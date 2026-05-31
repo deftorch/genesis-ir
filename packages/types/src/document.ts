@@ -5,6 +5,7 @@ import { IRConstraintSet } from './constraints.js';
 import { IRTimeline } from './timeline.js';
 import { IRDataBinding, IRInteractionModel } from './bindings.js';
 import { IRPrintSpec } from './print.js';
+import { IRObservability, IRDebugExtension } from './observability.js';
 
 /**
  * @stability STABLE
@@ -256,6 +257,8 @@ export interface IRDocument {
   bindings?: Record<string, IRDataBinding>;
   interaction_model?: IRInteractionModel;
   print_spec?: IRPrintSpec;
+  observability?: IRObservability;
+  x_debug?: IRDebugExtension;
 }
 
 function uuidv4(): string {

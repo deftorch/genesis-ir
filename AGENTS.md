@@ -103,8 +103,10 @@ packages/
 | M5: Timeline | Bulan 15 | 🟢 SELESAI |
 | M6: Interaksi & State Engine | Bulan 18 | 🟢 SELESAI |
 | M7: Output Cetak Sempurna | Bulan 21 | 🟢 SELESAI |
+| M8: Domain Expansion & Mode Context | Bulan 24 | 🟢 SELESAI |
+| M9: Jejak Audit & Audit WCAG | Bulan 27 | 🟢 SELESAI |
 
-**PHASE AKTIF: FASE 8 (Domain Expansion & Mode Context)**
+**PHASE AKTIF: FASE 10A (Document Domain)**
 
 ---
 

@@ -110,6 +110,14 @@ const irDocumentSchema: Schema = {
       type: 'object',
       additionalProperties: true,
     },
+    observability: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    x_debug: {
+      type: 'object',
+      additionalProperties: true,
+    },
   },
   additionalProperties: false,
 };

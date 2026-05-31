@@ -416,22 +416,22 @@
 > ⛔ **CRITICAL GATE (Keputusan #09–#16):** Seluruh keputusan arsitektur #09 s.d. #16 harus teruji dan audit sebelum Fase 10. Kegagalan di sini menyebabkan storage rewrite.
 
 ### 9.1 Compilation Pass Profiler
-- [ ] 🔴 Tulis tes: setiap pass kompilasi harus mencatat `start_time_ms`, `end_time_ms`, dan `duration_ms`
-- [ ] 🔴 Tulis tes: pass yang melebihi `timeout_ms` harus menghasilkan warning observability
-- [ ] 🟢 Implementasi `IRCompilationProfile` interface (per-pass timing, memory_used_mb)
-- [ ] 🟢 Implementasi `CompilerProfiler.startPass(passId)` / `.endPass(passId)`
+- [x] 🔴 Tulis tes: setiap pass kompilasi harus mencatat `start_time_ms`, `end_time_ms`, dan `duration_ms`
+- [x] 🔴 Tulis tes: pass yang melebihi `timeout_ms` harus menghasilkan warning observability
+- [x] 🟢 Implementasi `IRCompilationProfile` interface (per-pass timing, memory_used_mb)
+- [x] 🟢 Implementasi `CompilerProfiler.startPass(passId)` / `.endPass(passId)`
 
 ### 9.2 Accessibility Audit System
-- [ ] 🔴 Tulis tes: node `IRTextContent` tanpa `aria_label` di domain `interactive` harus menghasilkan WCAG warning
-- [ ] 🔴 Tulis tes: `IRAccessibilityAuditResult` dengan `status: "fail"` harus memiliki `message` dan `wcag_criterion`
-- [ ] 🟢 Implementasi `IRAccessibilityAuditResult` interface
-- [ ] 🟢 Implementasi `IRAccessibilityAnnotations` interface (wcag_level, audit_results, color_blind_simulations)
-- [ ] 🟢 Implementasi built-in tool `validate_accessibility` (tool_id dari IR_BUILTIN_TOOLS)
+- [x] 🔴 Tulis tes: node `IRTextContent` tanpa `aria_label` di domain `interactive` harus menghasilkan WCAG warning
+- [x] 🔴 Tulis tes: `IRAccessibilityAuditResult` dengan `status: "fail"` harus memiliki `message` dan `wcag_criterion`
+- [x] 🟢 Implementasi `IRAccessibilityAuditResult` interface
+- [x] 🟢 Implementasi `IRAccessibilityAnnotations` interface (wcag_level, audit_results, color_blind_simulations)
+- [x] 🟢 Implementasi built-in tool `validate_accessibility` (tool_id dari IR_BUILTIN_TOOLS)
 
 ### 9.3 `x_debug` & Provenance Tracking
-- [ ] 🔴 Tulis tes: setiap modifikasi oleh AI agent harus dicatat di `x_debug.agent_provenance`
-- [ ] 🟢 Implementasi `IRDebugExtension` interface (compilation_trace, agent_provenance, diff_snapshot)
-- [ ] 🟢 Implementasi `IRVisualConstraintExtension` (gestalt_analysis, typography_analysis)
+- [x] 🔴 Tulis tes: setiap modifikasi oleh AI agent harus dicatat di `x_debug.agent_provenance`
+- [x] 🟢 Implementasi `IRDebugExtension` interface (compilation_trace, agent_provenance, diff_snapshot)
+- [x] 🟢 Implementasi `IRVisualConstraintExtension` (gestalt_analysis, typography_analysis)
 
 ---
 

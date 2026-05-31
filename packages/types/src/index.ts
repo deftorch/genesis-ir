@@ -11,3 +11,4 @@ export * from './lir.js';
 export * from './gaps.js';
 export * from './bindings.js';
 export * from './print.js';
+export * from './observability.js';

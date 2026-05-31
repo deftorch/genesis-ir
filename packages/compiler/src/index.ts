@@ -1,4 +1,5 @@
 import { validateHIR } from '@genesis/schema';
+export * from './profiler.js';
 
 /**
  * @stability BETA
