@@ -176,14 +176,45 @@ export function validateCanvas(doc: any): ValidationResult {
     }
   }
 
-  // Music production domain requires sample_rate
-  if (domain === 'music_production') {
-    if (!('sample_rate' in canvas) || typeof canvas.sample_rate !== 'number' || canvas.sample_rate <= 0) {
+  // Music production/Audio domain and canvas_type === 'audio' validation
+  const activeDomains = doc.meta?.active_domains || [];
+  const isAudio = canvas.canvas_type === 'audio' || domain === 'music_production' || domain === 'audio';
+
+  if (isAudio) {
+    if (!('sample_rate' in canvas) || typeof canvas.sample_rate !== 'number') {
       errors.push({
         path: 'canvas.sample_rate',
-        message: 'Music production domain documents require a positive sample_rate field on the canvas',
+        message: 'Audio canvas requires a numerical sample_rate',
         keyword: 'required-sample_rate',
       });
+    } else {
+      const allowedRates = [44100, 48000, 96000];
+      if (!allowedRates.includes(canvas.sample_rate)) {
+        errors.push({
+          path: 'canvas.sample_rate',
+          message: 'Audio canvas sample_rate must be 44100, 48000, or 96000 Hz',
+          keyword: 'invalid-sample-rate',
+        });
+      }
+    }
+
+    if (domain === 'music_production' || activeDomains.includes('music_production')) {
+      if (!('bit_depth' in canvas) || canvas.bit_depth === undefined) {
+        errors.push({
+          path: 'canvas.bit_depth',
+          message: 'Music production domain documents require a bit_depth field on the canvas',
+          keyword: 'required-bit-depth',
+        });
+      } else {
+        const allowedDepths = [16, 24, 32];
+        if (!allowedDepths.includes(canvas.bit_depth)) {
+          errors.push({
+            path: 'canvas.bit_depth',
+            message: 'Music production domain bit_depth must be 16, 24, or 32',
+            keyword: 'invalid-bit-depth',
+          });
+        }
+      }
     }
   }
 
@@ -414,6 +445,12 @@ export function validateHIR(doc: unknown): ValidationResult {
   const interactionResult = validateInteractionModel(doc);
   if (!interactionResult.valid) {
     errors.push(...interactionResult.errors);
+  }
+
+  // Custom 3D Viewport validation
+  const threedResult = validate3DViewportAndNodes(doc);
+  if (!threedResult.valid) {
+    errors.push(...threedResult.errors);
   }
 
   const warnings: ValidationError[] = [];
@@ -1115,6 +1152,59 @@ export function validateDomainCompatibilities(doc: any): ValidationResult {
         keyword: 'invalid-3d-canvas',
       });
     }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate 3D viewports, cameras, and mesh definitions.
+ * @stability BETA
+ */
+export function validate3DViewportAndNodes(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const domain = doc.meta?.domain;
+  const activeDomains = doc.meta?.active_domains || [];
+
+  const is3D = domain === '3d' || activeDomains.includes('3d') || (doc.canvas && doc.canvas.canvas_type === '3d');
+
+  if (is3D) {
+    const objects = doc.objects || [];
+    // 1. IR3DViewport tanpa camera_3d node harus gagal Pass 3
+    const hasCamera3D = objects.some((obj: any) => obj.type === 'camera_3d');
+    if (!hasCamera3D) {
+      errors.push({
+        path: 'objects',
+        message: 'IR3DViewport requires at least one camera_3d node',
+        keyword: 'missing-camera_3d',
+      });
+    }
+
+    // 2. mesh_3d tanpa material_id yang valid harus gagal Pass 3
+    objects.forEach((obj: any, idx: number) => {
+      if (obj.type === 'mesh_3d') {
+        const matId = obj.material_id;
+        if (!matId) {
+          errors.push({
+            path: `objects[${idx}].material_id`,
+            message: `mesh_3d node '${obj.id || idx}' is missing material_id`,
+            keyword: 'missing-material-id',
+          });
+        } else {
+          const referencedNode = objects.find((o: any) => o.id === matId);
+          if (!referencedNode || referencedNode.type !== 'material_3d') {
+            errors.push({
+              path: `objects[${idx}].material_id`,
+              message: `mesh_3d node '${obj.id || idx}' references an invalid material_id: '${matId}'`,
+              keyword: 'invalid-material-id',
+            });
+          }
+        }
+      }
+    });
   }
 
   return {

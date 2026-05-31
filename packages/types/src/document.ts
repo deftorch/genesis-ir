@@ -1,5 +1,5 @@
 import { IRDomain } from './domains.js';
-import { IRStyleContext } from './style.js';
+import { IRStyleContext, ColorValue } from './style.js';
 import { IRNode } from './nodes.js';
 import { IRConstraintSet } from './constraints.js';
 import { IRTimeline } from './timeline.js';
@@ -160,15 +160,63 @@ export interface IRCanvas {
  * @stability STABLE
  */
 export interface IRAudioCanvas {
+  canvas_type: "audio";
   sample_rate: number;
-  bit_depth: number;
-  channels: number;
+  bit_depth: 16 | 24 | 32;
+  channel_layout: "mono" | "stereo" | "5.1" | "7.1" | { type: "custom"; channels: number; layout_name: string };
+  duration_ms: number;
+  export_format: "wav" | "aiff" | "flac" | "mp3" | "aac" | "ogg";
+  proxy_mode?: boolean;
+  loudness_target?: {
+    standard: "EBU_R128" | "ATSC_A85" | "ITU_BS1770";
+    lufs: number;
+    true_peak_db: number;
+  };
+  metadata?: {
+    title?: string;
+    artist?: string;
+    album?: string;
+    bpm?: number;
+    key?: string;
+  };
 }
 
 /**
  * @stability STABLE
  */
 export interface IR3DViewport {
+  canvas_type: "3d";
+  width: number;
+  height: number;
+  coordinate_system: "Y_up" | "Z_up";
+  units: "meters" | "centimeters" | "millimeters" | "inches";
+  proxy_mode?: boolean;
+  default_camera: {
+    type: "perspective" | "orthographic";
+    fov_deg?: number;
+    near_clip: number;
+    far_clip: number;
+    position: { x: number; y: number; z: number };
+    look_at: { x: number; y: number; z: number };
+    up_vector: { x: number; y: number; z: number };
+  };
+  default_lighting: {
+    type: "unlit" | "phong" | "pbr";
+    ambient_color: ColorValue;
+    ambient_intensity: number;
+  };
+  render_settings: {
+    antialiasing: "none" | "fxaa" | "msaa_2x" | "msaa_4x" | "msaa_8x";
+    shadows: boolean;
+    shadow_quality?: "low" | "medium" | "high";
+    reflections: boolean;
+    fps?: number;
+    duration_ms?: number;
+  };
+  background:
+    | { type: "color"; value: ColorValue }
+    | { type: "hdri"; url: string; intensity: number }
+    | { type: "transparent" };
   camera_3d?: string;
   scene_config?: Record<string, unknown>;
 }

@@ -392,21 +392,21 @@
 **Milestone M8: Konteks Mode Terintegrasi (Target: Akhir Bulan ke-24)**
 
 ### 8.1 Multi-Domain Document Support
-- [ ] 🔴 Tulis tes: dokumen dengan `meta.domain: "video"` dan `meta.active_domains: ["audio", "visual"]` harus valid
-- [ ] 🔴 Tulis tes: domain `visual` tidak boleh berisi domain `3d` tanpa `IR3DViewport` canvas
-- [ ] 🟢 Implementasi validasi `active_domains` kompatibilitas di Pass 1
-- [ ] 🟢 Implementasi multi-renderer dispatch untuk dokumen multi-domain
+- [x] 🔴 Tulis tes: dokumen dengan `meta.domain: "video"` dan `meta.active_domains: ["audio", "visual"]` harus valid
+- [x] 🔴 Tulis tes: domain `visual` tidak boleh berisi domain `3d` tanpa `IR3DViewport` canvas
+- [x] 🟢 Implementasi validasi `active_domains` kompatibilitas di Pass 1
+- [x] 🟢 Implementasi multi-renderer dispatch untuk dokumen multi-domain
 
 ### 8.2 `IRAudioCanvas` — Domain Audio & Music
-- [ ] 🔴 Tulis tes: `IRAudioCanvas` dengan `sample_rate` bukan 44100/48000/96000 Hz harus gagal
-- [ ] 🔴 Tulis tes: `IRAudioCanvas` domain `music_production` tanpa `bit_depth` harus gagal
-- [ ] 🟢 Implementasi `IRAudioCanvas` interface lengkap
+- [x] 🔴 Tulis tes: `IRAudioCanvas` dengan `sample_rate` bukan 44100/48000/96000 Hz harus gagal
+- [x] 🔴 Tulis tes: `IRAudioCanvas` domain `music_production` tanpa `bit_depth` harus gagal
+- [x] 🟢 Implementasi `IRAudioCanvas` interface lengkap
 
 ### 8.3 `IR3DViewport` — Domain 3D
-- [ ] 🔴 Tulis tes: `IR3DViewport` tanpa `camera_3d` node harus gagal Pass 3
-- [ ] 🔴 Tulis tes: `mesh_3d` tanpa `material_id` yang valid harus gagal Pass 3
-- [ ] 🟢 Implementasi `IR3DViewport` interface (scene_config, lighting, camera)
-- [ ] 🟢 Implementasi Three.js/WebGL renderer backend untuk domain `3d`
+- [x] 🔴 Tulis tes: `IR3DViewport` tanpa `camera_3d` node harus gagal Pass 3
+- [x] 🔴 Tulis tes: `mesh_3d` tanpa `material_id` yang valid harus gagal Pass 3
+- [x] 🟢 Implementasi `IR3DViewport` interface (scene_config, lighting, camera)
+- [x] 🟢 Implementasi Three.js/WebGL renderer backend untuk domain `3d`
 
 ---
 
