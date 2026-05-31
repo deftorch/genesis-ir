@@ -256,39 +256,39 @@
 **Milestone M4: Rendering Statis Live (Target: Akhir Bulan ke-12)**
 
 ### 4.1 Layout Computation (Pass 4)
-- [ ] 🔴 Tulis tes: node dengan `layout: "flex"` dan anak-anaknya harus menghasilkan posisi absolut yang benar
-- [ ] 🔴 Tulis tes: node `group` harus menghitung bounding box dari seluruh anaknya
-- [ ] 🔴 Tulis tes: `IRNodeConstraints` (min_width, max_width) harus diterapkan saat layout
-- [ ] 🟢 Implementasi `computeLayout(doc: IRDocument): ComputedLayoutMap`
-- [ ] 🟢 Implementasi Flexbox layout engine (menggunakan `yoga-layout` atau implementasi sendiri)
-- [ ] 🟢 Implementasi Grid layout engine
-- [ ] 🔵 Refactor: layout harus mendukung dirty-tracking untuk tier `core` (hanya recompute node berubah)
+- [x] 🔴 Tulis tes: node dengan `layout: "flex"` dan anak-anaknya harus menghasilkan posisi absolut yang benar
+- [x] 🔴 Tulis tes: node `group` harus menghitung bounding box dari seluruh anaknya
+- [x] 🔴 Tulis tes: `IRNodeConstraints` (min_width, max_width) harus diterapkan saat layout
+- [x] 🟢 Implementasi `computeLayout(doc: IRDocument): ComputedLayoutMap`
+- [x] 🟢 Implementasi Flexbox layout engine (menggunakan `yoga-layout` atau implementasi sendiri)
+- [x] 🟢 Implementasi Grid layout engine
+- [x] 🔵 Refactor: layout harus mendukung dirty-tracking untuk tier `core` (hanya recompute node berubah)
 
 ### 4.2 SVG Renderer Backend
-- [ ] 🔴 Tulis tes: node `IRShapeContent` tipe `rect` harus menghasilkan elemen `<rect>` SVG yang valid
-- [ ] 🔴 Tulis tes: node `IRShapeContent` tipe `ellipse` harus menghasilkan `<ellipse>` SVG
-- [ ] 🔴 Tulis tes: node `IRSVGPathContent` harus menghasilkan `<path d="...">` SVG yang identik
-- [ ] 🔴 Tulis tes: node `IRTextContent` harus menghasilkan `<text>` SVG dengan atribut font yang benar
-- [ ] 🔴 Tulis tes: node dengan `blend_mode: "multiply"` harus menghasilkan `mix-blend-mode: multiply` di SVG
-- [ ] 🔴 Tulis tes: node dengan `opacity: 0.5` harus menghasilkan `opacity="0.5"` di SVG
-- [ ] 🟢 Implementasi `SVGRenderer`: IRDocument → string (SVG output)
-- [ ] 🟢 Implementasi semua `IRShapeContent` types ke SVG primitives
-- [ ] 🟢 Implementasi `IRImageContent` ke `<image>` SVG dengan href ke asset
-- [ ] 🟢 Implementasi `IRBlendMode` ke SVG/CSS mix-blend-mode
-- [ ] 🔵 Refactor: gunakan virtual DOM SVG untuk operasi diff yang efisien
+- [x] 🔴 Tulis tes: node `IRShapeContent` tipe `rect` harus menghasilkan elemen `<rect>` SVG yang valid
+- [x] 🔴 Tulis tes: node `IRShapeContent` tipe `ellipse` harus menghasilkan `<ellipse>` SVG
+- [x] 🔴 Tulis tes: node `IRSVGPathContent` harus menghasilkan `<path d="...">` SVG yang identik
+- [x] 🔴 Tulis tes: node `IRTextContent` harus menghasilkan `<text>` SVG dengan atribut font yang benar
+- [x] 🔴 Tulis tes: node dengan `blend_mode: "multiply"` harus menghasilkan `mix-blend-mode: multiply` di SVG
+- [x] 🔴 Tulis tes: node dengan `opacity: 0.5` harus menghasilkan `opacity="0.5"` di SVG
+- [x] 🟢 Implementasi `SVGRenderer`: IRDocument → string (SVG output)
+- [x] 🟢 Implementasi semua `IRShapeContent` types ke SVG primitives
+- [x] 🟢 Implementasi `IRImageContent` ke `<image>` SVG dengan href ke asset
+- [x] 🟢 Implementasi `IRBlendMode` ke SVG/CSS mix-blend-mode
+- [x] 🔵 Refactor: gunakan virtual DOM SVG untuk operasi diff yang efisien
 
 ### 4.3 Web Canvas 2D Renderer Backend
-- [ ] 🔴 Tulis tes: `IRShapeContent` tipe `rect` menghasilkan call `ctx.fillRect()` yang benar
-- [ ] 🔴 Tulis tes: node dengan `IRImageFilter` brightness harus menghasilkan filter canvas yang sesuai
-- [ ] 🟢 Implementasi `Canvas2DRenderer`: IRDocument → HTMLCanvasElement instructions
-- [ ] 🔵 Refactor: group render calls menggunakan `ctx.save()` / `ctx.restore()`
+- [x] 🔴 Tulis tes: `IRShapeContent` tipe `rect` menghasilkan call `ctx.fillRect()` yang benar
+- [x] 🔴 Tulis tes: node dengan `IRImageFilter` brightness harus menghasilkan filter canvas yang sesuai
+- [x] 🟢 Implementasi `Canvas2DRenderer`: IRDocument → HTMLCanvasElement instructions
+- [x] 🔵 Refactor: group render calls menggunakan `ctx.save()` / `ctx.restore()`
 
 ### 4.4 LIR Generation (Pass 7 — Static)
-- [ ] 🔴 Tulis tes: MIR domain `visual` harus generate LIR bertipe SVG instructions
-- [ ] 🔴 Tulis tes: MIR domain `image_edit` harus generate LIR bertipe Canvas2D instructions
-- [ ] 🟢 Implementasi `IRLIRDocument` interface (low-level representation)
-- [ ] 🟢 Implementasi `generateLIR(mir: IRMIRDocument, target: PlatformTarget): IRLIRDocument`
-- [ ] ⛔ **Milestone M4 Gate:** Render dokumen Nano-tier domain `visual` menjadi SVG valid. Jalankan visual regression tests sebelum lanjut ke Fase 5.
+- [x] 🔴 Tulis tes: MIR domain `visual` harus generate LIR bertipe SVG instructions
+- [x] 🔴 Tulis tes: MIR domain `image_edit` harus generate LIR bertipe Canvas2D instructions
+- [x] 🟢 Implementasi `IRLIRDocument` interface (low-level representation)
+- [x] 🟢 Implementasi `generateLIR(mir: IRMIRDocument, target: PlatformTarget): IRLIRDocument`
+- [x] ⛔ **Milestone M4 Gate:** Render dokumen Nano-tier domain `visual` menjadi SVG valid. Jalankan visual regression tests sebelum lanjut ke Fase 5.
 
 ---
 

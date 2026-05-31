@@ -99,9 +99,9 @@ packages/
 | M1: Schema Core | Bulan 3 | 🟢 SELESAI |
 | M2: Style & Token | Bulan 6 | 🟢 SELESAI |
 | M3: Semantic Engine | Bulan 9 | 🟢 SELESAI |
-| M4: Renderer | Bulan 12 | 🔴 BELUM MULAI |
+| M4: Renderer | Bulan 12 | 🟢 SELESAI |
 
-**PHASE AKTIF: FASE 4 (Renderer Core - Setup & Infrastruktur)**
+**PHASE AKTIF: FASE 5 (Timeline & Temporal Resolution)**
 
 ---
 

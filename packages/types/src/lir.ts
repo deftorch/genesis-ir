@@ -1,3 +1,14 @@
+import { IRDocument } from './document.js';
+
+/**
+ * @stability STABLE
+ */
+export interface IRMIRDocument extends IRDocument {
+  mir_version?: string;
+}
+
+export type PlatformTarget = 'web' | 'print' | 'video' | '3d';
+
 /**
  * @stability STABLE
  */
@@ -26,6 +37,6 @@ export interface VideoLIR {
  * @stability STABLE
  */
 export interface IRLIRDocument {
-  target: 'web' | 'print' | 'video' | '3d';
+  target: PlatformTarget;
   lir: WebLIR | PrintLIR | VideoLIR;
 }
