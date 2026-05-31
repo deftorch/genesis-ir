@@ -2,6 +2,7 @@ import { IRDomain } from './domains.js';
 import { IRStyleContext } from './style.js';
 import { IRNode } from './nodes.js';
 import { IRConstraintSet } from './constraints.js';
+import { IRTimeline } from './timeline.js';
 
 /**
  * @stability STABLE
@@ -67,6 +68,81 @@ export interface IRDocumentMetadata {
 }
 
 /**
+ /**
+ * @stability STABLE
+ */
+export interface IRPixelCanvasContext {
+  type: 'pixel';
+  pixel_width: number;
+  pixel_height: number;
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IRMultiPageContext {
+  type: 'multipage';
+  page_count: number;
+  page_size?: string;
+  margins?: { top: number; right: number; bottom: number; left: number };
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IRMusicCanvasContext {
+  type: 'music';
+  bpm: number;
+  time_signature?: string;
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IRFontCanvasContext {
+  type: 'font';
+  em: 1000 | 2048;
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IRDiagramCanvasContext {
+  type: 'diagram';
+  layout_engine?: 'dot' | 'neato' | 'fdp' | 'circo';
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IR3DCanvasContext {
+  type: '3d';
+  fov?: number;
+  near?: number;
+  far?: number;
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IRMockupCanvasContext {
+  type: 'mockup';
+  target_device?: string;
+}
+
+/**
+ * @stability STABLE
+ */
+export type IRCanvasModeContext =
+  | IRPixelCanvasContext
+  | IRMultiPageContext
+  | IRMusicCanvasContext
+  | IRFontCanvasContext
+  | IRDiagramCanvasContext
+  | IR3DCanvasContext
+  | IRMockupCanvasContext;
+
+/**
  * @stability STABLE
  */
 export interface IRCanvas {
@@ -74,6 +150,7 @@ export interface IRCanvas {
   height: number;
   dpi?: number;
   color_space: 'sRGB' | 'CMYK';
+  context?: IRCanvasModeContext;
 }
 
 /**
@@ -94,6 +171,25 @@ export interface IR3DViewport {
 }
 
 /**
+ * @stability BETA
+ */
+export interface IRPhysicalSpec {
+  width_mm: number;
+  height_mm: number;
+  bleed_mm: number;
+  safe_zone_mm: number;
+  color_profile: "sRGB" | "CMYK" | "PantoneC" | "PantoneU" | "PantoneM" | "P3" | "Rec2020" | string;
+  three_d_print?: {
+    unit: "mm" | "cm" | "in";
+    infill_percent: number;
+    layer_height_mm: number;
+    support: boolean;
+    material: "PLA" | "ABS" | "PETG" | "resin" | "nylon" | string;
+    printer_profile?: string;
+  };
+}
+
+/**
  * @stability STABLE
  */
 export interface IRDocument {
@@ -104,6 +200,8 @@ export interface IRDocument {
   objects: IRNode[];
   constraints: IRConstraintSet;
   nodes: Record<string, unknown>; // Will reference IRNode
+  physical?: IRPhysicalSpec;
+  timeline?: IRTimeline;
 }
 
 function uuidv4(): string {
@@ -164,5 +262,109 @@ export function createIRDocument(opts: {
   });
 
   return doc;
+}
+
+/**
+ * @stability STABLE
+ */
+export interface CanvasPreset {
+  width: number;
+  height: number;
+  dpi?: number;
+  color_space: 'sRGB' | 'CMYK';
+  context?: IRCanvasModeContext;
+}
+
+/**
+ * Built-in standard canvas presets.
+ * @stability STABLE
+ */
+export const CANVAS_PRESETS: Readonly<Record<string, Readonly<CanvasPreset>>> = Object.freeze({
+  A4: Object.freeze({
+    width: 210,
+    height: 297,
+    dpi: 300,
+    color_space: 'CMYK',
+    context: {
+      type: 'multipage' as const,
+      page_count: 1,
+      page_size: 'A4',
+    },
+  }),
+  A3: Object.freeze({
+    width: 297,
+    height: 420,
+    dpi: 300,
+    color_space: 'CMYK',
+    context: {
+      type: 'multipage' as const,
+      page_count: 1,
+      page_size: 'A3',
+    },
+  }),
+  A5: Object.freeze({
+    width: 148,
+    height: 210,
+    dpi: 300,
+    color_space: 'CMYK',
+    context: {
+      type: 'multipage' as const,
+      page_count: 1,
+      page_size: 'A5',
+    },
+  }),
+  letter: Object.freeze({
+    width: 216,
+    height: 279,
+    dpi: 300,
+    color_space: 'CMYK',
+    context: {
+      type: 'multipage' as const,
+      page_count: 1,
+      page_size: 'letter',
+    },
+  }),
+  '1080p': Object.freeze({
+    width: 1920,
+    height: 1080,
+    color_space: 'sRGB',
+  }),
+  '720p': Object.freeze({
+    width: 1280,
+    height: 720,
+    color_space: 'sRGB',
+  }),
+  '4k': Object.freeze({
+    width: 3840,
+    height: 2160,
+    color_space: 'sRGB',
+  }),
+  square_instagram: Object.freeze({
+    width: 1080,
+    height: 1080,
+    color_space: 'sRGB',
+  }),
+  portrait_instagram: Object.freeze({
+    width: 1080,
+    height: 1350,
+    color_space: 'sRGB',
+  }),
+  twitter_header: Object.freeze({
+    width: 1500,
+    height: 500,
+    color_space: 'sRGB',
+  }),
+});
+
+/**
+ * Apply a standard canvas preset by preset ID
+ * @stability STABLE
+ */
+export function applyPreset(preset_id: string): Partial<IRCanvas> {
+  const preset = CANVAS_PRESETS[preset_id];
+  if (!preset) {
+    throw new Error(`Unknown canvas preset ID: ${preset_id}`);
+  }
+  return { ...preset };
 }
 

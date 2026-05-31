@@ -120,53 +120,53 @@
 ### 2.1 `IRStyleContext` & Design Tokens
 > 🔑 Keputusan #01: Urutan cascade = inline → component → global theme → brand profile.
 
-- [ ] 🔴 Tulis tes: token `theme://colors.primary` harus resolve ke nilai konkret berdasarkan `theme_tokens` aktif
-- [ ] 🔴 Tulis tes: token `brand://palette.accent` harus resolve ke nilai brand profile aktif
-- [ ] 🔴 Tulis tes: token yang tidak ditemukan harus mengembalikan `fallback` value atau error terstruktur
-- [ ] 🟢 Implementasi `IRStyleContext` interface (theme_tokens, brand_profile, component_styles)
-- [ ] 🟢 Implementasi `ColorValue` type alias (hex, rgba, cmyk, hsl, brand://, theme://, pantone://)
+- [x] 🔴 Tulis tes: token `theme://colors.primary` harus resolve ke nilai konkret berdasarkan `theme_tokens` aktif
+- [x] 🔴 Tulis tes: token `brand://palette.accent` harus resolve ke nilai brand profile aktif
+- [x] 🔴 Tulis tes: token yang tidak ditemukan harus mengembalikan `fallback` value atau error terstruktur
+- [x] 🟢 Implementasi `IRStyleContext` interface (theme_tokens, brand_profile, component_styles)
+- [x] 🟢 Implementasi `ColorValue` type alias (hex, rgba, cmyk, hsl, brand://, theme://, pantone://)
 
 ### 2.2 `IRBrandProfile`
-- [ ] 🔴 Tulis tes: dokumen domain `print` dengan brand profile harus memiliki palet warna CMYK
-- [ ] 🔴 Tulis tes: brand profile dengan warna Pantone harus memiliki format `pantone://[name]`
-- [ ] 🟢 Implementasi `IRBrandProfile` interface (color_palette, typography_tokens, spacing_tokens)
-- [ ] 🟢 Implementasi `resolveBrandToken(ref: string, brand: IRBrandProfile): string | undefined`
+- [x] 🔴 Tulis tes: dokumen domain `print` dengan brand profile harus memiliki palet warna CMYK
+- [x] 🔴 Tulis tes: brand profile dengan warna Pantone harus memiliki format `pantone://[name]`
+- [x] 🟢 Implementasi `IRBrandProfile` interface (color_palette, typography_tokens, spacing_tokens)
+- [x] 🟢 Implementasi `resolveBrandToken(ref: string, brand: IRBrandProfile): string | undefined`
 
 ### 2.3 Style Cascade Resolution (Pass 2)
-- [ ] 🔴 Tulis tes: inline style override sebuah node harus mengalahkan component style
-- [ ] 🔴 Tulis tes: component style harus mengalahkan global theme
-- [ ] 🔴 Tulis tes: global theme harus mengalahkan brand profile
-- [ ] 🔴 Tulis tes: `StyleOverride` pada node anak tidak boleh mempengaruhi node induk
-- [ ] 🟢 Implementasi fungsi `resolveStyleCascade(node: IRNode, context: IRStyleContext): ResolvedStyle`
-- [ ] 🟢 Implementasi `resolveColorValue(value: ColorValue, context: IRStyleContext): string`
-- [ ] 🔵 Refactor: gunakan memoization pada token resolution untuk dokumen besar
+- [x] 🔴 Tulis tes: inline style override sebuah node harus mengalahkan component style
+- [x] 🔴 Tulis tes: component style harus mengalahkan global theme
+- [x] 🔴 Tulis tes: global theme harus mengalahkan brand profile
+- [x] 🔴 Tulis tes: `StyleOverride` pada node anak tidak boleh mempengaruhi node induk
+- [x] 🟢 Implementasi fungsi `resolveStyleCascade(node: IRNode, context: IRStyleContext): ResolvedStyle`
+- [x] 🟢 Implementasi `resolveColorValue(value: ColorValue, context: IRStyleContext): string`
+- [x] 🔵 Refactor: gunakan memoization pada token resolution untuk dokumen besar
 
 ### 2.4 `IRCanvas` & Mode Context
 > 🔑 Keputusan #08: unit dasar dikunci per domain (px untuk digital, mm/pt untuk cetak, bar/beat untuk musik).
 
-- [ ] 🔴 Tulis tes: `IRCanvas` dengan `width: 0` atau `height: 0` harus gagal validasi
-- [ ] 🔴 Tulis tes: `IRCanvas` domain `print` harus memiliki `dpi` field
-- [ ] 🔴 Tulis tes: `IRCanvas` domain `music_production` harus memiliki `sample_rate` field
-- [ ] 🟢 Implementasi `IRCanvas` interface (standard canvas)
-- [ ] 🟢 Implementasi `IRAudioCanvas` interface (audio/music domain)
-- [ ] 🟢 Implementasi `IR3DViewport` interface (3D domain)
-- [ ] 🔴 Tulis tes: `IRCanvasModeContext` discriminated union memilih tipe yang benar berdasarkan `type` field
-- [ ] 🟢 Implementasi seluruh 7 konteks canvas:
-  - [ ] `IRPixelCanvasContext` (pixel art, pixel_width: 8–512)
-  - [ ] `IRMultiPageContext` (print, document)
-  - [ ] `IRMusicCanvasContext` (music_production, bpm: 20–300)
-  - [ ] `IRFontCanvasContext` (font_design, em: 1000|2048)
-  - [ ] `IRDiagramCanvasContext` (diagram)
-  - [ ] `IR3DCanvasContext` (3d)
-  - [ ] `IRMockupCanvasContext` (mockup)
+- [x] 🔴 Tulis tes: `IRCanvas` dengan `width: 0` atau `height: 0` harus gagal validasi
+- [x] 🔴 Tulis tes: `IRCanvas` domain `print` harus memiliki `dpi` field
+- [x] 🔴 Tulis tes: `IRCanvas` domain `music_production` harus memiliki `sample_rate` field
+- [x] 🟢 Implementasi `IRCanvas` interface (standard canvas)
+- [x] 🟢 Implementasi `IRAudioCanvas` interface (audio/music domain)
+- [x] 🟢 Implementasi `IR3DViewport` interface (3D domain)
+- [x] 🔴 Tulis tes: `IRCanvasModeContext` discriminated union memilih tipe yang benar berdasarkan `type` field
+- [x] 🟢 Implementasi seluruh 7 konteks canvas:
+  - [x] `IRPixelCanvasContext` (pixel art, pixel_width: 8–512)
+  - [x] `IRMultiPageContext` (print, document)
+  - [x] `IRMusicCanvasContext` (music_production, bpm: 20–300)
+  - [x] `IRFontCanvasContext` (font_design, em: 1000|2048)
+  - [x] `IRDiagramCanvasContext` (diagram)
+  - [x] `IR3DCanvasContext` (3d)
+  - [x] `IRMockupCanvasContext` (mockup)
 
 ### 2.5 Canvas Presets
 > 🔑 Keputusan #33: ID preset standar bersifat permanen (e.g., `"A4"`, `"1080p"`).
 
-- [ ] 🔴 Tulis tes: preset `A4` harus menghasilkan canvas 210×297mm, dpi 300, color_space CMYK
-- [ ] 🔴 Tulis tes: preset `1080p` harus menghasilkan canvas 1920×1080px, sRGB
-- [ ] 🟢 Implementasi `CANVAS_PRESETS` konstanta (minimal 10 preset umum)
-- [ ] 🟢 Implementasi `applyPreset(preset_id: string): Partial<IRCanvas>`
+- [x] 🔴 Tulis tes: preset `A4` harus menghasilkan canvas 210×297mm, dpi 300, color_space CMYK
+- [x] 🔴 Tulis tes: preset `1080p` harus menghasilkan canvas 1920×1080px, sRGB
+- [x] 🟢 Implementasi `CANVAS_PRESETS` konstanta (minimal 10 preset umum)
+- [x] 🟢 Implementasi `applyPreset(preset_id: string): Partial<IRCanvas>`
 
 ---
 
@@ -176,79 +176,79 @@
 ### 3.1 `IRNode` & `IRNodeType` Registry
 > 🔑 Keputusan #17: mapping `IR_ALLOWED_NODE_TYPES_BY_DOMAIN` dikunci setelah v1.0.
 
-- [ ] 🔴 Tulis tes: node bertipe `music_track` dalam domain `visual` harus ditolak Pass 1
-- [ ] 🔴 Tulis tes: node bertipe `glyph` hanya valid di domain `font_design`
-- [ ] 🔴 Tulis tes: node bertipe `bpmn_element` hanya valid di domain `diagram`
-- [ ] 🟢 Implementasi `IRNodeType` union type (seluruh 60+ tipe node dari spec)
-- [ ] 🟢 Implementasi konstanta `IR_ALLOWED_NODE_TYPES_BY_DOMAIN` untuk 17 domain
-- [ ] 🟢 Implementasi `isNodeAllowedInDomain(nodeType: IRNodeType, domain: IRDomain): boolean`
-- [ ] 🔵 Refactor: validasi dilakukan di Pass 1 sebelum proses lebih lanjut
+- [x] 🔴 Tulis tes: node bertipe `music_track` dalam domain `visual` harus ditolak Pass 1
+- [x] 🔴 Tulis tes: node bertipe `glyph` hanya valid di domain `font_design`
+- [x] 🔴 Tulis tes: node bertipe `bpmn_element` hanya valid di domain `diagram`
+- [x] 🟢 Implementasi `IRNodeType` union type (seluruh 60+ tipe node dari spec)
+- [x] 🟢 Implementasi konstanta `IR_ALLOWED_NODE_TYPES_BY_DOMAIN` untuk 17 domain
+- [x] 🟢 Implementasi `isNodeAllowedInDomain(nodeType: IRNodeType, domain: IRDomain): boolean`
+- [x] 🔵 Refactor: validasi dilakukan di Pass 1 sebelum proses lebih lanjut
 
 ### 3.2 `IRGeometry` & Transformasi
-- [ ] 🔴 Tulis tes: `IRGeometry` dengan `width < 0` atau `height < 0` harus gagal validasi
-- [ ] 🔴 Tulis tes: `rotation` harus dalam rentang 0–360 derajat
-- [ ] 🔴 Tulis tes: `IRMatrix2D` dengan nilai `a=1, b=0, c=0, d=1, tx=0, ty=0` adalah identitas
-- [ ] 🟢 Implementasi `IRGeometry` interface (2D + properti 3D opsional)
-- [ ] 🟢 Implementasi `IRMatrix2D` interface
-- [ ] 🟢 Implementasi fungsi `applyTransform(geo: IRGeometry, matrix: IRMatrix2D): IRGeometry`
+- [x] 🔴 Tulis tes: `IRGeometry` dengan `width < 0` atau `height < 0` harus gagal validasi
+- [x] 🔴 Tulis tes: `rotation` harus dalam rentang 0–360 derajat
+- [x] 🔴 Tulis tes: `IRMatrix2D` dengan nilai `a=1, b=0, c=0, d=1, tx=0, ty=0` adalah identitas
+- [x] 🟢 Implementasi `IRGeometry` interface (2D + properti 3D opsional)
+- [x] 🟢 Implementasi `IRMatrix2D` interface
+- [x] 🟢 Implementasi fungsi `applyTransform(geo: IRGeometry, matrix: IRMatrix2D): IRGeometry`
 
 ### 3.3 `IRNodeContent` — Discriminated Union
 > 🔑 Keputusan #18: discriminated union berdasarkan properti `kind`.
 
-- [ ] 🔴 Tulis tes: `IRTextContent` tanpa `raw` harus gagal validasi
-- [ ] 🔴 Tulis tes: `IRImageContent` tanpa `asset_id` dan tanpa `fit` harus gagal
-- [ ] 🔴 Tulis tes: `IRVideoContent` dengan `in_point_ms > out_point_ms` harus gagal
-- [ ] 🔴 Tulis tes: `IRShapeContent` dengan `shape_type: "polygon"` harus memiliki `sides >= 3`
-- [ ] 🔴 Tulis tes: `IRSVGPathContent` dengan `d` string kosong harus gagal
-- [ ] 🟢 Implementasi 17 `IRNodeContent` subtypes:
-  - [ ] `IRTextContent` (raw, rich_text, font_ref, text_align, overflow, chain_to)
-  - [ ] `IRImageContent` (asset_id, fit, focal_point, filters)
-  - [ ] `IRShapeContent` (shape_type, corner_radius, sides, star_ratio)
-  - [ ] `IRSVGPathContent` (d, fill_rule, path_type)
-  - [ ] `IRVideoContent` (asset_id, in_point_ms, out_point_ms, volume, muted, loop, playback_speed)
-  - [ ] `IRAudioContent` (asset_id, in_point_ms, out_point_ms, volume, muted, pan, loop)
-  - [ ] `IRChartContent` (chart_type, data_source, axes, series)
-  - [ ] `IRDocContent` (doc_type, paragraphs, toc)
-  - [ ] `IRDiagramNodeContent` (diagram_type, label, shape)
-  - [ ] `IRDiagramEdgeContent` (source_id, target_id, edge_type, waypoints)
-  - [ ] `IRMusicTrackContent` (track_type, clips, effects, volume, pan)
-  - [ ] `IRMusicNoteContent` (pitch, velocity, start_beat, duration_beats, channel)
-  - [ ] `IRPixelCelContent` (layer_id, pixel_data)
-  - [ ] `IRMesh3DContent` (geometry, material_id, cast_shadow)
-  - [ ] `IRGlyphContent` (unicode, contours, advance_width)
-  - [ ] `IRDeviceFrameContent` (device_type, screen_content_id)
-  - [ ] `IRPrintTextFrameContent` (text_chain_id, columns)
+- [x] 🔴 Tulis tes: `IRTextContent` tanpa `raw` harus gagal validasi
+- [x] 🔴 Tulis tes: `IRImageContent` tanpa `asset_id` dan tanpa `fit` harus gagal
+- [x] 🔴 Tulis tes: `IRVideoContent` dengan `in_point_ms > out_point_ms` harus gagal
+- [x] 🔴 Tulis tes: `IRShapeContent` dengan `shape_type: "polygon"` harus memiliki `sides >= 3`
+- [x] 🔴 Tulis tes: `IRSVGPathContent` dengan `d` string kosong harus gagal
+- [x] 🟢 Implementasi 17 `IRNodeContent` subtypes:
+  - [x] `IRTextContent` (raw, rich_text, font_ref, text_align, overflow, chain_to)
+  - [x] `IRImageContent` (asset_id, fit, focal_point, filters)
+  - [x] `IRShapeContent` (shape_type, corner_radius, sides, star_ratio)
+  - [x] `IRSVGPathContent` (d, fill_rule, path_type)
+  - [x] `IRVideoContent` (asset_id, in_point_ms, out_point_ms, volume, muted, loop, playback_speed)
+  - [x] `IRAudioContent` (asset_id, in_point_ms, out_point_ms, volume, muted, pan, loop)
+  - [x] `IRChartContent` (chart_type, data_source, axes, series)
+  - [x] `IRDocContent` (doc_type, paragraphs, toc)
+  - [x] `IRDiagramNodeContent` (diagram_type, label, shape)
+  - [x] `IRDiagramEdgeContent` (source_id, target_id, edge_type, waypoints)
+  - [x] `IRMusicTrackContent` (track_type, clips, effects, volume, pan)
+  - [x] `IRMusicNoteContent` (pitch, velocity, start_beat, duration_beats, channel)
+  - [x] `IRPixelCelContent` (layer_id, pixel_data)
+  - [x] `IRMesh3DContent` (geometry, material_id, cast_shadow)
+  - [x] `IRGlyphContent` (unicode, contours, advance_width)
+  - [x] `IRDeviceFrameContent` (device_type, screen_content_id)
+  - [x] `IRPrintTextFrameContent` (text_chain_id, columns)
 
 ### 3.4 `IRAssetRef` & `asset://` URI Scheme
 > 🔑 Keputusan #34: referensi ke media biner wajib menggunakan `asset://[UUID]`.
 
-- [ ] 🔴 Tulis tes: `IRAssetRef` dengan URL bukan format `asset://` harus gagal validasi
-- [ ] 🔴 Tulis tes: `IRAssetRef` tanpa `checksum` (SHA-256) harus gagal
-- [ ] 🔴 Tulis tes: `IRAssetRef` tipe `image` wajib memiliki `dimensions`
-- [ ] 🔴 Tulis tes: `IRAssetRef` tipe `audio` wajib memiliki `duration_ms`
-- [ ] 🟢 Implementasi `IRAssetRef` interface
-- [ ] 🟢 Implementasi `buildAssetURI(assetId: string): string` → `"asset://{uuid}"`
-- [ ] 🟢 Implementasi `parseAssetURI(uri: string): string | null` → extract UUID
+- [x] 🔴 Tulis tes: `IRAssetRef` dengan URL bukan format `asset://` harus gagal validasi
+- [x] 🔴 Tulis tes: `IRAssetRef` tanpa `checksum` (SHA-256) harus gagal
+- [x] 🔴 Tulis tes: `IRAssetRef` tipe `image` wajib memiliki `dimensions`
+- [x] 🔴 Tulis tes: `IRAssetRef` tipe `audio` wajib memiliki `duration_ms`
+- [x] 🟢 Implementasi `IRAssetRef` interface
+- [x] 🟢 Implementasi `buildAssetURI(assetId: string): string` → `"asset://{uuid}"`
+- [x] 🟢 Implementasi `parseAssetURI(uri: string): string | null` → extract UUID
 
 ### 3.5 `IRSemanticRule` & WCAG Engine
 > 🔑 Keputusan #07: setiap aturan harus diberi label `STABLE`, `BETA`, atau `x_*`.
 
-- [ ] 🔴 Tulis tes: teks putih (#FFFFFF) di atas latar putih (#FFFFFF) harus gagal WCAG AA (rasio 1:1)
-- [ ] 🔴 Tulis tes: teks hitam (#000000) di atas latar putih (#FFFFFF) harus lulus WCAG AAA (rasio 21:1)
-- [ ] 🔴 Tulis tes: teks 16px dengan rasio kontras ≥ 4.5:1 harus lulus WCAG AA
-- [ ] 🟢 Implementasi `calculateContrastRatio(fg: string, bg: string): number`
-- [ ] 🟢 Implementasi `checkWCAGCompliance(ratio: number, level: "A"|"AA"|"AAA", fontSize: number): boolean`
-- [ ] 🟢 Implementasi `IRSemanticRule` interface (rule_id, severity, evaluate_at, condition)
-- [ ] 🔵 Refactor: aturan WCAG harus callable sebagai tool `validate_accessibility` (lihat Fase 7)
+- [x] 🔴 Tulis tes: teks putih (#FFFFFF) di atas latar putih (#FFFFFF) harus gagal WCAG AA (rasio 1:1)
+- [x] 🔴 Tulis tes: teks hitam (#000000) di atas latar putih (#FFFFFF) harus lulus WCAG AAA (rasio 21:1)
+- [x] 🔴 Tulis tes: teks 16px dengan rasio kontras ≥ 4.5:1 harus lulus WCAG AA
+- [x] 🟢 Implementasi `calculateContrastRatio(fg: string, bg: string): number`
+- [x] 🟢 Implementasi `checkWCAGCompliance(ratio: number, level: "A"|"AA"|"AAA", fontSize: number): boolean`
+- [x] 🟢 Implementasi `IRSemanticRule` interface (rule_id, severity, evaluate_at, condition)
+- [x] 🔵 Refactor: aturan WCAG harus callable sebagai tool `validate_accessibility` (lihat Fase 7)
 
 ### 3.6 Constraint Engine (Pass 3)
-- [ ] 🔴 Tulis tes: domain `print` tanpa `physical` spec harus gagal Pass 3
-- [ ] 🔴 Tulis tes: domain `video` tanpa `timeline` harus gagal Pass 3
-- [ ] 🔴 Tulis tes: domain `audio` tanpa `IRAudioCanvas` harus gagal Pass 3
-- [ ] 🔴 Tulis tes: kedalaman pohon node melebihi `max_tree_depth` harus gagal Pass 3
-- [ ] 🟢 Implementasi `runPass3(doc: IRDocument): SemanticValidationResult`
-- [ ] 🟢 Implementasi validasi matriks domain coverage (lihat tabel §8.9 spec)
-- [ ] 🔵 Refactor: sub-pass 3a–3e harus dapat dijalankan secara paralel
+- [x] 🔴 Tulis tes: domain `print` tanpa `physical` spec harus gagal Pass 3
+- [x] 🔴 Tulis tes: domain `video` tanpa `timeline` harus gagal Pass 3
+- [x] 🔴 Tulis tes: domain `audio` tanpa `IRAudioCanvas` harus gagal Pass 3
+- [x] 🔴 Tulis tes: kedalaman pohon node melebihi `max_tree_depth` harus gagal Pass 3
+- [x] 🟢 Implementasi `runPass3(doc: IRDocument): SemanticValidationResult`
+- [x] 🟢 Implementasi validasi matriks domain coverage (lihat tabel §8.9 spec)
+- [x] 🔵 Refactor: sub-pass 3a–3e harus dapat dijalankan secara paralel
 
 ---
 

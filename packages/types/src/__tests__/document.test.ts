@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { canTransition, IRDocumentLifecycleStatus, createIRDocument } from '../document.js';
+import { canTransition, IRDocumentLifecycleStatus, createIRDocument, applyPreset } from '../document.js';
 
 const context = describe;
 
@@ -58,13 +58,34 @@ describe('document lifecycle & factory', () => {
       });
 
       const originalId = doc.ir_id;
-      
+
       // Attempting to overwrite should throw or be ignored depending on implementation.
       // Since TypeScript strict might block write, we can test it using Object.getOwnPropertyDescriptor or attempting delete/redefine or verify it throws in strict mode
       expect(() => {
         (doc as any).ir_id = 'new-id';
       }).toThrow();
       expect(doc.ir_id).toBe(originalId);
+    });
+  });
+
+  context('Canvas Presets', () => {
+    it('should resolve preset A4 to 210x297mm, dpi 300, color_space CMYK', () => {
+      const preset = applyPreset('A4');
+      expect(preset.width).toBe(210);
+      expect(preset.height).toBe(297);
+      expect(preset.dpi).toBe(300);
+      expect(preset.color_space).toBe('CMYK');
+    });
+
+    it('should resolve preset 1080p to 1920x1080px, sRGB', () => {
+      const preset = applyPreset('1080p');
+      expect(preset.width).toBe(1920);
+      expect(preset.height).toBe(1080);
+      expect(preset.color_space).toBe('sRGB');
+    });
+
+    it('should throw error for unknown preset ID', () => {
+      expect(() => applyPreset('unknown_preset')).toThrow();
     });
   });
 });

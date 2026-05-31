@@ -96,12 +96,12 @@ packages/
 
 | Milestone | Target | Status |
 |-----------|--------|--------|
-| M1: Schema Core | Bulan 3 | 🔴 BELUM MULAI |
-| M2: Style & Token | Bulan 6 | 🔴 BELUM MULAI |
-| M3: Semantic Engine | Bulan 9 | 🔴 BELUM MULAI |
+| M1: Schema Core | Bulan 3 | 🟢 SELESAI |
+| M2: Style & Token | Bulan 6 | 🟢 SELESAI |
+| M3: Semantic Engine | Bulan 9 | 🟢 SELESAI |
 | M4: Renderer | Bulan 12 | 🔴 BELUM MULAI |
 
-**PHASE AKTIF: PRE-PHASE (Setup & Infrastruktur)**
+**PHASE AKTIF: FASE 4 (Renderer Core - Setup & Infrastruktur)**
 
 ---
 
