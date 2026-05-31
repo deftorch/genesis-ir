@@ -439,11 +439,11 @@
 **Milestone M10-A: Dokumen Rich Text (Target: Akhir Bulan ke-30)**
 
 ### 10A.1 Document Node Types
-- [ ] 🔴 Tulis tes: `doc_heading` harus memiliki level 1–6
-- [ ] 🔴 Tulis tes: `doc_list_item` harus selalu berada di dalam `doc_list`
-- [ ] 🔴 Tulis tes: `doc_code_block` harus memiliki `language` field
-- [ ] 🟢 Implementasi semua 14 node type domain `document`
-- [ ] 🟢 Sub-pass 4a: Multi-page Text Reflow engine
+- [x] 🔴 Tulis tes: `doc_heading` harus memiliki level 1–6
+- [x] 🔴 Tulis tes: `doc_list_item` harus selalu berada di dalam `doc_list`
+- [x] 🔴 Tulis tes: `doc_code_block` harus memiliki `language` field
+- [x] 🟢 Implementasi semua 14 node type domain `document`
+- [x] 🟢 Sub-pass 4a: Multi-page Text Reflow engine
 
 ---
 
@@ -451,13 +451,13 @@
 **Milestone M10-B: Diagram Alir (Target: Akhir Bulan ke-30)**
 
 ### 10B.1 Diagram Node & Edge System
-- [ ] 🔴 Tulis tes: `diagram_edge` yang merujuk `source_id` node tidak ada harus gagal Pass 1 (dangling reference)
-- [ ] 🔴 Tulis tes: graf diagram siklik harus terdeteksi dan dilaporkan di sub-pass 3d
-- [ ] 🔴 Tulis tes: `bpmn_element` harus memiliki `bpmn_type` yang valid (start_event, end_event, task, gateway)
-- [ ] 🟢 Implementasi semua 13 node type domain `diagram` (diagram_node, diagram_edge, uml_class, bpmn_element, dll.)
-- [ ] 🟢 Sub-pass 3d: cyclic graph detection menggunakan DFS
-- [ ] 🟢 Sub-pass 4b: A* pathfinding untuk auto-routing diagram edges
-- [ ] 🟢 Sub-pass 7d: SVG connector generation dengan kurva Bezier
+- [x] 🔴 Tulis tes: `diagram_edge` yang merujuk `source_id` node tidak ada harus gagal Pass 1 (dangling reference)
+- [x] 🔴 Tulis tes: graf diagram siklik harus terdeteksi dan dilaporkan di sub-pass 3d
+- [x] 🔴 Tulis tes: `bpmn_element` harus memiliki `bpmn_type` yang valid (start_event, end_event, task, gateway)
+- [x] 🟢 Implementasi semua 13 node type domain `diagram` (diagram_node, diagram_edge, uml_class, bpmn_element, dll.)
+- [x] 🟢 Sub-pass 3d: cyclic graph detection menggunakan DFS
+- [x] 🟢 Sub-pass 4b: A* pathfinding untuk auto-routing diagram edges
+- [x] 🟢 Sub-pass 7d: SVG connector generation dengan kurva Bezier
 
 ---
 

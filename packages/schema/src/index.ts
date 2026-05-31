@@ -479,6 +479,21 @@ export function validateHIR(doc: unknown): ValidationResult {
     warnings.push(...compatResult.warnings);
   }
 
+  // Document domain validation
+  const docDomainResult = validateDocumentDomain(doc);
+  if (!docDomainResult.valid) {
+    errors.push(...docDomainResult.errors);
+  }
+
+  // Diagram domain validation
+  const diagramResult = validateDiagramDomain(doc);
+  if (!diagramResult.valid) {
+    errors.push(...diagramResult.errors);
+  }
+  if (diagramResult.warnings) {
+    warnings.push(...diagramResult.warnings);
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -1221,5 +1236,163 @@ export function validate3DViewportAndNodes(doc: any): ValidationResult {
   };
 }
 
+/**
+ * Validate document domain node constraints.
+ * @stability BETA
+ */
+export function validateDocumentDomain(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const objects = doc.objects || [];
 
+  objects.forEach((obj: any, idx: number) => {
+    // doc_heading must have level 1-6
+    if (obj.type === 'doc_heading') {
+      const level = obj.level;
+      if (typeof level !== 'number' || level < 1 || level > 6 || !Number.isInteger(level)) {
+        errors.push({
+          path: `objects[${idx}].level`,
+          message: `doc_heading '${obj.id || idx}' must have an integer level between 1 and 6, got ${level}`,
+          keyword: 'invalid-heading-level',
+        });
+      }
+    }
+
+    // doc_list_item must be inside a doc_list parent
+    if (obj.type === 'doc_list_item') {
+      const parentId = obj.parent_id;
+      if (parentId) {
+        const parent = objects.find((o: any) => o.id === parentId);
+        if (!parent || parent.type !== 'doc_list') {
+          errors.push({
+            path: `objects[${idx}].parent_id`,
+            message: `doc_list_item '${obj.id || idx}' must be inside a doc_list, but parent '${parentId}' is not a doc_list`,
+            keyword: 'orphan-list-item',
+          });
+        }
+      } else {
+        errors.push({
+          path: `objects[${idx}].parent_id`,
+          message: `doc_list_item '${obj.id || idx}' must have a parent_id pointing to a doc_list`,
+          keyword: 'orphan-list-item',
+        });
+      }
+    }
+
+    // doc_code_block must have a language field
+    if (obj.type === 'doc_code_block') {
+      if (!obj.language || typeof obj.language !== 'string') {
+        errors.push({
+          path: `objects[${idx}].language`,
+          message: `doc_code_block '${obj.id || idx}' must have a language field`,
+          keyword: 'missing-code-language',
+        });
+      }
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate diagram domain nodes, edges, cycles, and BPMN types.
+ * @stability BETA
+ */
+export function validateDiagramDomain(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const warnings: ValidationError[] = [];
+  const objects = doc.objects || [];
+
+  const validBpmnTypes = ['start_event', 'end_event', 'task', 'gateway', 'intermediate_event', 'sub_process'];
+
+  // Collect all node IDs for reference checking
+  const objectIds = new Set(objects.map((o: any) => o.id));
+
+  objects.forEach((obj: any, idx: number) => {
+    // diagram_edge: dangling reference check
+    if (obj.type === 'diagram_edge') {
+      if (obj.source_id && !objectIds.has(obj.source_id)) {
+        errors.push({
+          path: `objects[${idx}].source_id`,
+          message: `diagram_edge '${obj.id || idx}' references non-existent source_id '${obj.source_id}'`,
+          keyword: 'dangling-edge-ref',
+        });
+      }
+      if (obj.target_id && !objectIds.has(obj.target_id)) {
+        errors.push({
+          path: `objects[${idx}].target_id`,
+          message: `diagram_edge '${obj.id || idx}' references non-existent target_id '${obj.target_id}'`,
+          keyword: 'dangling-edge-ref',
+        });
+      }
+    }
+
+    // bpmn_element: validate bpmn_type
+    if (obj.type === 'bpmn_element') {
+      if (!obj.bpmn_type || !validBpmnTypes.includes(obj.bpmn_type)) {
+        errors.push({
+          path: `objects[${idx}].bpmn_type`,
+          message: `bpmn_element '${obj.id || idx}' has invalid bpmn_type '${obj.bpmn_type}'. Valid types: ${validBpmnTypes.join(', ')}`,
+          keyword: 'invalid-bpmn-type',
+        });
+      }
+    }
+  });
+
+  // Cyclic graph detection via DFS on diagram edges
+  const edges = objects.filter((o: any) => o.type === 'diagram_edge');
+  if (edges.length > 0) {
+    const adjacency: Record<string, string[]> = {};
+    for (const e of edges) {
+      if (e.source_id && e.target_id) {
+        if (!adjacency[e.source_id]) adjacency[e.source_id] = [];
+        adjacency[e.source_id].push(e.target_id);
+      }
+    }
+
+    const visited = new Set<string>();
+    const recStack = new Set<string>();
+    let hasCycle = false;
+
+    function dfs(node: string): boolean {
+      visited.add(node);
+      recStack.add(node);
+      for (const neighbor of (adjacency[node] || [])) {
+        if (!visited.has(neighbor)) {
+          if (dfs(neighbor)) return true;
+        } else if (recStack.has(neighbor)) {
+          return true;
+        }
+      }
+      recStack.delete(node);
+      return false;
+    }
+
+    for (const nodeId of Object.keys(adjacency)) {
+      if (!visited.has(nodeId)) {
+        if (dfs(nodeId)) {
+          hasCycle = true;
+          break;
+        }
+      }
+    }
+
+    if (hasCycle) {
+      warnings.push({
+        path: 'objects',
+        message: 'Cyclic reference detected in diagram graph edges',
+        keyword: 'cyclic-graph',
+        severity: 'warning',
+      });
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    warnings,
+  };
+}
 

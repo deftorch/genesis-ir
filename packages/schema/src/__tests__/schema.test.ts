@@ -425,6 +425,7 @@ describe('schema', () => {
         {
           id: 'node-1',
           type: 'bpmn_element', // allowed in diagram
+          bpmn_type: 'task',
           parent_id: null,
           children: [],
         },
