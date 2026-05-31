@@ -101,8 +101,9 @@ packages/
 | M3: Semantic Engine | Bulan 9 | 🟢 SELESAI |
 | M4: Renderer | Bulan 12 | 🟢 SELESAI |
 | M5: Timeline | Bulan 15 | 🟢 SELESAI |
+| M6: Interaksi & State Engine | Bulan 18 | 🟢 SELESAI |
 
-**PHASE AKTIF: FASE 6 (Data Binding & Interaction Store)**
+**PHASE AKTIF: FASE 7 (CRDT & Collaborative Protocol)**
 
 ---
 

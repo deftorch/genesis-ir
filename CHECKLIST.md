@@ -335,32 +335,32 @@
 ### 6.1 `IRDataBinding` System
 > 🔑 Keputusan #36: penggunaan token literal dalam data binding dilarang. Wajib `env:`, `vault:`, atau `secret:` prefix.
 
-- [ ] 🔴 Tulis tes: `IRDataBinding` dengan `auth.token: "Bearer abc123"` literal harus gagal validasi
-- [ ] 🔴 Tulis tes: `IRDataBinding` dengan `auth.token: "env:API_TOKEN"` harus lulus validasi
-- [ ] 🔴 Tulis tes: `IRDataBinding` tipe `api_rest` tanpa `endpoint` harus gagal validasi
-- [ ] 🔴 Tulis tes: `IRDataBinding` dengan transform `op: "filter"` tanpa `params` harus gagal
-- [ ] 🟢 Implementasi `IRDataBinding` interface (source, endpoint, method, transforms, fallback)
-- [ ] 🟢 Implementasi `SecretRef` type (`env:*`, `vault:*`, `secret:*`)
-- [ ] 🟢 Implementasi `validateSecretRef(value: unknown): value is SecretRef`
-- [ ] 🟢 Implementasi `circuit_breaker` dan `retry` logic untuk data binding failures
-- [ ] 🔵 Refactor: semua token autentikasi harus melewati `SecretRef` validator sebelum digunakan
+- [x] 🔴 Tulis tes: `IRDataBinding` dengan `auth.token: "Bearer abc123"` literal harus gagal validasi
+- [x] 🔴 Tulis tes: `IRDataBinding` dengan `auth.token: "env:API_TOKEN"` harus lulus validasi
+- [x] 🔴 Tulis tes: `IRDataBinding` tipe `api_rest` tanpa `endpoint` harus gagal validasi
+- [x] 🔴 Tulis tes: `IRDataBinding` dengan transform `op: "filter"` tanpa `params` harus gagal
+- [x] 🟢 Implementasi `IRDataBinding` interface (source, endpoint, method, transforms, fallback)
+- [x] 🟢 Implementasi `SecretRef` type (`env:*`, `vault:*`, `secret:*`)
+- [x] 🟢 Implementasi `validateSecretRef(value: unknown): value is SecretRef`
+- [x] 🟢 Implementasi `circuit_breaker` dan `retry` logic untuk data binding failures
+- [x] 🔵 Refactor: semua token autentikasi harus melewati `SecretRef` validator sebelum digunakan
 
 ### 6.2 `IRInteractionModel` & State Machine
 > 🔑 Keputusan #18: `IRAction` menggunakan discriminated union untuk validasi statis payload.
 
-- [ ] 🔴 Tulis tes: state machine dengan state `active` dan `inactive`, trigger `click` harus berpindah state dengan benar
-- [ ] 🔴 Tulis tes: aksi `navigate` tanpa `target_id` harus gagal validasi
-- [ ] 🔴 Tulis tes: aksi `toggle_state` harus membalik state boolean target dengan benar
-- [ ] 🟢 Implementasi `IRInteractionModel` (states, transitions, triggers, variables)
-- [ ] 🟢 Implementasi `IRAction` discriminated union (navigate, toggle_state, play_animation, open_modal, scroll_to, custom)
-- [ ] 🟢 Implementasi `InteractionEngine`: evaluasi trigger & eksekusi aksi di runtime
+- [x] 🔴 Tulis tes: state machine dengan state `active` dan `inactive`, trigger `click` harus berpindah state dengan benar
+- [x] 🔴 Tulis tes: aksi `navigate` tanpa `target_id` harus gagal validasi
+- [x] 🔴 Tulis tes: aksi `toggle_state` harus membalik state boolean target dengan benar
+- [x] 🟢 Implementasi `IRInteractionModel` (states, transitions, triggers, variables)
+- [x] 🟢 Implementasi `IRAction` discriminated union (navigate, toggle_state, play_animation, open_modal, scroll_to, custom)
+- [x] 🟢 Implementasi `InteractionEngine`: evaluasi trigger & eksekusi aksi di runtime
 
 ### 6.3 DSL Expression Engine
-- [ ] 🔴 Tulis tes: ekspresi `"$data.count > 10"` dengan `$data.count = 15` harus evaluate `true`
-- [ ] 🔴 Tulis tes: ekspresi DSL dengan referensi variabel yang tidak ada harus mengembalikan error
-- [ ] 🟢 Implementasi `IRDSLExpression` type
-- [ ] 🟢 Implementasi `evaluateDSL(expr: IRDSLExpression, context: Record<string, unknown>): unknown`
-- [ ] 🔵 Refactor: sandboxing DSL evaluator — tidak boleh mengakses global scope
+- [x] 🔴 Tulis tes: ekspresi `"$data.count > 10"` dengan `$data.count = 15` harus evaluate `true`
+- [x] 🔴 Tulis tes: ekspresi DSL dengan referensi variabel yang tidak ada harus mengembalikan error
+- [x] 🟢 Implementasi `IRDSLExpression` type
+- [x] 🟢 Implementasi `evaluateDSL(expr: IRDSLExpression, context: Record<string, unknown>): unknown`
+- [x] 🔵 Refactor: sandboxing DSL evaluator — tidak boleh mengakses global scope
 
 ---
 

@@ -3,6 +3,7 @@ import { IRStyleContext } from './style.js';
 import { IRNode } from './nodes.js';
 import { IRConstraintSet } from './constraints.js';
 import { IRTimeline } from './timeline.js';
+import { IRDataBinding, IRInteractionModel } from './bindings.js';
 
 /**
  * @stability STABLE
@@ -202,6 +203,8 @@ export interface IRDocument {
   nodes: Record<string, unknown>; // Will reference IRNode
   physical?: IRPhysicalSpec;
   timeline?: IRTimeline;
+  bindings?: Record<string, IRDataBinding>;
+  interaction_model?: IRInteractionModel;
 }
 
 function uuidv4(): string {
@@ -224,6 +227,8 @@ export function createIRDocument(opts: {
   canvas: IRCanvas | IRAudioCanvas | IR3DViewport;
   tier?: 'nano' | 'core' | 'full';
   lifecycle_status?: IRDocumentLifecycleStatus;
+  bindings?: Record<string, IRDataBinding>;
+  interaction_model?: IRInteractionModel;
 }): IRDocument {
   const doc = {
     meta: {
@@ -251,6 +256,8 @@ export function createIRDocument(opts: {
       rules: [],
     },
     nodes: {},
+    bindings: opts.bindings,
+    interaction_model: opts.interaction_model,
   } as unknown as IRDocument;
 
   const id = uuidv4();

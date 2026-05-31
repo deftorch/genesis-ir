@@ -1,4 +1,4 @@
-import { IRDocument, isNodeAllowedInDomain } from '@genesis/types';
+import { IRDocument, isNodeAllowedInDomain, validateSecretRef } from '@genesis/types';
 import { Ajv, Schema } from 'ajv';
 
 /**
@@ -87,6 +87,22 @@ const irDocumentSchema: Schema = {
       additionalProperties: true,
     },
     nodes: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    timeline: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    physical: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    bindings: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    interaction_model: {
       type: 'object',
       additionalProperties: true,
     },
@@ -380,6 +396,18 @@ export function validateHIR(doc: unknown): ValidationResult {
   const timelineResult = validateTimeline(doc);
   if (!timelineResult.valid) {
     errors.push(...timelineResult.errors);
+  }
+
+  // Custom data binding validation
+  const dataBindingResult = validateDataBinding(doc);
+  if (!dataBindingResult.valid) {
+    errors.push(...dataBindingResult.errors);
+  }
+
+  // Custom interaction model validation
+  const interactionResult = validateInteractionModel(doc);
+  if (!interactionResult.valid) {
+    errors.push(...interactionResult.errors);
   }
 
   return {
@@ -776,6 +804,158 @@ export function validateTimeline(doc: any): ValidationResult {
                 keyword: 'type-mismatch',
               });
             }
+          }
+        });
+      }
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate data binding rules.
+ * @stability BETA
+ */
+export function validateDataBinding(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+
+  const bindingsList: { path: string; binding: any }[] = [];
+  if (doc.bindings) {
+    if (typeof doc.bindings === 'object') {
+      for (const [key, b] of Object.entries(doc.bindings)) {
+        bindingsList.push({ path: `bindings.${key}`, binding: b });
+      }
+    }
+  }
+
+  if (doc.objects) {
+    doc.objects.forEach((obj: any, idx: number) => {
+      if (obj.bindings) {
+        for (const [key, b] of Object.entries(obj.bindings)) {
+          bindingsList.push({ path: `objects[${idx}].bindings.${key}`, binding: b });
+        }
+      }
+    });
+  }
+
+  for (const { path, binding } of bindingsList) {
+    if (!binding) continue;
+
+    if (binding.source === 'api_rest' && !binding.endpoint) {
+      errors.push({
+        path: `${path}.endpoint`,
+        message: 'Endpoint is required for api_rest source',
+        keyword: 'required-endpoint',
+      });
+    }
+
+    if (binding.auth && binding.auth.token) {
+      const token = binding.auth.token;
+      if (!validateSecretRef(token)) {
+        errors.push({
+          path: `${path}.auth.token`,
+          message: 'Token must use env:, vault:, or secret: prefix',
+          keyword: 'secret-ref-required',
+        });
+      }
+    }
+
+    if (binding.transforms) {
+      if (Array.isArray(binding.transforms)) {
+        binding.transforms.forEach((tr: any, tIdx: number) => {
+          if (tr.op === 'filter' && (!tr.params || typeof tr.params !== 'object' || Object.keys(tr.params).length === 0)) {
+            errors.push({
+              path: `${path}.transforms[${tIdx}].params`,
+              message: 'Params are required for filter transform operation',
+              keyword: 'required-params',
+            });
+          }
+        });
+      }
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate interaction model actions.
+ * @stability BETA
+ */
+export function validateInteractionModel(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+
+  const models: { path: string; model: any }[] = [];
+  if (doc.interaction_model) {
+    models.push({ path: 'interaction_model', model: doc.interaction_model });
+  }
+  if (doc.objects) {
+    doc.objects.forEach((obj: any, idx: number) => {
+      if (obj.interaction_model) {
+        models.push({ path: `objects[${idx}].interaction_model`, model: obj.interaction_model });
+      }
+    });
+  }
+
+  for (const { path, model } of models) {
+    if (!model || !model.states) continue;
+
+    for (const [stateId, state] of Object.entries(model.states)) {
+      const transitions = (state as any).transitions;
+      if (transitions && Array.isArray(transitions)) {
+        transitions.forEach((tr: any, trIdx: number) => {
+          if (tr.actions && Array.isArray(tr.actions)) {
+            tr.actions.forEach((act: any, actIdx: number) => {
+              const actPath = `${path}.states.${stateId}.transitions[${trIdx}].actions[${actIdx}]`;
+              if (act.type === 'navigate') {
+                if (!act.target_id) {
+                  errors.push({
+                    path: `${actPath}.target_id`,
+                    message: 'target_id is required for navigate action',
+                    keyword: 'required-target',
+                  });
+                }
+              } else if (act.type === 'toggle_state') {
+                if (!act.target_id) {
+                  errors.push({
+                    path: `${actPath}.target_id`,
+                    message: 'target_id is required for toggle_state action',
+                    keyword: 'required-target',
+                  });
+                }
+              } else if (act.type === 'play_animation') {
+                if (!act.animation_id) {
+                  errors.push({
+                    path: `${actPath}.animation_id`,
+                    message: 'animation_id is required for play_animation action',
+                    keyword: 'required-animation',
+                  });
+                }
+              } else if (act.type === 'open_modal') {
+                if (!act.modal_id) {
+                  errors.push({
+                    path: `${actPath}.modal_id`,
+                    message: 'modal_id is required for open_modal action',
+                    keyword: 'required-modal',
+                  });
+                }
+              } else if (act.type === 'scroll_to') {
+                if (!act.target_id) {
+                  errors.push({
+                    path: `${actPath}.target_id`,
+                    message: 'target_id is required for scroll_to action',
+                    keyword: 'required-target',
+                  });
+                }
+              }
+            });
           }
         });
       }
