@@ -41,10 +41,10 @@ Proses transformasi dipisahkan secara modular ke dalam 9 pass kompilasi kaku:
 8. **Pass 7**: LIR Generation (Platform target dispatcher)
 9. **Pass 8**: Serialization & Provenance Stamping (`x_debug` metadata)
 
-### 3. Kolaborasi Multi-Agen Berbasis Loro CRDT (Rust + WASM)
-Menjamin sinkronisasi dokumen waktu nyata tanpa konflik antara banyak peer menggunakan **Loro CRDT**:
+### 3. Kolaborasi Multi-Agen Berbasis LWW Delta Store (Migrasi Loro WASM di Fase 3)
+Menjamin sinkronisasi dokumen waktu nyata tanpa konflik menggunakan Last-Write-Wins (LWW) delta store berbasis JavaScript murni (migrasi ke Loro CRDT Rust/WASM dijadwalkan pada Fase 3):
 *  Mutasi atomik terstruktur melalui instruksi **`IRDelta`** (`add`, `remove`, `replace`, `move`).
-*  Resolusi konflik otomatis berbasis Last-Write-Wins (LWW).
+*  Resolusi konflik otomatis berbasis Last-Write-Wins (LWW) dengan stempel waktu.
 
 ### 4. Format Biner `.gir` & Strategi Migrasi Deklaratif
 *  **Storage Efisien**: Payload dikompresi menggunakan kompresi **LZ4 block** super cepat dan diserialisasi via **MessagePack**.
@@ -69,7 +69,7 @@ Proyek ini terbagi menjadi 7 paket modular di dalam direktori `packages/`:
 *  **`@genesis/compiler`**: Otak kompilator pipeline (Pass 1 s.d 8), serialisasi `.gir` biner, LZ4 compressor, sistem migrasi, dan rantai reward RLVRR.
 *  **`@genesis/renderer`**: Mesin layout spatial, text reflow engine, dan penghasil representasi visual/audio tingkat rendah (LIR).
 *  **`@genesis/agent`**: Runtime eksekusi agen AI Generatif, kapabilitas `IRAgentContract`, log append-only `actions_taken`, dan ACL plugin.
-*  **`@genesis/crdt`**: Integrasi library Loro CRDT Rust/WASM untuk rekonsiliasi peer kolaboratif.
+*  **`@genesis/crdt`**: Sinkronisasi delta stack berbasis Last-Write-Wins (LWW) murni JS (migrasi ke Loro CRDT Rust/WASM di Fase 3).
 *  **`@genesis/sdk`**: Software Development Kit terpadu sebagai pintu gerbang aplikasi pihak ketiga berinteraksi dengan pipeline Genesis IR.
 
 ---

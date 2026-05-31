@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GenesisLoroDoc, mergeDeltas } from '../index.js';
+import { GenesisLWWDoc, mergeDeltas } from '../index.js';
 import { IRDelta, createDeltaStack, pushDelta, undoDelta, redoDelta, validateDelta } from '@genesis/types';
 
 function makeDelta(overrides: Partial<IRDelta> = {}): IRDelta {
@@ -101,9 +101,9 @@ describe('FASE 13 — IRDeltaStack', () => {
   });
 });
 
-describe('FASE 13 — GenesisLoroDoc', () => {
+describe('FASE 13 — GenesisLWWDoc', () => {
   it('applies deltas and tracks state', () => {
-    const doc = new GenesisLoroDoc('doc-1');
+    const doc = new GenesisLWWDoc('doc-1');
     const d1 = makeDelta();
     const result = doc.applyDelta(d1);
     expect(result.success).toBe(true);
@@ -111,7 +111,7 @@ describe('FASE 13 — GenesisLoroDoc', () => {
   });
 
   it('rejects invalid deltas', () => {
-    const doc = new GenesisLoroDoc('doc-1');
+    const doc = new GenesisLWWDoc('doc-1');
     const invalid = makeDelta({ delta_type: 'undo' }); // missing reverses_delta_id
     const result = doc.applyDelta(invalid);
     expect(result.success).toBe(false);
@@ -119,7 +119,7 @@ describe('FASE 13 — GenesisLoroDoc', () => {
   });
 
   it('undo/redo works correctly', () => {
-    const doc = new GenesisLoroDoc('doc-1');
+    const doc = new GenesisLWWDoc('doc-1');
     doc.applyDelta(makeDelta({ delta_id: 'x1' }));
     doc.applyDelta(makeDelta({ delta_id: 'x2' }));
 
@@ -131,7 +131,7 @@ describe('FASE 13 — GenesisLoroDoc', () => {
   });
 
   it('syncWithPeer merges and deduplicates', () => {
-    const doc = new GenesisLoroDoc('doc-1');
+    const doc = new GenesisLWWDoc('doc-1');
     doc.applyDelta(makeDelta({ delta_id: 'local-1', created_at: '2026-01-01T00:00:01Z' }));
 
     const remote = [

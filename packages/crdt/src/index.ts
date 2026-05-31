@@ -18,11 +18,11 @@ export function mergeDeltas(local: IRDelta[], remote: IRDelta[]): IRDelta[] {
 }
 
 /**
- * GenesisLoroDoc: wrapper that manages an IRDeltaStack for a document.
+ * GenesisLWWDoc: wrapper that manages an IRDeltaStack for a document using Last-Write-Wins (LWW) delta store.
  * This provides the core state management layer before Loro WASM integration.
  * @stability BETA
  */
-export class GenesisLoroDoc {
+export class GenesisLWWDoc {
   private _stack: IRDeltaStack;
 
   constructor(documentId: string, maxSize: number = 100) {

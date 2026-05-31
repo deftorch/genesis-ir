@@ -2,17 +2,20 @@
 ## Genesis IR v1.0 — Kolaborasi & Multi-Agen
 
 > [!NOTE]
-> `@stability STABLE`
+> `@stability BETA`
 > Halaman ini mendokumentasikan spesifikasi integrasi sinkronisasi kolaboratif multi-user waktu nyata (real-time collaborative state sync) berbasis Loro CRDT di Genesis IR.
+
+> [!WARNING]
+> **Status Implementasi**: Saat ini, paket `@genesis/crdt` diimplementasikan menggunakan LWW (Last-Write-Wins) delta stack murni berbasis JavaScript (kelas `GenesisLWWDoc`). Integrasi asli menggunakan pustaka Loro CRDT (Rust + WASM) dijadwalkan untuk dikerjakan pada **Fase 3** sesuai dengan Roadmap v2.0.
 
 ---
 
 ## Pilihan Library CRDT (Keputusan #38)
 
-Untuk memfasilitasi kolaborasi real-time tanpa konflik antara agen AI dan manusia pengembang di workspace yang sama, Genesis IR mengunci penggunaan **Loro CRDT**:
+Untuk memfasilitasi kolaborasi real-time tanpa konflik antara agen AI dan manusia pengembang di workspace yang sama, Genesis IR mengunci penggunaan **Loro CRDT** sebagai target akhir:
 
-- **Karakteristik Utama**: Berbasis **Rust** dengan kompilasi web berkecepatan tinggi **WASM (WebAssembly)**.
-- **Efisiensi**: Sangat efisien dalam penggunaan memori dan memiliki performa merge delta tercepat dibanding alternatif JS konvensional (seperti Yjs atau Automerge).
+- **Target Akhir (Fase 3)**: Berbasis **Rust** dengan kompilasi web berkecepatan tinggi **WASM (WebAssembly)**.
+- **Implementasi Transisi (Fase 0 - Fase 2)**: Menggunakan kelas `GenesisLWWDoc` dengan delta stack murni JavaScript yang menerapkan penggabungan LWW (Last-Write-Wins) berbasis stempel waktu string (`created_at`).
 
 ---
 

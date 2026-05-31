@@ -63,7 +63,13 @@ importers:
       '@genesis/types':
         specifier: workspace:*
         version: link:../types
+      lz4js:
+        specifier: ^0.2.0
+        version: 0.2.0
     devDependencies:
+      '@types/lz4js':
+        specifier: ^0.2.2
+        version: 0.2.2
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
@@ -586,6 +592,9 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
+  '@types/lz4js@0.2.2':
+    resolution: {integrity: sha512-pqXfoJ2AwllcLTf1Nia0+HT1KHj8z4wWo3bBP6vn7Aen5ySywBqrh/u1TyBwWxuKDS+mPzVHkPbHivqZEfk6pA==}
+
   '@types/node@25.9.1':
     resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
 
@@ -1035,6 +1044,9 @@ packages:
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
+
+  lz4js@0.2.0:
+    resolution: {integrity: sha512-gY2Ia9Lm7Ep8qMiuGRhvUq0Q7qUereeldZPP1PMEJxPtEWHJLqw9pgX68oHajBH0nzJK4MaZEA/YNV3jT8u8Bg==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -1664,6 +1676,8 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/lz4js@0.2.2': {}
+
   '@types/node@25.9.1':
     dependencies:
       undici-types: 7.24.6
@@ -2173,6 +2187,8 @@ snapshots:
   loupe@3.2.1: {}
 
   lru-cache@10.4.3: {}
+
+  lz4js@0.2.0: {}
 
   magic-string@0.30.21:
     dependencies:

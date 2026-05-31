@@ -234,191 +234,24 @@ export function decodeMsgPack(buf: Buffer): any {
 }
 
 // ==========================================
-// 2. LZ4 COMPRESSOR / DECOMPRESSOR (PURE JS)
+// 2. LZ4 COMPRESSOR / DECOMPRESSOR (lz4js)
 // ==========================================
-// Block-level LZ4 compressor/decompressor using hash-table match lookup.
-// Each LZ4 sequence: token(1B) + [extra_lit_len] + literal_bytes + offset(2B LE) + [extra_match_len]
-// The LAST sequence in a block has no match part (literals only).
-
-function hashU32(buf: Buffer, pos: number): number {
-  // Simple 4-byte hash for match lookup
-  return ((buf[pos] | (buf[pos + 1] << 8) | (buf[pos + 2] << 16) | (buf[pos + 3] << 24)) * 2654435761) >>> 0;
-}
-
-function writeLitLen(out: number[], litLen: number, tokenPos: number): void {
-  // Write literal length into the upper nibble of token at tokenPos,
-  // and any extra length bytes after the token.
-  const nibble = Math.min(litLen, 15);
-  out[tokenPos] = (out[tokenPos] & 0x0f) | (nibble << 4);
-  if (litLen >= 15) {
-    let rem = litLen - 15;
-    while (rem >= 255) {
-      out.push(255);
-      rem -= 255;
-    }
-    out.push(rem);
-  }
-}
-
-function writeMatchLen(out: number[], matchLen: number, tokenPos: number): void {
-  // Write match length (minus 4) into the lower nibble of token at tokenPos.
-  const ml = matchLen - 4;
-  const nibble = Math.min(ml, 15);
-  out[tokenPos] = (out[tokenPos] & 0xf0) | nibble;
-  if (ml >= 15) {
-    let rem = ml - 15;
-    while (rem >= 255) {
-      out.push(255);
-      rem -= 255;
-    }
-    out.push(rem);
-  }
-}
+import { compress as lz4Compress, decompress as lz4Decompress } from './compression.js';
 
 /**
- * Compress a Buffer using LZ4 block format.
- * @stability BETA
+ * Compress a Buffer using LZ4 format.
+ * @stability STABLE
  */
 export function compressLZ4(input: Buffer): Buffer {
-  const len = input.length;
-  if (len === 0) return Buffer.alloc(0);
-
-  // For very small inputs, just emit a single literal-only sequence
-  if (len < 13) {
-    const out: number[] = [];
-    const tokenPos = out.length;
-    out.push(0); // placeholder token
-    writeLitLen(out, len, tokenPos);
-    for (let i = 0; i < len; i++) out.push(input[i]);
-    return Buffer.from(out);
-  }
-
-  const TABLE_BITS = 12;
-  const TABLE_SIZE = 1 << TABLE_BITS;
-  const TABLE_MASK = TABLE_SIZE - 1;
-  const hashTable = new Int32Array(TABLE_SIZE).fill(-1);
-
-  const out: number[] = [];
-  let anchor = 0; // start of current unmatched literal run
-  let ip = 0;
-
-  // Main compression loop — stop when we can no longer read a full 4-byte sequence
-  // plus the last 5 bytes (last match copy requires ≥5 trailing literals in LZ4)
-  const matchLimit = len - 5;
-
-  while (ip < matchLimit) {
-    // Hash current 4 bytes
-    const h = (hashU32(input, ip) >>> (32 - TABLE_BITS)) & TABLE_MASK;
-    const ref = hashTable[h];
-    hashTable[h] = ip;
-
-    // Check match: must be within 64KB window and match ≥4 bytes
-    if (
-      ref >= 0 &&
-      ip - ref <= 65535 &&
-      ip - ref >= 1 &&
-      input[ref] === input[ip] &&
-      input[ref + 1] === input[ip + 1] &&
-      input[ref + 2] === input[ip + 2] &&
-      input[ref + 3] === input[ip + 3]
-    ) {
-      // Extend match forward
-      let matchLen = 4;
-      while (ip + matchLen < len && input[ref + matchLen] === input[ip + matchLen]) {
-        matchLen++;
-      }
-
-      // Emit sequence: literals + match
-      const litLen = ip - anchor;
-      const tokenPos = out.length;
-      out.push(0); // placeholder token
-
-      // Literal length nibble + extra bytes
-      writeLitLen(out, litLen, tokenPos);
-
-      // Literal bytes
-      for (let i = anchor; i < ip; i++) out.push(input[i]);
-
-      // Match offset (LE 16-bit)
-      const offset = ip - ref;
-      out.push(offset & 0xff);
-      out.push((offset >> 8) & 0xff);
-
-      // Match length nibble + extra bytes
-      writeMatchLen(out, matchLen, tokenPos);
-
-      ip += matchLen;
-      anchor = ip;
-    } else {
-      ip++;
-    }
-  }
-
-  // Emit final literal-only sequence (remaining bytes from anchor to end)
-  {
-    const litLen = len - anchor;
-    const tokenPos = out.length;
-    out.push(0);
-    writeLitLen(out, litLen, tokenPos);
-    for (let i = anchor; i < len; i++) out.push(input[i]);
-  }
-
-  return Buffer.from(out);
+  return lz4Compress(input);
 }
 
 /**
  * Decompress an LZ4-compressed block.
- * @stability BETA
+ * @stability STABLE
  */
 export function decompressLZ4(input: Buffer): Buffer {
-  const out: number[] = [];
-  let ip = 0;
-  const ilen = input.length;
-
-  while (ip < ilen) {
-    const token = input[ip++];
-
-    // 1. Decode literal length
-    let litLen = (token >> 4) & 0x0f;
-    if (litLen === 15) {
-      let s: number;
-      do {
-        s = input[ip++];
-        litLen += s;
-      } while (s === 255);
-    }
-
-    // 2. Copy literal bytes
-    for (let i = 0; i < litLen; i++) {
-      out.push(input[ip++]);
-    }
-
-    // If we've consumed all input, this was the last (literal-only) sequence
-    if (ip >= ilen) break;
-
-    // 3. Decode match offset (LE 16-bit)
-    const offset = input[ip] | (input[ip + 1] << 8);
-    ip += 2;
-
-    // 4. Decode match length
-    let matchLen = token & 0x0f;
-    if (matchLen === 15) {
-      let s: number;
-      do {
-        s = input[ip++];
-        matchLen += s;
-      } while (s === 255);
-    }
-    matchLen += 4;
-
-    // 5. Copy match from output history
-    const matchStart = out.length - offset;
-    for (let i = 0; i < matchLen; i++) {
-      out.push(out[matchStart + i]);
-    }
-  }
-
-  return Buffer.from(out);
+  return lz4Decompress(input);
 }
 
 // ==========================================

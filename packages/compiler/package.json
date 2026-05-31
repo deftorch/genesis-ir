@@ -9,10 +9,12 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@genesis/schema": "workspace:*",
     "@genesis/types": "workspace:*",
-    "@genesis/schema": "workspace:*"
+    "lz4js": "^0.2.0"
   },
   "devDependencies": {
+    "@types/lz4js": "^0.2.2",
     "typescript": "^5.7.3"
   }
 }
