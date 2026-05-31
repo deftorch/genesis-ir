@@ -46,10 +46,30 @@ export interface VideoLIR {
   render_tracks: Record<string, unknown>;
 }
 
+export interface SpriteManifest {
+  meta: { size: { w: number; h: number }; format: 'RGBA8888'; scale: 1 };
+  frames: Record<string, {
+    frame:      { x: number; y: number; w: number; h: number };
+    sourceSize: { w: number; h: number };
+    pivot:      { x: number; y: number };
+    rotated:    false;
+    trimmed:    false;
+  }>;
+}
+
+/**
+ * @stability STABLE
+ */
+export interface PixelLIR {
+  type: 'pixel';
+  atlas: string; // base64 PNG
+  manifest: SpriteManifest;
+}
+
 /**
  * @stability STABLE
  */
 export interface IRLIRDocument {
   target: PlatformTarget;
-  lir: WebLIR | PrintLIR | VideoLIR;
+  lir: WebLIR | PrintLIR | VideoLIR | PixelLIR;
 }

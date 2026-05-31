@@ -8,3 +8,4 @@ export * from './pdfx.js';
 export * from './three_webgl.js';
 export * from './dispatch.js';
 export * from './webaudio.js';
+export * from './spritesheet.js';

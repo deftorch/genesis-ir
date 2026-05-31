@@ -1,7 +1,8 @@
-import { IRMIRDocument, PlatformTarget, IRLIRDocument, WebLIR, PrintLIR, VideoLIR } from '@genesis/types';
+import { IRMIRDocument, PlatformTarget, IRLIRDocument, WebLIR, PrintLIR, VideoLIR, PixelLIR } from '@genesis/types';
 import { renderToSVG } from './svg.js';
 import { computeLayout } from './layout.js';
 import { generateWebAudioLIR } from './webaudio.js';
+import { packSpriteSheet } from './spritesheet.js';
 
 /**
  * Generate Low-Level IR (LIR) from Medium-Level IR (MIR) document.
@@ -16,6 +17,23 @@ export function generateLIR(mir: IRMIRDocument, target: PlatformTarget): IRLIRDo
       return {
         target,
         lir: webLir,
+      };
+    }
+
+    if (domain === 'pixel_art') {
+      const spec = (mir as any).pixel_spec;
+      if (!spec) {
+        throw new Error('pixel_art domain document is missing pixel_spec');
+      }
+      const { atlasBuffer, manifest } = packSpriteSheet([spec], mir.objects || []);
+      const pixelLir: PixelLIR = {
+        type: 'pixel',
+        atlas: atlasBuffer.toString('base64'),
+        manifest,
+      };
+      return {
+        target,
+        lir: pixelLir,
       };
     }
 
