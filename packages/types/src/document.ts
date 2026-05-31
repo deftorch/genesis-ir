@@ -4,6 +4,7 @@ import { IRNode } from './nodes.js';
 import { IRConstraintSet } from './constraints.js';
 import { IRTimeline } from './timeline.js';
 import { IRDataBinding, IRInteractionModel } from './bindings.js';
+import { IRPrintSpec } from './print.js';
 
 /**
  * @stability STABLE
@@ -152,6 +153,7 @@ export interface IRCanvas {
   dpi?: number;
   color_space: 'sRGB' | 'CMYK';
   context?: IRCanvasModeContext;
+  dpi_sync_policy?: "strict" | "canvas_wins" | "physical_wins";
 }
 
 /**
@@ -205,6 +207,7 @@ export interface IRDocument {
   timeline?: IRTimeline;
   bindings?: Record<string, IRDataBinding>;
   interaction_model?: IRInteractionModel;
+  print_spec?: IRPrintSpec;
 }
 
 function uuidv4(): string {
@@ -229,6 +232,7 @@ export function createIRDocument(opts: {
   lifecycle_status?: IRDocumentLifecycleStatus;
   bindings?: Record<string, IRDataBinding>;
   interaction_model?: IRInteractionModel;
+  print_spec?: IRPrintSpec;
 }): IRDocument {
   const doc = {
     meta: {
@@ -258,6 +262,7 @@ export function createIRDocument(opts: {
     nodes: {},
     bindings: opts.bindings,
     interaction_model: opts.interaction_model,
+    print_spec: opts.print_spec,
   } as unknown as IRDocument;
 
   const id = uuidv4();

@@ -106,6 +106,10 @@ const irDocumentSchema: Schema = {
       type: 'object',
       additionalProperties: true,
     },
+    print_spec: {
+      type: 'object',
+      additionalProperties: true,
+    },
   },
   additionalProperties: false,
 };
@@ -116,11 +120,13 @@ export interface ValidationError {
   path: string;
   message: string;
   keyword: string;
+  severity?: 'error' | 'warning' | 'info';
 }
 
 export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
+  warnings?: ValidationError[];
 }
 
 /**
@@ -410,9 +416,28 @@ export function validateHIR(doc: unknown): ValidationResult {
     errors.push(...interactionResult.errors);
   }
 
+  const warnings: ValidationError[] = [];
+
+  const physicalResult = validatePhysicalAndPrint(doc);
+  if (!physicalResult.valid) {
+    errors.push(...physicalResult.errors);
+  }
+  if (physicalResult.warnings) {
+    warnings.push(...physicalResult.warnings);
+  }
+
+  const compatResult = validateDomainCompatibilities(doc);
+  if (!compatResult.valid) {
+    errors.push(...compatResult.errors);
+  }
+  if (compatResult.warnings) {
+    warnings.push(...compatResult.warnings);
+  }
+
   return {
     valid: errors.length === 0,
     errors,
+    warnings,
   };
 }
 
@@ -959,6 +984,136 @@ export function validateInteractionModel(doc: any): ValidationResult {
           }
         });
       }
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate Physical spec, Print spec and Packaging dieline constraints.
+ * @stability BETA
+ */
+export function validatePhysicalAndPrint(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const warnings: ValidationError[] = [];
+
+  const domain = doc.meta?.domain;
+  const activeDomains = doc.meta?.active_domains || [];
+
+  const isPrint = domain === 'print' || activeDomains.includes('print');
+  const isPackaging = domain === 'packaging' || activeDomains.includes('packaging');
+  const isSignage = domain === 'signage' || activeDomains.includes('signage');
+
+  // 1. DPI Sync Policy check
+  if (isPrint && doc.canvas && doc.canvas.dpi_sync_policy === 'strict') {
+    const canvasDpi = doc.canvas.dpi;
+    const physicalDpi = doc.physical?.dpi;
+    if (typeof canvasDpi === 'number' && typeof physicalDpi === 'number' && canvasDpi !== physicalDpi) {
+      errors.push({
+        path: 'canvas.dpi',
+        message: `DPI mismatch: Canvas DPI (${canvasDpi}) does not match physical DPI (${physicalDpi})`,
+        keyword: 'dpi-mismatch',
+      });
+    }
+  }
+
+  // 2. Packaging domain must contain at least one 'print_dieline' node
+  if (isPackaging) {
+    const objects = doc.objects || [];
+    const hasDieline = objects.some((obj: any) => obj.type === 'print_dieline');
+    if (!hasDieline) {
+      errors.push({
+        path: 'objects',
+        message: "Packaging domain documents require at least one 'print_dieline' node",
+        keyword: 'missing-dieline',
+      });
+    }
+  }
+
+  // 3. Signage safe zone validation
+  if (isSignage && doc.physical && typeof doc.physical.safe_zone_mm === 'number') {
+    const safeZone = doc.physical.safe_zone_mm;
+    const width = doc.physical.width_mm || doc.canvas?.width || 0;
+    const height = doc.physical.height_mm || doc.canvas?.height || 0;
+
+    const xMin = safeZone;
+    const xMax = width - safeZone;
+    const yMin = safeZone;
+    const yMax = height - safeZone;
+
+    const objects = doc.objects || [];
+    objects.forEach((obj: any, idx: number) => {
+      const x = typeof obj.x === 'number' ? obj.x : 0;
+      const y = typeof obj.y === 'number' ? obj.y : 0;
+      const w = typeof obj.width === 'number' ? obj.width : 0;
+      const h = typeof obj.height === 'number' ? obj.height : 0;
+
+      if (x < xMin || (x + w) > xMax || y < yMin || (y + h) > yMax) {
+        warnings.push({
+          path: `objects[${idx}]`,
+          message: `Content area of node ${obj.id || idx} exceeds physical safe zone (${safeZone}mm)`,
+          keyword: 'exceeds-safe-zone',
+          severity: 'warning',
+        });
+      }
+    });
+  }
+
+  // 4. Sub-pass 3e: validation of print_bleed_guide and print_safe_guide nodes
+  const objects = doc.objects || [];
+  objects.forEach((obj: any, idx: number) => {
+    if (obj.type === 'print_bleed_guide') {
+      if (typeof obj.width !== 'number' || typeof obj.height !== 'number') {
+        errors.push({
+          path: `objects[${idx}]`,
+          message: "print_bleed_guide node must have numerical width and height",
+          keyword: 'invalid-bleed-guide',
+        });
+      }
+    }
+    if (obj.type === 'print_safe_guide') {
+      if (typeof obj.width !== 'number' || typeof obj.height !== 'number') {
+        errors.push({
+          path: `objects[${idx}]`,
+          message: "print_safe_guide node must have numerical width and height",
+          keyword: 'invalid-safe-guide',
+        });
+      }
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    warnings,
+  };
+}
+
+/**
+ * Validate domain compatibilities.
+ * @stability BETA
+ */
+export function validateDomainCompatibilities(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const domain = doc.meta?.domain;
+  const activeDomains = doc.meta?.active_domains || [];
+
+  // Visual domain cannot have 3D domain active without 3D canvas (IR3DViewport)
+  const has3D = domain === '3d' || activeDomains.includes('3d');
+  const hasVisual = domain === 'visual' || activeDomains.includes('visual');
+  if (hasVisual && has3D) {
+    const canvas = doc.canvas;
+    const is3DCanvas = canvas && ('camera_3d' in canvas || (canvas.context && canvas.context.type === '3d'));
+    if (!is3DCanvas) {
+      errors.push({
+        path: 'canvas',
+        message: 'Visual domain cannot contain 3D domain without IR3DViewport canvas',
+        keyword: 'invalid-3d-canvas',
+      });
     }
   }
 

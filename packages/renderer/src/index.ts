@@ -4,3 +4,4 @@ export * from './canvas.js';
 export * from './lir.js';
 export * from './temporal.js';
 export * from './bindings.js';
+export * from './pdfx.js';

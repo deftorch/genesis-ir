@@ -10,3 +10,4 @@ export * from './assets.js';
 export * from './lir.js';
 export * from './gaps.js';
 export * from './bindings.js';
+export * from './print.js';

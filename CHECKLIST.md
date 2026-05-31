@@ -370,21 +370,21 @@
 ### 7.1 `IRPhysicalSpec` & Print Domain
 > 🔑 Keputusan #25: domain `print` dan `packaging` wajib menghentikan kompilasi jika DPI tidak match.
 
-- [ ] 🔴 Tulis tes: dokumen domain `print` dengan `dpi_sync_policy: "strict"` dan DPI canvas ≠ DPI fisik harus gagal Pass 1
-- [ ] 🔴 Tulis tes: dokumen domain `packaging` tanpa `print_dieline` node harus gagal Pass 3
-- [ ] 🔴 Tulis tes: area konten yang melewati `safe_zone` di domain `signage` harus menghasilkan warning
-- [ ] 🟢 Implementasi `IRPhysicalSpec` interface (bleed, safe_zone, trim_size, dpi, color_space)
-- [ ] 🟢 Implementasi `IRPrintSpec` (paper_size, binding, folding, varnish_areas)
-- [ ] 🟢 Implementasi `IRPackagingSpec` (dieline_id, fold_lines, cut_lines, score_lines)
-- [ ] 🟢 Sub-pass 3e: validasi `print_bleed_guide` dan `print_safe_guide` nodes
+- [x] 🔴 Tulis tes: dokumen domain `print` dengan `dpi_sync_policy: "strict"` dan DPI canvas ≠ DPI fisik harus gagal Pass 1
+- [x] 🔴 Tulis tes: dokumen domain `packaging` tanpa `print_dieline` node harus gagal Pass 3
+- [x] 🔴 Tulis tes: area konten yang melewati `safe_zone` di domain `signage` harus menghasilkan warning
+- [x] 🟢 Implementasi `IRPhysicalSpec` interface (bleed, safe_zone, trim_size, dpi, color_space)
+- [x] 🟢 Implementasi `IRPrintSpec` (paper_size, binding, folding, varnish_areas)
+- [x] 🟢 Implementasi `IRPackagingSpec` (dieline_id, fold_lines, cut_lines, score_lines)
+- [x] 🟢 Sub-pass 3e: validasi `print_bleed_guide` dan `print_safe_guide` nodes
 
 ### 7.2 PDF/X-4 Renderer Backend
-- [ ] 🔴 Tulis tes: output PDF/X-4 harus mengandung metadata `%PDF-1.6` header
-- [ ] 🔴 Tulis tes: warna CMYK dalam PDF output harus sesuai dengan nilai spesifikasi (tidak dikonversi ke RGB)
-- [ ] 🔴 Tulis tes: font dalam PDF harus di-embed, bukan referenced
-- [ ] 🟢 Implementasi `PDFXRenderer`: IRDocument → Buffer (PDF/X-4 output) menggunakan library `pdf-lib` atau `pdfkit`
-- [ ] 🟢 Implementasi color space conversion: `sRGB → CMYK` menggunakan ICC profile
-- [ ] 🔵 Refactor: DXF export untuk domain `packaging` (dieline output)
+- [x] 🔴 Tulis tes: output PDF/X-4 harus mengandung metadata `%PDF-1.6` header
+- [x] 🔴 Tulis tes: warna CMYK dalam PDF output harus sesuai dengan nilai spesifikasi (tidak dikonversi ke RGB)
+- [x] 🔴 Tulis tes: font dalam PDF harus di-embed, bukan referenced
+- [x] 🟢 Implementasi `PDFXRenderer`: IRDocument → Buffer (PDF/X-4 output) menggunakan library `pdf-lib` atau `pdfkit`
+- [x] 🟢 Implementasi color space conversion: `sRGB → CMYK` menggunakan ICC profile
+- [x] 🔵 Refactor: DXF export untuk domain `packaging` (dieline output)
 
 ---
 
