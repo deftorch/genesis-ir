@@ -1,0 +1,22 @@
+{
+  "name": "@genesis/sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@genesis/types": "workspace:*",
+    "@genesis/schema": "workspace:*",
+    "@genesis/compiler": "workspace:*",
+    "@genesis/renderer": "workspace:*",
+    "@genesis/agent": "workspace:*",
+    "@genesis/crdt": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

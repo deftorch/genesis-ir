@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+pnpm-lock.yaml
+.turbo/
+ir-specification-v1_0.md
+CHECKLIST.md
+AGENTS.md
+.agent/
+docs/

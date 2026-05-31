@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running pre-commit checks (Vitest unit tests)..."
+export PATH="/home/deftorch/.nvm/versions/node/v24.14.0/bin:$PATH"
+pnpm test
