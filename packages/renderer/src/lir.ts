@@ -1,6 +1,7 @@
 import { IRMIRDocument, PlatformTarget, IRLIRDocument, WebLIR, PrintLIR, VideoLIR } from '@genesis/types';
 import { renderToSVG } from './svg.js';
 import { computeLayout } from './layout.js';
+import { generateWebAudioLIR } from './webaudio.js';
 
 /**
  * Generate Low-Level IR (LIR) from Medium-Level IR (MIR) document.
@@ -9,6 +10,14 @@ import { computeLayout } from './layout.js';
 export function generateLIR(mir: IRMIRDocument, target: PlatformTarget): IRLIRDocument {
   if (target === 'web') {
     const domain = mir.meta.domain;
+
+    if (domain === 'music_production') {
+      const webLir = generateWebAudioLIR(mir);
+      return {
+        target,
+        lir: webLir,
+      };
+    }
 
     if (domain === 'visual') {
       const svgString = renderToSVG(mir);

@@ -9,12 +9,25 @@ export interface IRMIRDocument extends IRDocument {
 
 export type PlatformTarget = 'web' | 'print' | 'video' | '3d';
 
+export interface AudioGraphInstruction {
+  nodeId: string;
+  type: 'GainNode' | 'OscillatorNode' | 'BiquadFilterNode'
+      | 'DynamicsCompressorNode' | 'DelayNode';
+  params: Record<string, number | string>;
+  connections: string[];   // nodeId targets
+  schedule?: { startMs: number; stopMs: number };
+}
+
 /**
  * @stability STABLE
  */
 export interface WebLIR {
   type: 'web';
-  dom_instructions: Record<string, unknown>;
+  dom_instructions:
+    | { format: 'svg'; svg: string }
+    | { format: 'canvas2d'; instructions: any[] }
+    | { format: 'webaudio'; graph: AudioGraphInstruction[] }
+    | Record<string, unknown>;
 }
 
 /**
