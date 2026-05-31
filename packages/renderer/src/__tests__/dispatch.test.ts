@@ -92,5 +92,56 @@ describe('Multi-Renderer Dispatch & WebGL Renderer', () => {
       expect(html).toContain("material_box1 = new THREE.MeshPhongMaterial({ color: '#0000ff' })");
       expect(html).toContain('mesh_box1.position.set(1, 2, 3)');
     });
+
+    it('generates standard PBR materials and various primitive geometries', () => {
+      const doc = createIRDocument({
+        domain: '3d',
+        canvas: {
+          canvas_type: '3d',
+          width: 800,
+          height: 600,
+        } as any,
+      });
+
+      doc.objects = [
+        {
+          id: 'mat_standard',
+          type: 'material_3d',
+          style: {
+            color: '#ffaa00',
+            material_type: 'standard',
+            roughness: 0.2,
+            metalness: 0.8,
+            opacity: 0.9,
+          },
+        } as any,
+        {
+          id: 'sphere1',
+          type: 'mesh_3d',
+          primitive: 'sphere',
+          primitive_params: { radius: 2, widthSegments: 64 },
+          material_id: 'mat_standard',
+        } as any,
+        {
+          id: 'torus1',
+          type: 'mesh_3d',
+          primitive: 'torus',
+          material_id: 'mat_standard',
+        } as any,
+      ];
+
+      const renderer = new ThreeDWebGLRenderer();
+      const html = renderer.renderToHtml(doc);
+
+      expect(html).toContain('THREE.SphereGeometry(2, 64, 16)');
+      expect(html).toContain('THREE.TorusGeometry(0.5, 0.2, 16, 100)');
+      expect(html).toContain('new THREE.MeshStandardMaterial');
+      expect(html).toContain("color: '#ffaa00'");
+      expect(html).toContain('roughness: 0.2');
+      expect(html).toContain('metalness: 0.8');
+      expect(html).toContain('opacity: 0.9');
+      expect(html).toContain('transparent: true');
+      expect(html).toContain('THREE.OrbitControls');
+    });
   });
 });
