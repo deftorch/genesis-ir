@@ -7,7 +7,7 @@
 
 ---
 
-## 📜 Kontrak Tugas Agen (`IRAgentContract`)
+## Kontrak Tugas Agen (`IRAgentContract`)
 
 Agen AI di workspace Genesis IR bekerja di bawah aturan kapabilitas kaku yang dideklarasikan pada berkas `AGENTS.md` proyek.
 
@@ -28,7 +28,7 @@ Untuk menjaga akuntabilitas tindakan otonom yang dilakukan oleh kecerdasan buata
 
 ---
 
-## ⚠️ Eskalasi Keputusan `irreversible` (Keputusan #37)
+## Eskalasi Keputusan `irreversible` (Keputusan #37)
 
 Beberapa aksi penting dikategorikan bersifat tidak dapat dibatalkan (**`irreversible`**), seperti:
 1. Menghapus artboard utama dokumen fisik.
@@ -36,14 +36,14 @@ Beberapa aksi penting dikategorikan bersifat tidak dapat dibatalkan (**`irrevers
 3. Melakukan migrasi destruktif tanpa backup terdaftar.
 
 ```
-       [AI Agent: Request Irreversible Action]
-                         ↓
-  [Runtime Check: capability.irreversible == true]
-                         ↓
-      [Eskalasi Manual: Kirim Konfirmasi Manusia]
-                         ↓
-    [Persetujuan Manusia] ---> [Eksekusi Aksi]
-    [Penolakan Manusia]   ---> [Batalkan & Rollback]
+    [AI Agent: Request Irreversible Action]
+             ↓
+ [Runtime Check: capability.irreversible == true]
+             ↓
+   [Eskalasi Manual: Kirim Konfirmasi Manusia]
+             ↓
+  [Persetujuan Manusia] ---> [Eksekusi Aksi]
+  [Penolakan Manusia]  ---> [Batalkan & Rollback]
 ```
 
 ### Protokol Konfirmasi:

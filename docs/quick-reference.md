@@ -3,7 +3,7 @@
 
 ---
 
-## 🚀 Memulai Antigravity untuk Proyek Ini
+## Memulai Antigravity untuk Proyek Ini
 
 ### 1. Setup Proyek di Antigravity 2.0
 ```
@@ -20,7 +20,7 @@
 
 ---
 
-## ⌨️ Shortcuts Harian
+## ⌨ Shortcuts Harian
 
 | Command | Fungsi |
 |---------|--------|
@@ -32,7 +32,7 @@
 
 ---
 
-## 📝 Prompt Efektif untuk Genesis IR
+## Prompt Efektif untuk Genesis IR
 
 ### Untuk Implementasi Feature
 ```
@@ -57,40 +57,40 @@ keputusan lain?"
 
 ---
 
-## 🏗️ Urutan Implementasi yang Benar
+## Urutan Implementasi yang Benar
 
 ```
 PRE-PHASE (sekarang)
-  → 0.1 Monorepo + TypeScript setup
-  → 0.2 Package architecture creation
+ → 0.1 Monorepo + TypeScript setup
+ → 0.2 Package architecture creation
 
 FASE 1 (bulan 1-3)
-  → 1.1 IRDomain & IRMode
-  → 1.2 IRDocument root schema
-  → 1.3 Tier system
-  → 1.4 AJV validator
-  ⛔ M1 GATE: 100% tes harus lulus
+ → 1.1 IRDomain & IRMode
+ → 1.2 IRDocument root schema
+ → 1.3 Tier system
+ → 1.4 AJV validator
+  M1 GATE: 100% tes harus lulus
 
 FASE 2 (bulan 4-6)
-  → Style cascade
-  → IRCanvas & mode contexts
-  ...
+ → Style cascade
+ → IRCanvas & mode contexts
+ ...
 ```
 
 ---
 
-## ⚠️ Yang Tidak Boleh Dilakukan
+## Yang Tidak Boleh Dilakukan
 
-- ❌ Skip penulisan tes (TDD tidak bisa dibalik)
-- ❌ Mengubah nama 17 domain yang sudah dikunci
-- ❌ Bypass gate kritis `⛔`
-- ❌ Hardcode API token atau secret
-- ❌ Menggunakan `any` type di TypeScript
-- ❌ Menulis LIR langsung tanpa melalui HIR → MIR pipeline
+- Skip penulisan tes (TDD tidak bisa dibalik)
+- Mengubah nama 17 domain yang sudah dikunci
+- Bypass gate kritis ``
+- Hardcode API token atau secret
+- Menggunakan `any` type di TypeScript
+- Menulis LIR langsung tanpa melalui HIR → MIR pipeline
 
 ---
 
-## 📊 Coverage Report
+## Coverage Report
 
 Jalankan setelah setiap sesi:
 ```bash

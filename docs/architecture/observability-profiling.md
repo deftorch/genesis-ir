@@ -7,18 +7,18 @@
 
 ---
 
-## ⏱️ Compilation Pass Profiler
+## ⏱ Compilation Pass Profiler
 
 Pass kompilasi di Genesis IR dilengkapi instrumen observabilitas bawaan untuk melacak konsumsi memori dan kinerja waktu nyata:
 
 ```typescript
 export interface IRCompilationProfile {
-  pass_id: string;
-  start_time_ms: number;
-  end_time_ms: number;
-  duration_ms: number;
-  memory_used_mb?: number;
-  resolved_styles_count?: number;
+ pass_id: string;
+ start_time_ms: number;
+ end_time_ms: number;
+ duration_ms: number;
+ memory_used_mb?: number;
+ resolved_styles_count?: number;
 }
 ```
 
@@ -27,34 +27,34 @@ export interface IRCompilationProfile {
 
 ---
 
-## ♿ Sistem Audit Aksesibilitas WCAG (Fase 9.2)
+## Sistem Audit Aksesibilitas WCAG (Fase 9.2)
 
 Disediakan pustaka audit aksesibilitas terintegrasi yang diekspos sebagai built-in tool kompilator `validate_accessibility`:
 
 - **Audit Rasio Kontras**: Menghitung rasio kontras luminansi relatif antara warna teks (`foreground`) dan latar belakang (`background`).
 - **Kepatuhan Kriteria**:
-  - Lulus tingkat **AA** jika rasio kontras ≥ 4.5:1 untuk teks biasa, atau ≥ 3:1 untuk teks besar (≥18pt).
-  - Lulus tingkat **AAA** jika rasio kontras ≥ 7:1 untuk teks biasa, atau ≥ 4.5:1 untuk teks besar.
+ - Lulus tingkat **AA** jika rasio kontras ≥ 4.5:1 untuk teks biasa, atau ≥ 3:1 untuk teks besar (≥18pt).
+ - Lulus tingkat **AAA** jika rasio kontras ≥ 7:1 untuk teks biasa, atau ≥ 4.5:1 untuk teks besar.
 - **Simulasi Buta Warna**: Menganalisis visibilitas elemen untuk tipe Deuteranopia, Protanopia, dan Tritanopia guna mencegah kegagalan informasi berbasis warna murni.
 
 ---
 
-## 🔍 `x_debug` & Pelacakan Provenance
+## `x_debug` & Pelacakan Provenance
 
 Semua berkas dokumen HIR memiliki objek `x_debug` opsional untuk mencatat sejarah perubahan otonom oleh agen AI:
 
 ```json
 {
-  "x_debug": {
-    "agent_provenance": [
-      {
-        "agent_id": "agent-crdt-01",
-        "timestamp": "2026-05-31T11:00:00Z",
-        "action_taken": "apply_brand",
-        "nodes_modified": ["n1", "n2"]
-      }
-    ]
-  }
+ "x_debug": {
+  "agent_provenance": [
+   {
+    "agent_id": "agent-crdt-01",
+    "timestamp": "2026-05-31T11:00:00Z",
+    "action_taken": "apply_brand",
+    "nodes_modified": ["n1", "n2"]
+   }
+  ]
+ }
 }
 ```
 

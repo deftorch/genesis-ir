@@ -7,15 +7,15 @@
 
 ---
 
-## 📐 Perhitungan Spatial Layout (Pass 4)
+## Perhitungan Spatial Layout (Pass 4)
 
 Pass 4 bertanggung jawab menghitung letak dan dimensi mutlak (`ComputedLayoutMap`) setiap node berdasarkan parameter geometri relatif (`IRGeometry`) dan kekangan model (constraints).
 
 ```
-          [HIR Node: Flex/Grid Constraints]
-                         ↓
-           [Pass 4: Yoga Layout Engine]
-                         ↓
+     [HIR Node: Flex/Grid Constraints]
+             ↓
+      [Pass 4: Yoga Layout Engine]
+             ↓
 [LIR Node: Posisi Absolut / Absolute Pixel Coordinates]
 ```
 
@@ -33,7 +33,7 @@ Pass 4 bertanggung jawab menghitung letak dan dimensi mutlak (`ComputedLayoutMap
 
 ---
 
-## 📄 Multi-Page Text Reflow Engine (Fase 10A)
+## Multi-Page Text Reflow Engine (Fase 10A)
 
 Untuk dokumen multi-halaman (`meta.domain: "document"`), text reflow engine menangani aliran teks dinamis lintas batas halaman fisik secara otomatis:
 

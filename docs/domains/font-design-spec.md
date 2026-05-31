@@ -7,7 +7,7 @@
 
 ---
 
-## 📐 Batasan Units Per EM (Keputusan #10)
+## Batasan Units Per EM (Keputusan #10)
 
 Untuk menjamin kompatibilitas rendering font di sistem operasi tingkat rendah dan rasterizer web browser, properti `units_per_em` pada `IRFontSpec` dibatasi secara mutlak:
 
@@ -16,7 +16,7 @@ Untuk menjamin kompatibilitas rendering font di sistem operasi tingkat rendah da
 
 ---
 
-## 🔠 Struktur Node Glyph & Kurva Vektor
+## Struktur Node Glyph & Kurva Vektor
 
 Setiap karakter didefinisikan sebagai glyph vektor independen:
 
@@ -26,7 +26,7 @@ Setiap karakter didefinisikan sebagai glyph vektor independen:
 
 ---
 
-## ↔️ Sistem Kelas Kerning & Fitur OpenType (Keputusan #15)
+## Sistem Kelas Kerning & Fitur OpenType (Keputusan #15)
 
 Dibanding mendefinisikan kerning pasangan huruf per huruf (yang berujung pada ribuan data tidak efisien), Genesis IR mengunci sistem **Kerning Class**:
 
@@ -36,7 +36,7 @@ Dibanding mendefinisikan kerning pasangan huruf per huruf (yang berujung pada ri
 
 ---
 
-## 💾 Kompilasi Binar OpenType `.otf` / `.ttf`
+## Kompilasi Binar OpenType `.otf` / `.ttf`
 
 Generator LIR Pass 7c mengompilasi seluruh deskripsi glyph, metrik, kerning, dan fitur OpenType ke dalam bytes biner font TrueType/OpenType standar menggunakan library pembantu OpenType compilation:
 

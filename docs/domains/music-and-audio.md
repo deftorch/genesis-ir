@@ -7,7 +7,7 @@
 
 ---
 
-## 🎵 Konsep Waktu Temporal (Beat/Bar ke Milidetik)
+## Konsep Waktu Temporal (Beat/Bar ke Milidetik)
 
 Mengikuti **Keputusan Arsitektur #12**, seluruh domain musik menggunakan koordinat ketukan (beat/bar) sebagai koordinat waktu utama pada HIR. Pass 5 (Temporal Resolution) bertanggung jawab mengonversinya ke satuan milidetik absolut berdasarkan peta tempo (BPM) aktif.
 
@@ -20,16 +20,16 @@ Pada dokumen dengan automasi perubahan tempo dinamis (`IRTempoChange`), ketukan 
 
 ---
 
-## 🎛️ Struktur DAW & Track System
+## Struktur DAW & Track System
 
 Dokumen bertipe `IRAudioCanvas` membagi audio ke dalam track virtual yang diproses secara paralel:
 
 ```
-               [IRAudioCanvas]
-                      ↓
-  [Track 1: MIDI]  [Track 2: Audio]  [Track 3: Master]
-         ↓                 ↓                 ↓
-   [Synthesizer]      [WAV/MP3 Clip]    [Reverb Effect]
+        [IRAudioCanvas]
+           ↓
+ [Track 1: MIDI] [Track 2: Audio] [Track 3: Master]
+     ↓         ↓         ↓
+  [Synthesizer]   [WAV/MP3 Clip]  [Reverb Effect]
 ```
 
 ### Tipe Node Khusus:
@@ -40,7 +40,7 @@ Dokumen bertipe `IRAudioCanvas` membagi audio ke dalam track virtual yang dipros
 
 ---
 
-## 🔊 LIR Generation: Web Audio API Graph
+## LIR Generation: Web Audio API Graph
 
 Saat mengekspor dokumen MIR ke LIR target web, engine mengonversi deskripsi DAW ke grafik simpul suara **Web Audio API**:
 

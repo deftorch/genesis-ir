@@ -3,7 +3,7 @@
 
 ---
 
-## 📌 Konteks Proyek
+## Konteks Proyek
 
 Proyek ini adalah **Genesis Intermediate Representation (IR) v1.0** — sebuah platform
 TypeScript monorepo untuk representasi aset kreatif multi-domain (17 domain: visual,
@@ -13,12 +13,12 @@ Arsitektur terdiri dari:
 - HIR → MIR → LIR (3-level IR pipeline)
 - 9 pass kompilasi wajib (Pass 0–8)
 - 7 package: @genesis/types, @genesis/schema, @genesis/compiler, @genesis/renderer,
-  @genesis/agent, @genesis/crdt, @genesis/sdk
+ @genesis/agent, @genesis/crdt, @genesis/sdk
 - Metodologi: TDD (Red → Green → Refactor) + Incremental Development
 
 ---
 
-## ⚠️ ATURAN KERAS (Tidak Boleh Dilanggar)
+## ATURAN KERAS (Tidak Boleh Dilanggar)
 
 1. **Semua kode TypeScript wajib menggunakan `strict: true`**
 2. **Setiap fitur WAJIB diawali dengan tes Vitest (TDD Red → Green → Refactor)**
@@ -33,7 +33,7 @@ Arsitektur terdiri dari:
 
 ---
 
-## 🔑 Keputusan Arsitektur Kritis (40 Keputusan Terkunci)
+## Keputusan Arsitektur Kritis (40 Keputusan Terkunci)
 
 | # | Keputusan | Detail |
 |---|-----------|--------|
@@ -53,7 +53,7 @@ Arsitektur terdiri dari:
 
 ---
 
-## 📐 Standar Koding
+## Standar Koding
 
 ### TypeScript
 - Gunakan `strict: true`, `noImplicitAny: true`, `strictNullChecks: true`
@@ -65,17 +65,17 @@ Arsitektur terdiri dari:
 ### Struktur File
 ```
 packages/
-  @genesis/types/src/
-    domains.ts        # IRDomain, IRMode, IR_MODE_DOMAIN_MAP
-    document.ts       # IRDocument, IRCanvas, IRAudioCanvas, IR3DViewport
-    nodes.ts          # IRNode, IRNodeType, IRNodeContent
-    style.ts          # IRStyleContext, DesignTokenMap, ColorValue
-    constraints.ts    # IRConstraintSet, IRSemanticRule
-    timeline.ts       # IRTimeline, IRKeyframe, IRAutomationCurve
-    agents.ts         # IRAgentContext, IRAgentContract, IRTaskContext
-    delta.ts          # IRDelta, IRDeltaStack
-    assets.ts         # IRAssetPool, IRAssetRef
-    lir.ts            # WebLIR, PrintLIR, VideoLIR, dll
+ @genesis/types/src/
+  domains.ts    # IRDomain, IRMode, IR_MODE_DOMAIN_MAP
+  document.ts    # IRDocument, IRCanvas, IRAudioCanvas, IR3DViewport
+  nodes.ts     # IRNode, IRNodeType, IRNodeContent
+  style.ts     # IRStyleContext, DesignTokenMap, ColorValue
+  constraints.ts  # IRConstraintSet, IRSemanticRule
+  timeline.ts    # IRTimeline, IRKeyframe, IRAutomationCurve
+  agents.ts     # IRAgentContext, IRAgentContract, IRTaskContext
+  delta.ts     # IRDelta, IRDeltaStack
+  assets.ts     # IRAssetPool, IRAssetRef
+  lir.ts      # WebLIR, PrintLIR, VideoLIR, dll
 ```
 
 ### Testing
@@ -92,27 +92,27 @@ packages/
 
 ---
 
-## 🏗️ Milestone & Status Fase
+## Milestone & Status Fase
 
 | Milestone | Target | Status |
 |-----------|--------|--------|
-| M1: Schema Core | Bulan 3 | 🟢 SELESAI |
-| M2: Style & Token | Bulan 6 | 🟢 SELESAI |
-| M3: Semantic Engine | Bulan 9 | 🟢 SELESAI |
-| M4: Renderer | Bulan 12 | 🟢 SELESAI |
-| M5: Timeline | Bulan 15 | 🟢 SELESAI |
-| M6: Interaksi & State Engine | Bulan 18 | 🟢 SELESAI |
-| M7: Output Cetak Sempurna | Bulan 21 | 🟢 SELESAI |
-| M8: Domain Expansion & Mode Context | Bulan 24 | 🟢 SELESAI |
-| M9: Jejak Audit & Audit WCAG | Bulan 27 | 🟢 SELESAI |
+| M1: Schema Core | Bulan 3 | SELESAI |
+| M2: Style & Token | Bulan 6 | SELESAI |
+| M3: Semantic Engine | Bulan 9 | SELESAI |
+| M4: Renderer | Bulan 12 | SELESAI |
+| M5: Timeline | Bulan 15 | SELESAI |
+| M6: Interaksi & State Engine | Bulan 18 | SELESAI |
+| M7: Output Cetak Sempurna | Bulan 21 | SELESAI |
+| M8: Domain Expansion & Mode Context | Bulan 24 | SELESAI |
+| M9: Jejak Audit & Audit WCAG | Bulan 27 | SELESAI |
 
 **PHASE AKTIF: FASE 10A (Document Domain)**
 
 ---
 
-## 🚨 Gate Kritis (Jangan Skip)
+## Gate Kritis (Jangan Skip)
 
-- `⛔` di CHECKLIST.md = GATE KRITIS, tidak boleh dilewati
+- `` di CHECKLIST.md = GATE KRITIS, tidak boleh dilewati
 - M1 gate: semua tes Fase 1 harus 100% lulus sebelum Fase 2
 - M4 gate: visual regression test SVG harus lulus sebelum Fase 5
 - M9 gate (Kep. #09–#16): harus audit semua keputusan #09 s.d. #16

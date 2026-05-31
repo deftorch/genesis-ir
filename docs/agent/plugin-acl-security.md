@@ -7,7 +7,7 @@
 
 ---
 
-## 🔒 Namespace Plugin Terisolasi (Keputusan #17)
+## Namespace Plugin Terisolasi (Keputusan #17)
 
 Seluruh plugin yang dipasang di workspace wajib mematuhi standar penamaan berbasis namespace terisolasi:
 
@@ -20,7 +20,7 @@ Tindakan ini mencegah terjadinya bentrokan nama fungsi (collision) dan memastika
 
 ---
 
-## 🎖️ Hirarki Kepercayaan Plugin (Keputusan #29)
+## Hirarki Kepercayaan Plugin (Keputusan #29)
 
 Untuk memitigasi eksekusi kode berbahaya (malicious code execution), dipasang **Hirarki Kepercayaan**:
 
@@ -32,18 +32,18 @@ Untuk memitigasi eksekusi kode berbahaya (malicious code execution), dipasang **
 
 ---
 
-## 🛡️ Aturan Keamanan & Akses Data (Keputusan #21 & #31)
+## Aturan Keamanan & Akses Data (Keputusan #21 & #31)
 
 1. **Strict IR Access Control**:
-   Apabila opsi `strict_ir_access` bernilai `true` (default), plugin dilarang mengakses objek node di luar domain kerja yang dideklarasikan pada kontraknya (Keputusan #21).
+  Apabila opsi `strict_ir_access` bernilai `true` (default), plugin dilarang mengakses objek node di luar domain kerja yang dideklarasikan pada kontraknya (Keputusan #21).
 2. **Isolasi Aksi Plugin**:
-   Aksi yang dipicu oleh plugin dibatasi secara ketat hanya pada ruang lingkup (scope) artboard atau node target yang sedang aktif (Keputusan #30).
+  Aksi yang dipicu oleh plugin dibatasi secara ketat hanya pada ruang lingkup (scope) artboard atau node target yang sedang aktif (Keputusan #30).
 3. **Snapshot Immutable**:
-   Data snapshot dokumen yang dikirimkan ke modul plugin pihak ketiga dikunci sebagai objek **Read-Only (Immutable)** menggunakan mekanisme pembekuan JavaScript (`Object.freeze`). Modifikasi dokumen hanya diperbolehkan melalui pemancaran delta update terenkripsi (Keputusan #31).
+  Data snapshot dokumen yang dikirimkan ke modul plugin pihak ketiga dikunci sebagai objek **Read-Only (Immutable)** menggunakan mekanisme pembekuan JavaScript (`Object.freeze`). Modifikasi dokumen hanya diperbolehkan melalui pemancaran delta update terenkripsi (Keputusan #31).
 
 ---
 
-## 🔑 Kebijakan Referensi Rahasia / Secret Token (Keputusan #36)
+## Kebijakan Referensi Rahasia / Secret Token (Keputusan #36)
 
 Rahasia pengembang (seperti kunci enkripsi API Loro, token LLM, atau password database eksternal) dilarang keras ditulis secara literal (hardcoded) di dalam dokumen HIR.
 

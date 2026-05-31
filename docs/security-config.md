@@ -68,13 +68,13 @@ rm -rf /
 
 ## Browser Allow List
 ```
-localhost:*         # Dev server lokal
-127.0.0.1:*        # Dev server lokal
-docs.antigravity.google   # Dokumentasi Antigravity
-typescriptlang.org        # TypeScript docs
-vitest.dev               # Vitest docs
-ajv.js.org              # AJV validator docs
-loro.dev                # Loro CRDT docs
+localhost:*     # Dev server lokal
+127.0.0.1:*    # Dev server lokal
+docs.antigravity.google  # Dokumentasi Antigravity
+typescriptlang.org    # TypeScript docs
+vitest.dev        # Vitest docs
+ajv.js.org       # AJV validator docs
+loro.dev        # Loro CRDT docs
 ```
 
 ---

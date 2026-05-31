@@ -7,7 +7,7 @@
 
 ---
 
-## 👾 Penyimpanan Data Piksel (Keputusan #11)
+## Penyimpanan Data Piksel (Keputusan #11)
 
 Berbeda dengan domain vektor visual biasa, domain `pixel_art` menyimpan representasi raster piksel secara langsung di dalam dokumen HIR menggunakan node **`pixel_cel`**.
 
@@ -17,7 +17,7 @@ Berbeda dengan domain vektor visual biasa, domain `pixel_art` menyimpan represen
 
 ---
 
-## 🎞️ Arsitektur Animasi Frame & Cel
+## Arsitektur Animasi Frame & Cel
 
 Sistem animasi sprite pixel menggunakan konsep Grid-Cell Frame yang efisien:
 
@@ -33,7 +33,7 @@ Sistem animasi sprite pixel menggunakan konsep Grid-Cell Frame yang efisien:
 
 ---
 
-## 📦 LIR Target: Sprite Sheet Packing (Pass 7b)
+## LIR Target: Sprite Sheet Packing (Pass 7b)
 
 Saat kompilasi ke LIR target, compiler tidak mengekspor frame piksel satu-per-satu sebagai berkas terpisah. Sebaliknya, generator Pass 7b melakukan **Sprite Sheet Packing**:
 

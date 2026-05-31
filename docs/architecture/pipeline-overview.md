@@ -7,14 +7,14 @@
 
 ---
 
-## 🏛️ Arsitektur Pipeline 3-Level
+## Arsitektur Pipeline 3-Level
 
 Genesis IR menggunakan arsitektur kompilasi bertingkat (3-level AST) untuk memastikan fleksibilitas representasi lintas platform dan efisiensi eksekusi.
 
 ```mermaid
 graph TD
-    HIR[HIR: High-level IR - JSON Document] -->|Pass 0-3: Validation & Resolution| MIR[MIR: Mid-level IR - Resolved Tree & Styles]
-    MIR -->|Pass 4-6: Spatial & Temporal Layout| LIR[LIR: Low-level IR - Platform Backends]
+  HIR[HIR: High-level IR - JSON Document] -->|Pass 0-3: Validation & Resolution| MIR[MIR: Mid-level IR - Resolved Tree & Styles]
+  MIR -->|Pass 4-6: Spatial & Temporal Layout| LIR[LIR: Low-level IR - Platform Backends]
 ```
 
 ### 1. High-level IR (HIR)
@@ -29,7 +29,7 @@ graph TD
 
 ---
 
-## ⚙️ Spesifikasi 9 Compiler Passes (Pass 0–8)
+## Spesifikasi 9 Compiler Passes (Pass 0–8)
 
 Proses transformasi dari HIR ke LIR wajib melalui **9 pass kompilasi sekuensial** tanpa perkecualian:
 

@@ -7,7 +7,7 @@
 
 ---
 
-## 🚫 Larangan Kode JavaScript Bebas (Keputusan #22)
+## Larangan Kode JavaScript Bebas (Keputusan #22)
 
 Untuk memastikan bahwa migrasi dapat diputar balik (rolled back) secara otomatis dan diprediksi perilakunya secara aman oleh agen kecerdasan buatan, **penggunaan kode JavaScript bebas (`eval`, fungsi kustom) dilarang keras**.
 
@@ -17,10 +17,10 @@ Seluruh transformasi dokumen wajib dideklarasikan secara tertulis menggunakan **
 Mengubah nama kunci/properti pada suatu objek tanpa menghilangkan data nilai di dalamnya.
 ```json
 {
-  "operator": "rename_field",
-  "path": "objects.n1.style",
-  "old_name": "color",
-  "new_name": "fill_color"
+ "operator": "rename_field",
+ "path": "objects.n1.style",
+ "old_name": "color",
+ "new_name": "fill_color"
 }
 ```
 
@@ -28,9 +28,9 @@ Mengubah nama kunci/properti pada suatu objek tanpa menghilangkan data nilai di 
 Menghapus kunci/properti tertentu dari objek node secara permanen.
 ```json
 {
-  "operator": "remove_field",
-  "path": "objects.n1.style",
-  "field_name": "deprecated_prop"
+ "operator": "remove_field",
+ "path": "objects.n1.style",
+ "field_name": "deprecated_prop"
 }
 ```
 
@@ -38,10 +38,10 @@ Menghapus kunci/properti tertentu dari objek node secara permanen.
 Menambahkan properti gaya baru dengan nilai bawaan (default value) tertentu.
 ```json
 {
-  "operator": "add_field",
-  "path": "objects.n1.style",
-  "field_name": "opacity",
-  "value": 1.0
+ "operator": "add_field",
+ "path": "objects.n1.style",
+ "field_name": "opacity",
+ "value": 1.0
 }
 ```
 
@@ -49,9 +49,9 @@ Menambahkan properti gaya baru dengan nilai bawaan (default value) tertentu.
 Melakukan konversi tipe data properti (misalnya mengubah string `"100"` menjadi integer `100`).
 ```json
 {
-  "operator": "change_type",
-  "path": "objects.n1.style.opacity",
-  "target_type": "number"
+ "operator": "change_type",
+ "path": "objects.n1.style.opacity",
+ "target_type": "number"
 }
 ```
 
@@ -59,24 +59,24 @@ Melakukan konversi tipe data properti (misalnya mengubah string `"100"` menjadi 
 Memindahkan sub-struktur data ke lokasi path baru.
 ```json
 {
-  "operator": "restructure",
-  "from_path": "objects.n1.style.legacy_margin",
-  "to_path": "objects.n1.style.margin.top"
+ "operator": "restructure",
+ "from_path": "objects.n1.style.legacy_margin",
+ "to_path": "objects.n1.style.margin.top"
 }
 ```
 
 ---
 
-## 📜 Registrasi Naskah Migrasi (`IRMigrationScript`)
+## Registrasi Naskah Migrasi (`IRMigrationScript`)
 
 Setiap skrip migrasi didaftarkan ke dalam `MigrationRegistry` dengan format berikut:
 
 ```typescript
 export interface IRMigrationScript {
-  script_id: string; // Wajib diisi (Keputusan #26)
-  from_version: string; // Format semver (e.g. "1.0.0")
-  to_version: string; // Format semver (e.g. "1.1.0")
-  transformers: IRMigrationTransformer[];
+ script_id: string; // Wajib diisi (Keputusan #26)
+ from_version: string; // Format semver (e.g. "1.0.0")
+ to_version: string; // Format semver (e.g. "1.1.0")
+ transformers: IRMigrationTransformer[];
 }
 ```
 

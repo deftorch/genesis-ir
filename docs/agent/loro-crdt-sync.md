@@ -7,7 +7,7 @@
 
 ---
 
-## 🤝 Pilihan Library CRDT (Keputusan #38)
+## Pilihan Library CRDT (Keputusan #38)
 
 Untuk memfasilitasi kolaborasi real-time tanpa konflik antara agen AI dan manusia pengembang di workspace yang sama, Genesis IR mengunci penggunaan **Loro CRDT**:
 
@@ -16,16 +16,16 @@ Untuk memfasilitasi kolaborasi real-time tanpa konflik antara agen AI dan manusi
 
 ---
 
-## ⚡ Delta Update Atomik (`IRDelta`)
+## Delta Update Atomik (`IRDelta`)
 
 Seluruh mutasi dokumen wajib dikemas dalam bentuk operasi atomik terstruktur **`IRDelta`** (Keputusan #27):
 
 ```typescript
 export type IRDelta =
-  | { kind: 'add'; path: string; value: any }
-  | { kind: 'remove'; path: string }
-  | { kind: 'replace'; path: string; value: any; prev_value: any }
-  | { kind: 'move'; from_path: string; to_path: string };
+ | { kind: 'add'; path: string; value: any }
+ | { kind: 'remove'; path: string }
+ | { kind: 'replace'; path: string; value: any; prev_value: any }
+ | { kind: 'move'; from_path: string; to_path: string };
 ```
 
 ### 1. Sifat Deterministik
@@ -36,14 +36,14 @@ Apabila agen melakukan request perubahan dengan bendera `delta_only: true`, serv
 
 ---
 
-## 📂 Alur Rekonsiliasi & Delta Stack
+## Alur Rekonsiliasi & Delta Stack
 
 Rekonsiliasi revisi dikelola oleh `IRDeltaStack` yang melacak sejarah modifikasi secara berurutan:
 
 ```
 [Peer A: Edit Style] ---> [Local Loro Doc] ---> [Export Update Bytes]
-                                                       ↓
-[Peer B: Loro Merge] <--- [Apply Update]  <--- [Transport Layer]
+                            ↓
+[Peer B: Loro Merge] <--- [Apply Update] <--- [Transport Layer]
 ```
 
 1. **Local Update**: Modifikasi lokal diaplikasikan langsung ke dokumen Loro lokal demi responsivitas instan (zero latency).

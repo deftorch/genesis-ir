@@ -7,7 +7,7 @@
 
 ---
 
-## 🎨 Gambaran Umum Domain Visual
+## Gambaran Umum Domain Visual
 
 Domain-domain visual melayani pembuatan representasi visual 2D baik digital maupun fisik (cetak).
 
@@ -31,18 +31,18 @@ Domain-domain visual melayani pembuatan representasi visual 2D baik digital maup
 
 ---
 
-## 📐 Spesifikasi Cetak Fisik: `signage` & `packaging` (Fase 7)
+## Spesifikasi Cetak Fisik: `signage` & `packaging` (Fase 7)
 
 Dua domain visual khusus ini memerlukan koordinasi langsung dengan spesifikasi fisik (`IRPhysicalSpec`) dan unit presisi:
 
 ```
-                  [HIR Document]
-                        ↓
-          [Pass 3: Physical Validation]
-      - Validasi Bleed & Safe Guide (mm/pt)
-      - Verifikasi Sinkronisasi DPI (min 300)
-                        ↓
-          [LIR Output: PDF/X-4 atau DXF]
+         [HIR Document]
+            ↓
+     [Pass 3: Physical Validation]
+   - Validasi Bleed & Safe Guide (mm/pt)
+   - Verifikasi Sinkronisasi DPI (min 300)
+            ↓
+     [LIR Output: PDF/X-4 atau DXF]
 ```
 
 ### 1. `signage` (STABLE)

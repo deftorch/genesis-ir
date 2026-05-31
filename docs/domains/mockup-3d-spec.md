@@ -7,16 +7,16 @@
 
 ---
 
-## 📦 Arsitektur Viewport 3D (`IR3DViewport`)
+## Arsitektur Viewport 3D (`IR3DViewport`)
 
 Setiap dokumen 3D dideklarasikan di dalam objek canvas **`IR3DViewport`** khusus yang menampung dunia visual tiga dimensi (Fase 8.3):
 
 ```
-                       [IR3DViewport]
-                             ↓
-  [Scene Objects]   [Lighting Setup]   [Camera Settings]
-   - Mesh/Geometri   - Ambient/Point    - FOV/Orthographic
-   - Material/PBR    - Directional      - Target Look-At
+            [IR3DViewport]
+               ↓
+ [Scene Objects]  [Lighting Setup]  [Camera Settings]
+  - Mesh/Geometri  - Ambient/Point  - FOV/Orthographic
+  - Material/PBR  - Directional   - Target Look-At
 ```
 
 ### 1. Objek & Mesh
@@ -29,7 +29,7 @@ Setiap dokumen 3D dideklarasikan di dalam objek canvas **`IR3DViewport`** khusus
 
 ---
 
-## 🎨 Proyeksi Mockup 2D ke Aset 3D (`mockup`)
+## Proyeksi Mockup 2D ke Aset 3D (`mockup`)
 
 Domain `mockup` menjembatani representasi grafis 2D (seperti poster, kemasan cetak) dengan model fisik 3D:
 
@@ -38,7 +38,7 @@ Domain `mockup` menjembatani representasi grafis 2D (seperti poster, kemasan cet
 
 ---
 
-## 🖥️ LIR Target: WebGL / Three.js Pipeline
+## LIR Target: WebGL / Three.js Pipeline
 
 Untuk rendering interaktif waktu nyata di browser web, generator LIR Pass 7d mengekspor deskripsi `IR3DViewport` menjadi kode inisialisasi API **Three.js**:
 

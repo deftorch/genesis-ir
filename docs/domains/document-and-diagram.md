@@ -7,7 +7,7 @@
 
 ---
 
-## 📄 Spesifikasi Domain `document`
+## Spesifikasi Domain `document`
 
 Domain `document` ditujukan untuk penataan halaman bertekstur kaya (rich text) berskala besar seperti laporan, e-book, dan dokumen cetak multi-halaman.
 
@@ -20,7 +20,7 @@ Domain `document` ditujukan untuk penataan halaman bertekstur kaya (rich text) b
 
 ---
 
-## 📊 Spesifikasi Domain `diagram`
+## Spesifikasi Domain `diagram`
 
 Domain `diagram` menyediakan representasi visual untuk grafis berelasi, diagram alir, pemodelan data (ERD/UML), dan tata letak proses bisnis (BPMN).
 
@@ -34,10 +34,10 @@ Untuk beberapa jenis pemodelan proses kaku, diagram dilarang memiliki putaran te
 
 ```mermaid
 graph TD
-    A[Node A] --> B[Node B]
-    B --> C[Node C]
-    C -->|Feedback Loop| A
-    style C fill:#ffcccc,stroke:#ff0000
+  A[Node A] --> B[Node B]
+  B --> C[Node C]
+  C -->|Feedback Loop| A
+  style C fill:#ffcccc,stroke:#ff0000
 ```
 
 ### 3. Algoritma Auto-Routing Konektor (A*)

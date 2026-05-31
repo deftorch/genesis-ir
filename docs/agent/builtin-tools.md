@@ -7,7 +7,7 @@
 
 ---
 
-## 🛠️ Daftar 9 Built-in Tools Terkunci (Keputusan #40)
+## Daftar 9 Built-in Tools Terkunci (Keputusan #40)
 
 Setiap agen pelaksana memiliki akses langsung ke 9 built-in tools yang terdaftar di dalam `CompilerToolRegistry`. ID alat ini bersifat permanen dan dilarang ditimpa (overridden) atau dimodifikasi strukturnya:
 
