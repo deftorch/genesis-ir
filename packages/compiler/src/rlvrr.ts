@@ -1,4 +1,4 @@
-import { IRDocument, IRRLVRRSignals, IRRLVRRResult, IRRLVRRConfig } from '@genesis/types';
+import { IRDocument, IRRLVRRSignals, IRRLVRRResult, IRRLVRRConfig, calculateContrastRatio, checkWCAGCompliance } from '@genesis/types';
 import { validateHIR } from '@genesis/schema';
 
 const DEFAULT_CONFIG: IRRLVRRConfig = {
@@ -54,10 +54,36 @@ export function evaluateRLVRR(
   if (output.style_context?.theme_tokens && reference.style_context?.theme_tokens) {
     const outTokens = output.style_context.theme_tokens;
     const refTokens = reference.style_context.theme_tokens;
-    // Check key presence
-    for (const key of Object.keys(refTokens)) {
-      if (!(key in outTokens)) {
-        violations.push(`Missing brand token: ${key}`);
+    
+    // 1. Check key presence
+    if (refTokens.colors && outTokens.colors) {
+      for (const key of Object.keys(refTokens.colors)) {
+        if (!(key in outTokens.colors)) {
+          violations.push(`Missing brand color token: ${key}`);
+        }
+      }
+    }
+
+    // 2. Palette validation: Check if output colors match reference colors
+    if (outTokens.colors && refTokens.colors) {
+      for (const [key, value] of Object.entries(outTokens.colors)) {
+        const refValue = refTokens.colors[key];
+        if (refValue && JSON.stringify(refValue) !== JSON.stringify(value)) {
+          violations.push(`Invalid color for brand token colors.${key}: expected ${JSON.stringify(refValue)}, got ${JSON.stringify(value)}`);
+        }
+      }
+    }
+
+    // 3. Contrast check: check WCAG AA (4.5:1) for text/primary against background
+    if (outTokens.colors) {
+      const fgColor = outTokens.colors['text'] || outTokens.colors['primary'];
+      const bgColor = outTokens.colors['background'];
+      if (typeof fgColor === 'string' && typeof bgColor === 'string' && fgColor.startsWith('#') && bgColor.startsWith('#')) {
+        const ratio = calculateContrastRatio(fgColor, bgColor);
+        const compliant = checkWCAGCompliance(ratio, 'AA', 12);
+        if (!compliant) {
+          violations.push(`WCAG contrast compliance failed: contrast between text (${fgColor}) and background (${bgColor}) is ${ratio.toFixed(2)}:1 (minimum 4.5:1 required)`);
+        }
       }
     }
   }

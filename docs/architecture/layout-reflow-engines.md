@@ -40,3 +40,16 @@ Untuk dokumen multi-halaman (`meta.domain: "document"`), text reflow engine mena
 - **Text Overflow & Chaining**: Teks mengalir melalui properti `chain_to` yang menunjuk ID node frame berikutnya.
 - **Auto-Page Generation**: Jika teks meluap dari frame halaman terakhir, engine secara otomatis menambahkan objek halaman baru (`artboard` / `frame` baru) ke dalam dokumen LIR.
 - **Aturan Pemisah**: Mematuhi kriteria tipografi standar seperti pencegahan yatim piatu (orphan) dan janda (widow) teks.
+
+---
+
+## Native WASM Fallback & Layout Benchmarks (Fase 3.3)
+
+Untuk menjamin performa maksimal pada runtime yang mendukung WebAssembly, compiler menyediakan modul penyelesaian layout berbasis Rust/WASM (`packages/native`) secara transparan:
+
+### 1. Transparent Fallback Wrapper
+Fungsi `nativeComputeLayout` mencoba mengimpor package native `@genesis/native` secara asinkron. Apabila runtime tidak mendukung WASM atau paket native belum terinstal/terkompilasi, sistem akan melakukan fallback secara otomatis dan aman ke layouter murni JavaScript tanpa mengganggu alur kerja rendering.
+
+### 2. Layout Benchmarking
+Fungsi `runLayoutBenchmark` mengukur dan membandingkan kecepatan kalkulasi layouter murni JS terhadap WASM layouter. Ini membantu mengidentifikasi bottleneck pada dokumen berskala besar dengan jumlah node tinggi, serta mengukur rasio peningkatan performa (speedup multiplier).
+

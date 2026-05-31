@@ -18,7 +18,9 @@ $$\text{Total Reward} = 0.40 \cdot S_1 + 0.25 \cdot S_2 + 0.20 \cdot S_3 + 0.10 
   - Evaluasi kelulusan dokumen terhadap validasi HIR JSON Schema.
   - Bersifat biner (skor `1.0` jika lulus sepenuhnya, atau `0.0` jika gagal).
 2. **$S_2$: Brand Guard (Bobot 0.25)**:
-  - Evaluasi penggunaan palet warna brand terdaftar, larangan kontras buruk, dan akurasi spacing log.
+  - Validasi keberadaan theme token dibandingkan dokumen referensi.
+  - Palette validation: mencocokkan nilai warna pada token warna (`colors.*`) agar tidak menyimpang dari warna brand referensi.
+  - Audit kontras warna teks/primary terhadap background menggunakan standar kalkulasi WCAG AA (rasio minimum 4.5:1).
 3. **$S_3$: Render Error Rate (Bobot 0.20)**:
   - Mengukur kegagalan rendering visual LIR (SVG error, open path font, audio clipping, tabrakan box model).
 4. **$S_4$: Budget Accuracy (Bobot 0.10)**:

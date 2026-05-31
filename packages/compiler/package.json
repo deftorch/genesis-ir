@@ -11,6 +11,7 @@
   "dependencies": {
     "@genesis/schema": "workspace:*",
     "@genesis/types": "workspace:*",
+    "@genesis/renderer": "workspace:*",
     "lz4js": "^0.2.0",
     "opentype.js": "^2.0.0",
     "svg-path-parser": "^1.1.0"

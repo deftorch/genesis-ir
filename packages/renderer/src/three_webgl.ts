@@ -1,6 +1,32 @@
 import { IRDocument } from '@genesis/types';
 
 /**
+ * GeometryFactory maps mesh/primitive types to Three.js geometries.
+ * @stability STABLE
+ */
+export const GeometryFactory = {
+  create(primitive: string, params: Record<string, number> = {}): string {
+    switch (primitive) {
+      case 'sphere':
+        return `new THREE.SphereGeometry(${params.radius ?? 0.5}, ${params.widthSegments ?? 32}, ${params.heightSegments ?? 16})`;
+      case 'cylinder':
+        return `new THREE.CylinderGeometry(${params.radiusTop ?? 0.5}, ${params.radiusBottom ?? 0.5}, ${params.height ?? 1}, ${params.radialSegments ?? 32})`;
+      case 'cone':
+        return `new THREE.ConeGeometry(${params.radius ?? 0.5}, ${params.height ?? 1}, ${params.radialSegments ?? 32})`;
+      case 'torus':
+        return `new THREE.TorusGeometry(${params.radius ?? 0.5}, ${params.tube ?? 0.2}, ${params.radialSegments ?? 16}, ${params.tubularSegments ?? 100})`;
+      case 'plane':
+        return `new THREE.PlaneGeometry(${params.width ?? 1}, ${params.height ?? 1})`;
+      case 'capsule':
+        return `new THREE.CapsuleGeometry(${params.radius ?? 0.5}, ${params.length ?? 1}, ${params.capSegments ?? 4}, ${params.radialSegments ?? 8})`;
+      case 'box':
+      default:
+        return `new THREE.BoxGeometry(${params.width ?? 1}, ${params.height ?? 1}, ${params.depth ?? 1})`;
+    }
+  }
+};
+
+/**
  * Three.js / WebGL Renderer Backend.
  * @stability BETA
  */
@@ -41,7 +67,7 @@ export class ThreeDWebGLRenderer {
     let meshesCode = '';
     objects.forEach((obj: any) => {
       if (obj.type === 'mesh_3d') {
-        const materialId = obj.material_id;
+        const materialId = obj.content?.material_id ?? obj.material_id;
         const matNode = objects.find((o: any) => o.id === materialId) as any;
         const style = (matNode?.style || {}) as any;
         const matColor = style.color || '#00ff00';
@@ -64,6 +90,11 @@ export class ThreeDWebGLRenderer {
           matProps.push(`wireframe: ${wireframe}`);
         }
 
+        // Add support for emissive color
+        if (style.emissive !== undefined) {
+          matProps.push(`emissive: '${style.emissive}'`);
+        }
+
         let materialClass = 'MeshPhongMaterial';
         if (matType === 'standard') {
           materialClass = 'MeshStandardMaterial';
@@ -82,34 +113,10 @@ export class ThreeDWebGLRenderer {
         const scaleY = obj.geometry?.scale_y ?? obj.scale_y ?? 1;
         const scaleZ = obj.geometry?.scale_z ?? obj.scale_z ?? 1;
 
-        // Geometries
-        const primitive = obj.primitive || 'box';
-        const params = obj.primitive_params || {};
-        let geometryCode = '';
-        switch (primitive) {
-          case 'sphere':
-            geometryCode = `new THREE.SphereGeometry(${params.radius ?? 0.5}, ${params.widthSegments ?? 32}, ${params.heightSegments ?? 16})`;
-            break;
-          case 'cylinder':
-            geometryCode = `new THREE.CylinderGeometry(${params.radiusTop ?? 0.5}, ${params.radiusBottom ?? 0.5}, ${params.height ?? 1}, ${params.radialSegments ?? 32})`;
-            break;
-          case 'cone':
-            geometryCode = `new THREE.ConeGeometry(${params.radius ?? 0.5}, ${params.height ?? 1}, ${params.radialSegments ?? 32})`;
-            break;
-          case 'torus':
-            geometryCode = `new THREE.TorusGeometry(${params.radius ?? 0.5}, ${params.tube ?? 0.2}, ${params.radialSegments ?? 16}, ${params.tubularSegments ?? 100})`;
-            break;
-          case 'plane':
-            geometryCode = `new THREE.PlaneGeometry(${params.width ?? 1}, ${params.height ?? 1})`;
-            break;
-          case 'capsule':
-            geometryCode = `new THREE.CapsuleGeometry(${params.radius ?? 0.5}, ${params.length ?? 1}, ${params.capSegments ?? 4}, ${params.radialSegments ?? 8})`;
-            break;
-          case 'box':
-          default:
-            geometryCode = `new THREE.BoxGeometry(${params.width ?? 1}, ${params.height ?? 1}, ${params.depth ?? 1})`;
-            break;
-        }
+        // Geometries - Use GeometryFactory and support mesh_type, primitive in content or root
+        const primitive = obj.content?.primitive ?? obj.primitive ?? obj.geometry?.mesh_type ?? 'box';
+        const params = obj.content?.primitive_params ?? obj.primitive_params ?? {};
+        const geometryCode = GeometryFactory.create(primitive, params);
 
         meshesCode += `
         // Create mesh: ${obj.id}
@@ -136,7 +143,7 @@ export class ThreeDWebGLRenderer {
     canvas { width: ${width}px; height: ${height}px; display: block; }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r147/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
   <script>

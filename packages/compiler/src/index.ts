@@ -3,6 +3,8 @@ export * from './profiler.js';
 export * from './binary.js';
 export * from './rlvrr.js';
 export * from './font.js';
+export * from './native_wasm.js';
+
 
 /**
  * @stability BETA

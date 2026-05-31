@@ -92,7 +92,7 @@ describe('FASE RLVRR — Reward Signal Chain', () => {
   it('fails Signal 2 (brand guard) when output is missing brand tokens', () => {
     const doc = makeValidDoc({
       style_context: {
-        theme_tokens: {},
+        theme_tokens: { colors: {} },
         brand_profile: {},
         component_styles: {},
       },
@@ -100,7 +100,9 @@ describe('FASE RLVRR — Reward Signal Chain', () => {
 
     const ref = makeValidDoc({
       style_context: {
-        theme_tokens: { 'colors.primary': '#ff0000', 'colors.secondary': '#00ff00' },
+        theme_tokens: {
+          colors: { primary: '#ff0000', secondary: '#00ff00' }
+        },
         brand_profile: {},
         component_styles: {},
       },
@@ -115,6 +117,67 @@ describe('FASE RLVRR — Reward Signal Chain', () => {
     expect(result.signals.signal_3_render_error_rate).toBeUndefined();
     expect(result.quality).toBe('AMBIGUOUS');
   });
+
+  it('fails Signal 2 (brand guard) when palette color diverges from reference', () => {
+    const doc = makeValidDoc({
+      style_context: {
+        theme_tokens: {
+          colors: { primary: '#0000ff' }
+        },
+        brand_profile: {},
+        component_styles: {},
+      },
+    });
+
+    const ref = makeValidDoc({
+      style_context: {
+        theme_tokens: {
+          colors: { primary: '#ff0000' }
+        },
+        brand_profile: {},
+        component_styles: {},
+      },
+    });
+
+    const result = evaluateRLVRR(doc, ref);
+
+    expect(result.signals.signal_2_brand_guard?.passed).toBe(false);
+    expect(result.signals.signal_2_brand_guard?.violations[0]).toContain('Invalid color for brand token colors.primary');
+  });
+
+  it('fails Signal 2 (brand guard) when contrast ratio violates WCAG AA requirement', () => {
+    const doc = makeValidDoc({
+      style_context: {
+        theme_tokens: {
+          colors: {
+            text: '#777777',
+            background: '#888888'
+          }
+        },
+        brand_profile: {},
+        component_styles: {},
+      },
+    });
+
+    const ref = makeValidDoc({
+      style_context: {
+        theme_tokens: {
+          colors: {
+            text: '#777777',
+            background: '#888888'
+          }
+        },
+        brand_profile: {},
+        component_styles: {},
+      },
+    });
+
+    const result = evaluateRLVRR(doc, ref);
+
+    expect(result.signals.signal_2_brand_guard?.passed).toBe(false);
+    expect(result.signals.signal_2_brand_guard?.violations.some(v => v.includes('WCAG contrast compliance failed'))).toBe(true);
+  });
+
 
   it('fails Signal 3 (render error) when node count diverges', () => {
     const doc = makeValidDoc({

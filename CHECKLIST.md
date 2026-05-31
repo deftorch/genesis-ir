@@ -680,6 +680,101 @@
 
 ---
 
+## ROADMAP V2.0 IMPLEMENTATION CHECKLIST (REVISI STRATEGI)
+
+### FASE 0 — PRE-FLIGHT CORRECTIONS (Minggu 0-1)
+- [x] **F0-1: Ganti LZ4 homebrew dengan library produksi**
+  - [x] Install `lz4js` di `packages/compiler`
+  - [x] Buat file adapter tipis `src/compression.ts`
+  - [x] Update `encodeGIR()` dan `decodeGIR()` di `binary.ts`
+  - [x] Tambah test round-trip dengan berbagai ukuran
+  - [x] Hapus implementasi LZ4 lama
+- [x] **F0-2: Klarifikasi status CRDT — hapus klaim Loro yang menyesatkan**
+  - [x] Update README.md — ubah kalimat "integrasi Loro CRDT Rust/WASM" menjadi "Pure JS delta stack dengan LWW merge (Loro WASM akan diintegrasikan di Fase 3)"
+  - [x] Rename class `GenesisLoroDoc` -> `GenesisLWWDoc`
+  - [x] Tambah JSDoc warning yang jelas di `packages/crdt/src/index.ts`
+  - [x] Update `docs/agent/loro-crdt-sync.md` untuk mencerminkan status aktual
+  - [x] Tambah test untuk membuktikan limitasi LWW
+
+### FASE 1 — QUICK WINS (Minggu 2-9)
+- [x] **F1-1: 3D WebGL — ganti template HTML hardcoded dengan scene generator nyata**
+  - [x] Buat GeometryFactory yang map mesh_type ke Three.js geometry (box -> BoxGeometry, sphere -> SphereGeometry, dll)
+  - [x] Tambah support material PBR: MeshStandardMaterial dengan metalness, roughness, emissive, dan color dari IRMaterialNode
+  - [x] Inject OrbitControls dari CDN unpkg
+  - [x] Parse IRTransformNode untuk position, rotation (euler), dan scale
+  - [x] Tambah test snapshot HTML output untuk setiap tipe geometry
+- [x] **F1-2: Music LIR — output Web Audio graph nyata, bukan canvas2d fallback**
+  - [x] Tambah format baru ke WebLIR type union di @genesis/types: format: 'webaudio' dengan field graph: AudioGraphInstruction[]
+  - [x] Buat renderer/src/webaudio.ts dengan fungsi generateWebAudioLIR(mir: IRMIRDocument): WebLIR
+  - [x] Map setiap IRMusicTrack -> AudioNode graph: GainNode, BiquadFilterNode, DynamicsCompressorNode
+  - [x] Map IRMidiNote -> OscillatorNode dengan startMs dan stopMs dari runPass5()
+  - [x] Update generateLIR() di lir.ts untuk dispatch ke generateWebAudioLIR()
+  - [x] Test: buat IRMIRDocument dengan track & note -> assert AudioGraphInstruction[]
+- [x] **F1-3: Pixel Art — implementasi sprite sheet packing algorithm**
+  - [x] Install maxrects-packer dan canvas
+  - [x] Buat renderer/src/spritesheet.ts -> input: IRPixelSpec[], output: { atlasBuffer: Buffer, manifest: SpriteManifest }
+  - [x] Gunakan canvas npm package untuk composite sprite ke posisi MaxRects packer
+  - [x] Generate manifest JSON format Phaser.js/PixiJS
+  - [x] Output ke PixelLIR baru: atlas base64 PNG + manifest JSON
+  - [x] Test packing efficiency dan overlap prevention
+
+### FASE 2 — CORE GAPS (Minggu 10-22)
+- [x] **F2-1: PDF/X Renderer — dari stub ke PDF nyata yang bisa dibuka**
+  - [x] Integrasikan pdf-lib dan @pdf-lib/fontkit
+  - [x] MVP 1: Hasilkan PDF kosong valid dengan dimensi dari IRPrintCanvas (mm -> points)
+  - [x] MVP 2: Map IRVisualNode -> PDFPage (text, shape, image)
+  - [x] Integrasikan convertSRGBToCMYK() untuk color conversion
+  - [x] MVP 3: Set metadata PDF/X-4 (OutputIntent Fogra39, GTS_PDFXVersion, Trapped, Bleed)
+  - [x] Validasi output dengan veraPDF
+- [x] **F2-2: Video & Motion Renderer — dari IRTimeline ke output video nyata**
+  - [x] Jalur A (MVP wajib): Buat CanvasVideoRenderer render frame ke OffscreenCanvas menggunakan interpolateKeyframe()
+  - [x] Gunakan MediaRecorder API dengan codec video/webm;codecs=vp9
+  - [x] Definisikan VideoRenderInstruction interface
+  - [x] Test timeline frame interpolation
+  - [x] Jalur B (Opsional): Integrasikan @ffmpeg/ffmpeg untuk MP4 conversion (setelah Jalur A stabil)
+- [x] **F2-3: Font Compilation — dari IRFontSpec ke binary .otf/.ttf nyata**
+  - [x] Integrasikan opentype.js
+  - [x] Map IRFontSpec.metrics -> opentype.Font header
+  - [x] Implementasi svgPathToOTPath() dengan coordinate flip sumbu Y (y_ot = upm - y_svg)
+  - [x] Map IRGlyphContent -> opentype.Glyph
+  - [x] Map kerning pairs dan OpenType features (GSUB/GPOS)
+  - [x] Test round-trip compile & parse
+- [x] **F2-4: RLVRR S3-S5 — implementasi 3 sinyal reward yang belum ada**
+  - [x] Perkuat S2: check color contrast (WCAG AA 4.5:1) dan palette validation
+  - [x] Implementasi S3 (Render Error Rate, bobot 0.20)
+  - [x] Implementasi S4 (Budget Accuracy, bobot 0.10)
+  - [x] Implementasi S5 (Semantic Quality, bobot 0.05)
+  - [x] Test full chain reward & short-circuiting
+- [x] **F2-5: Test Coverage — dari 250 test ke 80%+ coverage per package baru**
+  - [x] PDF/X tests
+  - [x] Video tests
+  - [x] Font compiler tests
+  - [x] Web Audio tests
+  - [x] RLVRR chain tests
+
+### FASE 3 — ADVANCED INFRASTRUCTURE (Minggu 23-32)
+- [x] **F3-1: Loro CRDT WASM — migrasi dari pure JS ke Rust/WASM sesungguhnya**
+  - [x] Audit interface ICRDTStore saat ini
+  - [x] Install loro-crdt dan check WASM async initialization
+  - [x] Buat LoroCRDTAdapter implements ICRDTStore
+  - [x] Implementasi applyDelta, merge, export
+  - [x] Tambahkan feature flag GENESIS_CRDT_BACKEND (default LWW)
+  - [x] Fuzz testing ekstensif (commutativity, idempotency, site ID convergence)
+- [x] **F3-2: Real-time Collaboration — WebSocket sync layer di atas Loro**
+  - [x] Buat packages/sync dengan server WebSocket (ws package)
+  - [x] Implementasi loro update protocol
+  - [x] Presence layer (cursor, user identity via Loro ephemeral)
+  - [x] Persistence snapshot Loro ke Redis/PostgreSQL
+  - [x] Reconnection sync handling
+- [x] **F3-3: Performance — Rust WASM untuk hot paths di compiler**
+  - [x] Kumpulkan profiling data dari penggunaan Fase 2
+  - [x] Identifikasi bottleneck (e.g., computeLayout())
+  - [x] Buat packages/native Rust crate dengan wasm-pack
+  - [x] Implementasi JS transparent fallback wrapper
+  - [x] Benchmark JS vs Rust WASM
+
+---
+
 ## CHECKLIST LINTAS-FASE: Keputusan Arsitektur Kritis
 
 > Tabel berikut adalah rekap **40 keputusan arsitektur** dari spec yang harus diimplementasikan dan diuji.
