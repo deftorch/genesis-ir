@@ -6,6 +6,8 @@ import { IRTimeline } from './timeline.js';
 import { IRDataBinding, IRInteractionModel } from './bindings.js';
 import { IRPrintSpec } from './print.js';
 import { IRObservability, IRDebugExtension } from './observability.js';
+import { IRMusicSpec } from './music.js';
+import { IRPixelSpec } from './pixel.js';
 
 /**
  * @stability STABLE
@@ -259,6 +261,8 @@ export interface IRDocument {
   print_spec?: IRPrintSpec;
   observability?: IRObservability;
   x_debug?: IRDebugExtension;
+  music_spec?: IRMusicSpec;
+  pixel_spec?: IRPixelSpec;
 }
 
 function uuidv4(): string {

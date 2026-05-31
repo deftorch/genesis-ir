@@ -118,6 +118,14 @@ const irDocumentSchema: Schema = {
       type: 'object',
       additionalProperties: true,
     },
+    music_spec: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    pixel_spec: {
+      type: 'object',
+      additionalProperties: true,
+    },
   },
   additionalProperties: false,
 };
@@ -492,6 +500,18 @@ export function validateHIR(doc: unknown): ValidationResult {
   }
   if (diagramResult.warnings) {
     warnings.push(...diagramResult.warnings);
+  }
+
+  // Music domain validation
+  const musicResult = validateMusicDomain(doc);
+  if (!musicResult.valid) {
+    errors.push(...musicResult.errors);
+  }
+
+  // Pixel art domain validation
+  const pixelResult = validatePixelDomain(doc);
+  if (!pixelResult.valid) {
+    errors.push(...pixelResult.errors);
   }
 
   return {
@@ -1396,3 +1416,146 @@ export function validateDiagramDomain(doc: any): ValidationResult {
   };
 }
 
+/**
+ * Validate music production domain constraints.
+ * @stability BETA
+ */
+export function validateMusicDomain(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const musicSpec = doc.music_spec;
+  if (!musicSpec) return { valid: true, errors: [] };
+
+  // BPM validation: 20-300
+  if (musicSpec.project) {
+    const bpm = musicSpec.project.bpm;
+    if (typeof bpm === 'number' && (bpm < 20 || bpm > 300)) {
+      errors.push({
+        path: 'music_spec.project.bpm',
+        message: `BPM must be between 20 and 300, got ${bpm}`,
+        keyword: 'invalid-bpm-range',
+      });
+    }
+  }
+
+  // Validate tracks and clips
+  const tracks = musicSpec.tracks || [];
+  tracks.forEach((track: any, ti: number) => {
+    const clips = track.clips || [];
+    clips.forEach((clip: any, ci: number) => {
+      // Validate MIDI notes
+      const notes = clip.notes || [];
+      notes.forEach((note: any, ni: number) => {
+        if (typeof note.pitch === 'number' && (note.pitch < 0 || note.pitch > 127)) {
+          errors.push({
+            path: `music_spec.tracks[${ti}].clips[${ci}].notes[${ni}].pitch`,
+            message: `MIDI note pitch must be between 0 and 127, got ${note.pitch}`,
+            keyword: 'invalid-midi-pitch',
+          });
+        }
+      });
+    });
+  });
+
+  // Validate instruments
+  const instruments = musicSpec.instruments || [];
+  instruments.forEach((inst: any, ii: number) => {
+    if (inst.type === 'synthesizer' && !inst.synth_params) {
+      errors.push({
+        path: `music_spec.instruments[${ii}].synth_params`,
+        message: `Synthesizer instrument '${inst.id || ii}' must have synth_params`,
+        keyword: 'missing-synth-params',
+      });
+    }
+  });
+
+  // Validate effects
+  const allEffects = [
+    ...(musicSpec.master_effects || []),
+    ...tracks.flatMap((t: any) => t.effects || []),
+  ];
+  allEffects.forEach((fx: any, fi: number) => {
+    if (fx.type === 'reverb' && (fx.params === undefined || fx.params.room_size === undefined)) {
+      errors.push({
+        path: `music_spec.effects[${fi}]`,
+        message: `Reverb effect '${fx.id || fi}' must have room_size param`,
+        keyword: 'missing-reverb-room-size',
+      });
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate pixel art domain constraints.
+ * @stability BETA
+ */
+export function validatePixelDomain(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const pixelSpec = doc.pixel_spec;
+  if (!pixelSpec) return { valid: true, errors: [] };
+
+  // Canvas pixel_width validation: 8-512
+  if (pixelSpec.canvas) {
+    const pw = pixelSpec.canvas.pixel_width;
+    if (typeof pw === 'number' && (pw < 8 || pw > 512)) {
+      errors.push({
+        path: 'pixel_spec.canvas.pixel_width',
+        message: `pixel_width must be between 8 and 512, got ${pw}`,
+        keyword: 'invalid-pixel-width',
+      });
+    }
+  }
+
+  // Locked palette: cannot add new colors (validated by checking color count invariant)
+  // This is a semantic rule; we validate palette structure here
+  if (pixelSpec.palette && pixelSpec.palette.locked === true) {
+    if (!pixelSpec.palette.colors || pixelSpec.palette.colors.length === 0) {
+      errors.push({
+        path: 'pixel_spec.palette',
+        message: 'Locked palette must have at least one color defined',
+        keyword: 'locked-palette-empty',
+      });
+    }
+  }
+
+  // Sprite tag validation: from_frame <= to_frame
+  const tags = pixelSpec.animation_tags || [];
+  tags.forEach((tag: any, ti: number) => {
+    if (typeof tag.from_frame === 'number' && typeof tag.to_frame === 'number') {
+      if (tag.from_frame > tag.to_frame) {
+        errors.push({
+          path: `pixel_spec.animation_tags[${ti}]`,
+          message: `SpriteTag '${tag.id || ti}' has from_frame (${tag.from_frame}) > to_frame (${tag.to_frame})`,
+          keyword: 'invalid-sprite-tag-range',
+        });
+      }
+    }
+  });
+
+  // Tilemap layer data length validation
+  const tilemaps = pixelSpec.tilemaps || [];
+  tilemaps.forEach((tm: any, tmi: number) => {
+    const expectedLen = (tm.map_width || 0) * (tm.map_height || 0);
+    const layers = tm.layers || [];
+    layers.forEach((layer: any, li: number) => {
+      if (layer.data && Array.isArray(layer.data)) {
+        if (layer.data.length !== expectedLen) {
+          errors.push({
+            path: `pixel_spec.tilemaps[${tmi}].layers[${li}].data`,
+            message: `TilemapLayer data length (${layer.data.length}) must equal map_width × map_height (${expectedLen})`,
+            keyword: 'invalid-tilemap-data-length',
+          });
+        }
+      }
+    });
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}

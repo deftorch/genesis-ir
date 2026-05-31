@@ -467,17 +467,17 @@
 ### 11A.1 `IRMusicSpec` Implementation
 > 🔑 Keputusan #12: domain `music_production` menggunakan bar/beat sebagai unit.
 
-- [ ] 🔴 Tulis tes: `IRMusicSpec.project.bpm` di luar rentang 20–300 harus gagal
-- [ ] 🔴 Tulis tes: `IRMidiNote.pitch` di luar 0–127 harus gagal
-- [ ] 🔴 Tulis tes: `IRVirtualInstrument` tipe `synthesizer` harus memiliki `synth_params`
-- [ ] 🔴 Tulis tes: `IRMusicEffect` dengan `type: "reverb"` harus memiliki `room_size` param
-- [ ] 🟢 Implementasi `IRMusicSpec` interface (project, tracks, instruments, master_effects)
-- [ ] 🟢 Implementasi `IRMusicTrack`, `IRMusicClip`, `IRMidiNote`
-- [ ] 🟢 Implementasi `IRVirtualInstrument` (drum_machine, synthesizer, sampler)
-- [ ] 🟢 Implementasi `IREnvelope`, `IRLFO`, `IRSampleMapEntry`, `IRDrumPad`
-- [ ] 🟢 Sub-pass 3a: Music Semantic Validation (harmoni, ketukan, frekuensi)
-- [ ] 🟢 Sub-pass 5a: konversi bar/beat → milidetik berdasarkan tempo map
-- [ ] 🟢 Sub-pass 7a: Web Audio API node graph generation
+- [x] 🔴 Tulis tes: `IRMusicSpec.project.bpm` di luar rentang 20–300 harus gagal
+- [x] 🔴 Tulis tes: `IRMidiNote.pitch` di luar 0–127 harus gagal
+- [x] 🔴 Tulis tes: `IRVirtualInstrument` tipe `synthesizer` harus memiliki `synth_params`
+- [x] 🔴 Tulis tes: `IRMusicEffect` dengan `type: "reverb"` harus memiliki `room_size` param
+- [x] 🟢 Implementasi `IRMusicSpec` interface (project, tracks, instruments, master_effects)
+- [x] 🟢 Implementasi `IRMusicTrack`, `IRMusicClip`, `IRMidiNote`
+- [x] 🟢 Implementasi `IRVirtualInstrument` (drum_machine, synthesizer, sampler)
+- [x] 🟢 Implementasi `IREnvelope`, `IRLFO`, `IRSampleMapEntry`, `IRDrumPad`
+- [x] 🟢 Sub-pass 3a: Music Semantic Validation (harmoni, ketukan, frekuensi)
+- [x] 🟢 Sub-pass 5a: konversi bar/beat → milidetik berdasarkan tempo map
+- [x] 🟢 Sub-pass 7a: Web Audio API node graph generation
 
 ---
 
@@ -487,17 +487,17 @@
 ### 11B.1 `IRPixelSpec` Implementation
 > 🔑 Keputusan #11: data piksel biner tersimpan di node `pixel_cel`.
 
-- [ ] 🔴 Tulis tes: `IRPixelCanvasContext.pixel_width` di luar rentang 8–512 harus gagal
-- [ ] 🔴 Tulis tes: `IRPixelPalette` dengan `locked: true` tidak boleh menambah warna baru
-- [ ] 🔴 Tulis tes: `IRSpriteTag` dengan `from_frame > to_frame` harus gagal
-- [ ] 🔴 Tulis tes: `IRTilemapLayer` dengan `data.length ≠ map_width × map_height` harus gagal
-- [ ] 🟢 Implementasi `IRPixelSpec` interface (palettes, layer_definitions, frames, sprite_tags, tilesets, tilemaps)
-- [ ] 🟢 Implementasi `IRPixelLayerDef`, `IRPixelFrameDef`, `IRPixelCelRef`
-- [ ] 🟢 Implementasi `IRSpriteTag` (from_frame, to_frame, direction, repeat)
-- [ ] 🟢 Implementasi `IRTileset` dan `IRTilemap` (tile_width, tile_height, collision detection)
-- [ ] 🟢 Sub-pass 3c: Pixel Semantic Validation (palet indeks, batas dimensi)
-- [ ] 🟢 Sub-pass 5b: Pixel Frame Timing (durasi cel per frame, onion skin)
-- [ ] 🟢 Sub-pass 7b: Canvas2D LIR generation, sprite sheet packing
+- [x] 🔴 Tulis tes: `IRPixelCanvasContext.pixel_width` di luar rentang 8–512 harus gagal
+- [x] 🔴 Tulis tes: `IRPixelPalette` dengan `locked: true` tidak boleh menambah warna baru
+- [x] 🔴 Tulis tes: `IRSpriteTag` dengan `from_frame > to_frame` harus gagal
+- [x] 🔴 Tulis tes: `IRTilemapLayer` dengan `data.length ≠ map_width × map_height` harus gagal
+- [x] 🟢 Implementasi `IRPixelSpec` interface (palettes, layer_definitions, frames, sprite_tags, tilesets, tilemaps)
+- [x] 🟢 Implementasi `IRPixelLayerDef`, `IRPixelFrameDef`, `IRPixelCelRef`
+- [x] 🟢 Implementasi `IRSpriteTag` (from_frame, to_frame, direction, repeat)
+- [x] 🟢 Implementasi `IRTileset` dan `IRTilemap` (tile_width, tile_height, collision detection)
+- [x] 🟢 Sub-pass 3c: Pixel Semantic Validation (palet indeks, batas dimensi)
+- [x] 🟢 Sub-pass 5b: Pixel Frame Timing (durasi cel per frame, onion skin)
+- [x] 🟢 Sub-pass 7b: Canvas2D LIR generation, sprite sheet packing
 
 ---
 

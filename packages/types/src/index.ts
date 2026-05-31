@@ -12,3 +12,5 @@ export * from './gaps.js';
 export * from './bindings.js';
 export * from './print.js';
 export * from './observability.js';
+export * from './music.js';
+export * from './pixel.js';
