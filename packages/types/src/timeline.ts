@@ -19,10 +19,30 @@ export interface IRAutomationCurve {
 /**
  * @stability STABLE
  */
+export interface IRTimelineClip {
+  id: string;
+  start_ms: number;
+  duration_ms: number;
+  asset_id: string;
+}
+
+/**
+ * @stability STABLE
+ */
 export interface IRTimelineTrack {
   id: string;
   type: 'video' | 'audio' | 'motion';
-  clips: { id: string; start_ms: number; duration_ms: number; asset_id: string }[];
+  allow_overlap?: boolean;
+  clips: IRTimelineClip[];
+}
+
+/**
+ * @stability STABLE
+ */
+export interface IRTimeMarker {
+  id: string;
+  time_ms: number;
+  label: string;
 }
 
 /**
@@ -31,5 +51,6 @@ export interface IRTimelineTrack {
 export interface IRTimeline {
   duration_ms: number;
   tracks: IRTimelineTrack[];
+  markers?: IRTimeMarker[];
   keyframes?: Record<string, IRKeyframe[]>;
 }

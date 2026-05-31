@@ -296,36 +296,36 @@
 **Milestone M5: Animasi & Keyframe Live (Target: Akhir Bulan ke-15)**
 
 ### 5.1 `IRTimeline` & Track System
-- [ ] 🔴 Tulis tes: `IRTimeline` tanpa `duration_ms` di domain `video` harus gagal validasi
-- [ ] 🔴 Tulis tes: track audio dan track visual dalam dokumen `video` harus dapat berjalan bersamaan
-- [ ] 🔴 Tulis tes: klip pada timeline tidak boleh saling overlap jika `allow_overlap: false`
-- [ ] 🟢 Implementasi `IRTimeline` interface (tracks, markers, duration_ms)
-- [ ] 🟢 Implementasi `IRTimelineTrack` (id, type: video|audio|motion, clips)
-- [ ] 🟢 Implementasi `IRTimelineClip` (id, start_ms, duration_ms, asset_id)
+- [x] 🔴 Tulis tes: `IRTimeline` tanpa `duration_ms` di domain `video` harus gagal validasi
+- [x] 🔴 Tulis tes: track audio dan track visual dalam dokumen `video` harus dapat berjalan bersamaan
+- [x] 🔴 Tulis tes: klip pada timeline tidak boleh saling overlap jika `allow_overlap: false`
+- [x] 🟢 Implementasi `IRTimeline` interface (tracks, markers, duration_ms)
+- [x] 🟢 Implementasi `IRTimelineTrack` (id, type: video|audio|motion, clips)
+- [x] 🟢 Implementasi `IRTimelineClip` (id, start_ms, duration_ms, asset_id)
 
 ### 5.2 `IRKeyframe` & Easing Engine
 > 🔑 Keputusan #28: properti keyframe harus dideklarasikan tipe datanya secara statis.
 
-- [ ] 🔴 Tulis tes: keyframe `geometry.x` dengan value string harus gagal validasi (type mismatch)
-- [ ] 🔴 Tulis tes: keyframe pada waktu `t=0ms` dan `t=1000ms` untuk `opacity: 0→1` harus menghasilkan `opacity=0.5` pada `t=500ms` dengan easing `linear`
-- [ ] 🔴 Tulis tes: easing `ease-in` harus menghasilkan nilai lebih rendah dari `linear` pada titik tengah
-- [ ] 🟢 Implementasi `IRKeyframe` interface (time, property, value, easing)
-- [ ] 🟢 Implementasi `interpolateKeyframe(keyframes: IRKeyframe[], time: number): PropertyMap`
-- [ ] 🟢 Implementasi fungsi easing: `linear`, `ease-in`, `ease-out`, `ease-in-out`, `cubic-bezier()`
+- [x] 🔴 Tulis tes: keyframe `geometry.x` dengan value string harus gagal validasi (type mismatch)
+- [x] 🔴 Tulis tes: keyframe pada waktu `t=0ms` dan `t=1000ms` untuk `opacity: 0→1` harus menghasilkan `opacity=0.5` pada `t=500ms` dengan easing `linear`
+- [x] 🔴 Tulis tes: easing `ease-in` harus menghasilkan nilai lebih rendah dari `linear` pada titik tengah
+- [x] 🟢 Implementasi `IRKeyframe` interface (time, property, value, easing)
+- [x] 🟢 Implementasi `interpolateKeyframe(keyframes: IRKeyframe[], time: number): PropertyMap`
+- [x] 🟢 Implementasi fungsi easing: `linear`, `ease-in`, `ease-out`, `ease-in-out`, `cubic-bezier()`
 
 ### 5.3 Temporal Resolution (Pass 5)
 > 🔑 Keputusan #12: domain `music_production` menggunakan unit bar/beat yang dikonversi ke ms berdasarkan BPM.
 
-- [ ] 🔴 Tulis tes: pada BPM=120, 1 beat = 500ms; bar pertama (4/4) dimulai pada 0ms, berakhir 2000ms
-- [ ] 🔴 Tulis tes: `IRTempoChange` pada bar ke-5 dari 120 BPM ke 180 BPM harus mengubah timing semua note setelahnya
-- [ ] 🟢 Implementasi `convertBeatToMs(beat: number, bpm: number, timeSigNum: number, timeSigDen: number): number`
-- [ ] 🟢 Implementasi `resolveTempoChanges(changes: IRTempoChange[], totalBars: number): TempoMap`
-- [ ] 🟢 Implementasi `runPass5(doc: IRDocument, assetPool: IRAssetRef[]): TemporalResolutionResult`
+- [x] 🔴 Tulis tes: pada BPM=120, 1 beat = 500ms; bar pertama (4/4) dimulai pada 0ms, berakhir 2000ms
+- [x] 🔴 Tulis tes: `IRTempoChange` pada bar ke-5 dari 120 BPM ke 180 BPM harus mengubah timing semua note setelahnya
+- [x] 🟢 Implementasi `convertBeatToMs(beat: number, bpm: number, timeSigNum: number, timeSigDen: number): number`
+- [x] 🟢 Implementasi `resolveTempoChanges(changes: IRTempoChange[], totalBars: number): TempoMap`
+- [x] 🟢 Implementasi `runPass5(doc: IRDocument, assetPool: IRAssetRef[]): TemporalResolutionResult`
 
 ### 5.4 Automation Schedules
-- [ ] 🔴 Tulis tes: otomasi `volume` pada track audio dari 0.0 ke 1.0 dalam 1 detik harus interpolasi dengan benar
-- [ ] 🟢 Implementasi `IRAutomationCurve` interface (parameter, control_points, range)
-- [ ] 🟢 Implementasi `evaluateAutomation(curve: IRAutomationCurve, time_ms: number): number`
+- [x] 🔴 Tulis tes: otomasi `volume` pada track audio dari 0.0 ke 1.0 dalam 1 detik harus interpolasi dengan benar
+- [x] 🟢 Implementasi `IRAutomationCurve` interface (parameter, control_points, range)
+- [x] 🟢 Implementasi `evaluateAutomation(curve: IRAutomationCurve, time_ms: number): number`
 
 ---
 

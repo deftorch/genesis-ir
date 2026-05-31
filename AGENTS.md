@@ -100,8 +100,9 @@ packages/
 | M2: Style & Token | Bulan 6 | 🟢 SELESAI |
 | M3: Semantic Engine | Bulan 9 | 🟢 SELESAI |
 | M4: Renderer | Bulan 12 | 🟢 SELESAI |
+| M5: Timeline | Bulan 15 | 🟢 SELESAI |
 
-**PHASE AKTIF: FASE 5 (Timeline & Temporal Resolution)**
+**PHASE AKTIF: FASE 6 (Data Binding & Interaction Store)**
 
 ---
 

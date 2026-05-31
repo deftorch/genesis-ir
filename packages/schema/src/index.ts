@@ -376,6 +376,12 @@ export function validateHIR(doc: unknown): ValidationResult {
     errors.push(...tierResult.errors);
   }
 
+  // Custom timeline validation
+  const timelineResult = validateTimeline(doc);
+  if (!timelineResult.valid) {
+    errors.push(...timelineResult.errors);
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -696,6 +702,90 @@ export function runPass3(doc: any): SemanticValidationResult {
 export interface SemanticValidationResult {
   valid: boolean;
   errors: ValidationError[];
+}
+
+/**
+ * Validate temporal timeline and keyframe rules.
+ * @stability BETA
+ */
+export function validateTimeline(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const timeline = doc.timeline;
+
+  if (timeline) {
+    if (typeof timeline.duration_ms !== 'number' || timeline.duration_ms <= 0) {
+      errors.push({
+        path: 'timeline.duration_ms',
+        message: 'Timeline duration_ms is required and must be greater than 0',
+        keyword: 'invalid-duration',
+      });
+    }
+
+    if (timeline.tracks) {
+      if (!Array.isArray(timeline.tracks)) {
+        errors.push({
+          path: 'timeline.tracks',
+          message: 'Timeline tracks must be an array',
+          keyword: 'invalid-tracks',
+        });
+      } else {
+        timeline.tracks.forEach((track: any, idx: number) => {
+          if (!track.clips || !Array.isArray(track.clips)) {
+            errors.push({
+              path: `timeline.tracks[${idx}].clips`,
+              message: 'Track clips must be an array',
+              keyword: 'invalid-clips',
+            });
+            return;
+          }
+
+          // Check overlap if allow_overlap is false
+          if (track.allow_overlap === false) {
+            const clips = track.clips;
+            for (let i = 0; i < clips.length; i++) {
+              for (let j = i + 1; j < clips.length; j++) {
+                const c1 = clips[i];
+                const c2 = clips[j];
+                const overlap = c1.start_ms < c2.start_ms + c2.duration_ms && c2.start_ms < c1.start_ms + c1.duration_ms;
+                if (overlap) {
+                  errors.push({
+                    path: `timeline.tracks[${idx}].clips`,
+                    message: `Clips "${c1.id}" and "${c2.id}" overlap on track "${track.id}" where overlap is disallowed`,
+                    keyword: 'clip-overlap',
+                  });
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // Validate keyframes type mismatches
+    if (timeline.keyframes) {
+      for (const [nodeId, keyframes] of Object.entries(timeline.keyframes)) {
+        if (!Array.isArray(keyframes)) continue;
+        keyframes.forEach((kf: any, idx: number) => {
+          const prop = kf.property;
+          const val = kf.value;
+          if (prop === 'geometry.x' || prop === 'geometry.y' || prop === 'geometry.width' || prop === 'geometry.height' || prop === 'style.opacity') {
+            if (typeof val !== 'number') {
+              errors.push({
+                path: `timeline.keyframes.${nodeId}[${idx}].value`,
+                message: `Type mismatch: property "${prop}" requires a number, received ${typeof val}`,
+                keyword: 'type-mismatch',
+              });
+            }
+          }
+        });
+      }
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
 }
 
 
