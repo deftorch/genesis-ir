@@ -5,39 +5,39 @@ import { ThreeDWebGLRenderer } from '../three_webgl.js';
 
 describe('Multi-Renderer Dispatch & WebGL Renderer', () => {
   describe('dispatchMultiRenderer', () => {
-    it('dispatches visual/svg rendering for visual domain documents', () => {
+    it('dispatches visual/svg rendering for visual domain documents', async () => {
       const doc = createIRDocument({
         domain: 'visual',
         canvas: { width: 100, height: 100, color_space: 'sRGB' },
       });
 
-      const res = dispatchMultiRenderer(doc, ['svg']);
+      const res = await dispatchMultiRenderer(doc, ['svg']);
       expect(res.svg).toBeDefined();
       expect(res.svg).toContain('<svg');
       expect(res.pdf).toBeUndefined();
     });
 
-    it('dispatches visual, pdf, and audio rendering for multi-domain documents', () => {
+    it('dispatches visual, pdf, and audio rendering for multi-domain documents', async () => {
       const doc = createIRDocument({
         domain: 'print',
         canvas: { width: 100, height: 100, color_space: 'CMYK' },
       });
       doc.meta.active_domains = ['print', 'audio'];
 
-      const res = dispatchMultiRenderer(doc);
+      const res = await dispatchMultiRenderer(doc);
       expect(res.svg).toBeDefined();
       expect(res.pdf).toBeDefined();
       expect(res.audio).toBeDefined();
       expect(res.audio!.toString('binary')).toContain('WAVE');
     });
 
-    it('dispatches 3D HTML output for 3D viewport canvas documents', () => {
+    it('dispatches 3D HTML output for 3D viewport canvas documents', async () => {
       const doc = createIRDocument({
         domain: '3d',
         canvas: { canvas_type: '3d' } as any,
       });
 
-      const res = dispatchMultiRenderer(doc, ['three_d']);
+      const res = await dispatchMultiRenderer(doc, ['three_d']);
       expect(res.three_d_html).toBeDefined();
       expect(res.three_d_html).toContain('THREE.Scene');
     });

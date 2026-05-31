@@ -4,7 +4,7 @@ import { PDFXRenderer, convertSRGBToCMYK, DXFExporter } from '../pdfx.js';
 
 describe('PDF/X-4 & DXF Renderer Backend', () => {
   describe('PDFXRenderer', () => {
-    it('produces an output containing %PDF-1.6 header', () => {
+    it('produces an output containing %PDF-1.6 header', async () => {
       const doc = createIRDocument({
         domain: 'print',
         canvas: {
@@ -16,13 +16,13 @@ describe('PDF/X-4 & DXF Renderer Backend', () => {
       });
 
       const renderer = new PDFXRenderer();
-      const buffer = renderer.render(doc);
+      const buffer = await renderer.render(doc);
       const outputStr = buffer.toString('utf-8');
 
       expect(outputStr.startsWith('%PDF-1.6')).toBe(true);
     });
 
-    it('retains CMYK colors and includes CMYK rendering operators', () => {
+    it('retains CMYK colors and includes CMYK rendering operators', async () => {
       const doc = createIRDocument({
         domain: 'print',
         canvas: {
@@ -34,17 +34,17 @@ describe('PDF/X-4 & DXF Renderer Backend', () => {
       });
 
       const renderer = new PDFXRenderer();
-      const buffer = renderer.render(doc);
+      const buffer = await renderer.render(doc);
       const outputStr = buffer.toString('utf-8');
 
       // Should contain CMYK fill/stroke operators (k/K)
       expect(outputStr).toContain('k');
       expect(outputStr).toContain('K');
-      // Should not fall back to RGB (rg/RG)
-      expect(outputStr).not.toContain('rg');
+      // Should not fall back to RGB operators (rg/RG)
+      expect(outputStr).not.toMatch(/\srg\s/);
     });
 
-    it('embeds fonts inside the PDF stream instead of just referencing them', () => {
+    it('embeds fonts inside the PDF stream instead of just referencing them', async () => {
       const doc = createIRDocument({
         domain: 'print',
         canvas: {
@@ -56,7 +56,7 @@ describe('PDF/X-4 & DXF Renderer Backend', () => {
       });
 
       const renderer = new PDFXRenderer();
-      const buffer = renderer.render(doc);
+      const buffer = await renderer.render(doc);
       const outputStr = buffer.toString('utf-8');
 
       // Should contain FontDescriptor and FontFile2 (embedded font stream descriptor)

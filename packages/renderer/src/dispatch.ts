@@ -14,7 +14,7 @@ export interface DispatchOutput {
  * Dispatch rendering to appropriate domain renderers based on active_domains.
  * @stability BETA
  */
-export function dispatchMultiRenderer(doc: IRDocument, targetContexts?: string[]): DispatchOutput {
+export async function dispatchMultiRenderer(doc: IRDocument, targetContexts?: string[]): Promise<DispatchOutput> {
   const domain = doc.meta?.domain;
   const activeDomains = doc.meta?.active_domains || [domain];
   const output: DispatchOutput = {};
@@ -37,7 +37,7 @@ export function dispatchMultiRenderer(doc: IRDocument, targetContexts?: string[]
     }
     if ((activeDomains.includes('print') || activeDomains.includes('packaging') || domain === 'print' || domain === 'packaging') && wants('pdf')) {
       const pdfRenderer = new PDFXRenderer();
-      output.pdf = pdfRenderer.render(doc);
+      output.pdf = await pdfRenderer.render(doc);
     }
   }
 
