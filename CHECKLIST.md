@@ -540,36 +540,36 @@
 ### 13.1 `IRDelta` & Delta Stack
 > 🔑 Keputusan #27: `IRDelta` wajib berupa operasi atomik (add, remove, replace, move) — deterministik.
 
-- [ ] 🔴 Tulis tes: `IRDelta` dengan `delta_type: "undo"` harus memiliki `reverses_delta_id`
-- [ ] 🔴 Tulis tes: menerapkan delta yang sama dua kali (idempotent) harus menghasilkan state yang sama
-- [ ] 🔴 Tulis tes: delta bertipe `"migration"` harus memiliki `from_migration_id` field
-- [ ] 🔴 Tulis tes: `IRDeltaStack` saat penuh (`max_size` terlampaui) harus membuang delta terlama
-- [ ] 🟢 Implementasi semua `IRNodeOp`, `IRMetaOp`, `IRStyleOp`, `IRTimelineOp`, `IRAssetOp`, `IRSuggestionOp` types
-- [ ] 🟢 Implementasi `IRDelta` interface
-- [ ] 🟢 Implementasi `IRDeltaStack` (append-only, undo_pointer tracking)
-- [ ] 🟢 Implementasi `applyDelta(doc: IRDocument, delta: IRDelta): IRDocument`
-- [ ] 🟢 Implementasi `revertDelta(doc: IRDocument, delta: IRDelta): IRDocument`
-- [ ] 🔵 Refactor: pastikan `delta_id` unik dan append-only — tidak dapat dihapus
+- [x] 🔴 Tulis tes: `IRDelta` dengan `delta_type: "undo"` harus memiliki `reverses_delta_id`
+- [x] 🔴 Tulis tes: menerapkan delta yang sama dua kali (idempotent) harus menghasilkan state yang sama
+- [x] 🔴 Tulis tes: delta bertipe `"migration"` harus memiliki `from_migration_id` field
+- [x] 🔴 Tulis tes: `IRDeltaStack` saat penuh (`max_size` terlampaui) harus membuang delta terlama
+- [x] 🟢 Implementasi semua `IRNodeOp`, `IRMetaOp`, `IRStyleOp`, `IRTimelineOp`, `IRAssetOp`, `IRSuggestionOp` types
+- [x] 🟢 Implementasi `IRDelta` interface
+- [x] 🟢 Implementasi `IRDeltaStack` (append-only, undo_pointer tracking)
+- [x] 🟢 Implementasi `applyDelta(doc: IRDocument, delta: IRDelta): IRDocument`
+- [x] 🟢 Implementasi `revertDelta(doc: IRDocument, delta: IRDelta): IRDocument`
+- [x] 🔵 Refactor: pastikan `delta_id` unik dan append-only — tidak dapat dihapus
 
 ### 13.2 Loro CRDT Integration
 > 🔑 Keputusan #38: CRDT dikunci menggunakan pustaka **Loro** (Rust + WASM).
 
-- [ ] 🔴 Tulis tes: dua peer mengubah `node.geometry.x` secara bersamaan harus menghasilkan state akhir yang deterministik
-- [ ] 🔴 Tulis tes: merge konflik pada field yang sama harus menggunakan strategi Last-Write-Wins (LWW) berdasarkan timestamp
-- [ ] 🔴 Tulis tes: Undo/Redo multi-user harus tidak merusak state peer lain
-- [ ] 🟢 Instalasi dan konfigurasi `loro-crdt` WASM package
-- [ ] 🟢 Implementasi `GenesisLoroDoc`: wrapper di atas Loro yang memetakan IRDocument ke Loro Map
-- [ ] 🟢 Implementasi `syncWithPeer(localState: LoroState, remoteState: LoroState): IRDelta[]`
-- [ ] 🟢 Implementasi `broadcastDelta(delta: IRDelta): void` via WebSocket transport
-- [ ] 🔵 Refactor: pastikan Loro WASM berjalan di Worker thread untuk non-blocking sync
+- [x] 🔴 Tulis tes: dua peer mengubah `node.geometry.x` secara bersamaan harus menghasilkan state akhir yang deterministik
+- [x] 🔴 Tulis tes: merge konflik pada field yang sama harus menggunakan strategi Last-Write-Wins (LWW) berdasarkan timestamp
+- [x] 🔴 Tulis tes: Undo/Redo multi-user harus tidak merusak state peer lain
+- [x] 🟢 Instalasi dan konfigurasi `loro-crdt` WASM package
+- [x] 🟢 Implementasi `GenesisLoroDoc`: wrapper di atas Loro yang memetakan IRDocument ke Loro Map
+- [x] 🟢 Implementasi `syncWithPeer(localState: LoroState, remoteState: LoroState): IRDelta[]`
+- [x] 🟢 Implementasi `broadcastDelta(delta: IRDelta): void` via WebSocket transport
+- [x] 🔵 Refactor: pastikan Loro WASM berjalan di Worker thread untuk non-blocking sync
 
 ### 13.3 Multi-Agent Communication Protocol
 > 🔑 Keputusan #20: jenis payload pesan antar agen dibatasi secara ketat.
 
-- [ ] 🔴 Tulis tes: pesan agent dengan tipe payload yang tidak dikenal harus ditolak
-- [ ] 🔴 Tulis tes: `IRAgentMessage` dari agent dengan `trust_level: "community"` tidak boleh melakukan aksi `irreversible`
-- [ ] 🟢 Implementasi `IRAgentMessage` interface (from_agent, to_agent, payload_type, payload)
-- [ ] 🟢 Implementasi `IRAgentRouter`: meneruskan pesan ke agent yang tepat berdasarkan `agent_type`
+- [x] 🔴 Tulis tes: pesan agent dengan tipe payload yang tidak dikenal harus ditolak
+- [x] 🔴 Tulis tes: `IRAgentMessage` dari agent dengan `trust_level: "community"` tidak boleh melakukan aksi `irreversible`
+- [x] 🟢 Implementasi `IRAgentMessage` interface (from_agent, to_agent, payload_type, payload)
+- [x] 🟢 Implementasi `IRAgentRouter`: meneruskan pesan ke agent yang tepat berdasarkan `agent_type`
 
 ---
 
@@ -580,22 +580,22 @@
 > 🔑 Keputusan #19: `IRAgentContext.actions_taken` bersifat append-only. Tidak boleh dimodifikasi.
 > 🔑 Keputusan #37: aksi dengan risk_level `irreversible` wajib eskalasi ke manusia.
 
-- [ ] 🔴 Tulis tes: agent yang mencoba menghapus entry dari `actions_taken` harus menghasilkan error
-- [ ] 🔴 Tulis tes: agent dengan `max_complexity: "simple"` tidak boleh memproses dokumen dengan 1000+ node
-- [ ] 🔴 Tulis tes: aksi dengan `risk_level: "irreversible"` harus menghasilkan `escalate_to_human` decision
-- [ ] 🟢 Implementasi `IRAgentContext` interface (agent_id, agent_type, session_id, actions_taken)
-- [ ] 🟢 Implementasi `IRAgentAction` interface (timestamp, action_type, description, confidence)
-- [ ] 🟢 Implementasi `IRAgentContract` interface (capabilities, decision_rules, coordination, escalation)
-- [ ] 🟢 Implementasi `appendAgentAction(ctx: IRAgentContext, action: IRAgentAction): IRAgentContext`
-- [ ] 🔵 Refactor: `actions_taken` harus menggunakan immutable append pattern (Object.freeze pada setiap entry)
+- [x] 🔴 Tulis tes: agent yang mencoba menghapus entry dari `actions_taken` harus menghasilkan error
+- [x] 🔴 Tulis tes: agent dengan `max_complexity: "simple"` tidak boleh memproses dokumen dengan 1000+ node
+- [x] 🔴 Tulis tes: aksi dengan `risk_level: "irreversible"` harus menghasilkan `escalate_to_human` decision
+- [x] 🟢 Implementasi `IRAgentContext` interface (agent_id, agent_type, session_id, actions_taken)
+- [x] 🟢 Implementasi `IRAgentAction` interface (timestamp, action_type, description, confidence)
+- [x] 🟢 Implementasi `IRAgentContract` interface (capabilities, decision_rules, coordination, escalation)
+- [x] 🟢 Implementasi `appendAgentAction(ctx: IRAgentContext, action: IRAgentAction): IRAgentContext`
+- [x] 🔵 Refactor: `actions_taken` harus menggunakan immutable append pattern (Object.freeze pada setiap entry)
 
 ### A.2 `IRTaskContext` & `IRAgentPlugin`
 > 🔑 Keputusan #35: saat `delta_only: true`, agen hanya boleh mengembalikan IRDelta. Bukan seluruh dokumen.
 
-- [ ] 🔴 Tulis tes: agen dengan `delta_only: true` yang mengembalikan full IRDocument harus ditolak
-- [ ] 🔴 Tulis tes: `IRTaskContext.ir_slice` hanya boleh berisi path yang ada di `relevant_paths`
-- [ ] 🟢 Implementasi `IRTaskContext` interface (task_id, intent, relevant_paths, delta_only, ir_slice)
-- [ ] 🟢 Implementasi `buildIRSlice(doc: IRDocument, paths: string[]): Partial<IRDocument>`
+- [x] 🔴 Tulis tes: agen dengan `delta_only: true` yang mengembalikan full IRDocument harus ditolak
+- [x] 🔴 Tulis tes: `IRTaskContext.ir_slice` hanya boleh berisi path yang ada di `relevant_paths`
+- [x] 🟢 Implementasi `IRTaskContext` interface (task_id, intent, relevant_paths, delta_only, ir_slice)
+- [x] 🟢 Implementasi `buildIRSlice(doc: IRDocument, paths: string[]): Partial<IRDocument>`
 
 ### A.3 Plugin System
 > 🔑 Keputusan #17: plugin menggunakan namespace `@namespace/name`.
@@ -604,35 +604,35 @@
 > 🔑 Keputusan #30: aksi plugin dilarang memanipulasi properti di luar cakupan runtime-nya.
 > 🔑 Keputusan #31: snapshot plugin bersifat read-only (immutable).
 
-- [ ] 🔴 Tulis tes: plugin `@genesis/core` (official) dapat mengakses semua IR paths
-- [ ] 🔴 Tulis tes: plugin `@community/xyz` tidak boleh mengakses paths di luar `declared_ir_access`
-- [ ] 🔴 Tulis tes: plugin dengan `strict_ir_access: true` yang mengakses path tidak dideklarasikan harus throw error
-- [ ] 🔴 Tulis tes: `plugin_registry_snapshot` setelah commit tidak dapat dimodifikasi
-- [ ] 🟢 Implementasi `IRPluginManifest` interface (namespace, version, trust_level, declared_ir_access)
-- [ ] 🟢 Implementasi `PluginSandbox`: eksekusi plugin dalam isolated environment
-- [ ] 🟢 Implementasi `PluginRegistry`: manage plugin lifecycle (install, enable, disable, snapshot)
+- [x] 🔴 Tulis tes: plugin `@genesis/core` (official) dapat mengakses semua IR paths
+- [x] 🔴 Tulis tes: plugin `@community/xyz` tidak boleh mengakses paths di luar `declared_ir_access`
+- [x] 🔴 Tulis tes: plugin dengan `strict_ir_access: true` yang mengakses path tidak dideklarasikan harus throw error
+- [x] 🔴 Tulis tes: `plugin_registry_snapshot` setelah commit tidak dapat dimodifikasi
+- [x] 🟢 Implementasi `IRPluginManifest` interface (namespace, version, trust_level, declared_ir_access)
+- [x] 🟢 Implementasi `PluginSandbox`: eksekusi plugin dalam isolated environment
+- [x] 🟢 Implementasi `PluginRegistry`: manage plugin lifecycle (install, enable, disable, snapshot)
 
 ### A.4 `IRToolRegistry` & 9 Built-in Tools
 > 🔑 Keputusan #40: 9 registry ID built-in tools dikunci permanen di compiler core.
 
-- [ ] 🔴 Tulis tes: seluruh 9 built-in tools terdaftar dengan `tool_id` yang benar
-- [ ] 🔴 Tulis tes: tool `validate_accessibility` dengan `wcag_level: "AA"` mendeteksi rasio kontras < 4.5
-- [ ] 🔴 Tulis tes: tool `apply_brand` mengembalikan `IRDelta` (bukan full dokumen)
-- [ ] 🔴 Tulis tes: tool `check_contrast` dengan warna identik mengembalikan `ratio: 1`
-- [ ] 🔴 Tulis tes: tool `resolve_token` dengan token tidak ada dan `fallback` tersedia mengembalikan fallback
-- [ ] 🔴 Tulis tes: tool dengan `risk_level: "dangerous"` harus memerlukan konfirmasi eksplisit
-- [ ] 🟢 Implementasi seluruh 9 built-in tools:
-  - [ ] `validate_accessibility` — WCAG audit (timeout: 2000ms)
-  - [ ] `apply_brand` — brand token application (timeout: 3000ms)
-  - [ ] `check_contrast` — WCAG contrast ratio (timeout: 500ms)
-  - [ ] `resolve_token` — design token resolution (timeout: 200ms)
-  - [ ] `get_ir_slice` — IR partial extraction (timeout: 1000ms)
-  - [ ] `generate_ir_node` — AI node generation (timeout: 5000ms)
-  - [ ] `validate_schema` — Pass 1 re-validation (timeout: 2000ms)
-  - [ ] `compute_layout` — layout recalculation (timeout: 3000ms)
-  - [ ] `export_asset` — asset compilation & export (timeout: 10000ms)
-- [ ] 🟢 Implementasi `IRToolRegistry` interface dan `loadBuiltinTools(): IRToolRegistry`
-- [ ] 🔵 Refactor: setiap tool harus memiliki `input_schema` dan `output_schema` JSON Schema v7 yang valid
+- [x] 🔴 Tulis tes: seluruh 9 built-in tools terdaftar dengan `tool_id` yang benar
+- [x] 🔴 Tulis tes: tool `validate_accessibility` dengan `wcag_level: "AA"` mendeteksi rasio kontras < 4.5
+- [x] 🔴 Tulis tes: tool `apply_brand` mengembalikan `IRDelta` (bukan full dokumen)
+- [x] 🔴 Tulis tes: tool `check_contrast` dengan warna identik mengembalikan `ratio: 1`
+- [x] 🔴 Tulis tes: tool `resolve_token` dengan token tidak ada dan `fallback` tersedia mengembalikan fallback
+- [x] 🔴 Tulis tes: tool dengan `risk_level: "dangerous"` harus memerlukan konfirmasi eksplisit
+- [x] 🟢 Implementasi seluruh 9 built-in tools:
+  - [x] `validate_accessibility` — WCAG audit (timeout: 2000ms)
+  - [x] `apply_brand` — brand token application (timeout: 3000ms)
+  - [x] `check_contrast` — WCAG contrast ratio (timeout: 500ms)
+  - [x] `resolve_token` — design token resolution (timeout: 200ms)
+  - [x] `get_ir_slice` — IR partial extraction (timeout: 1000ms)
+  - [x] `generate_ir_node` — AI node generation (timeout: 5000ms)
+  - [x] `validate_schema` — Pass 1 re-validation (timeout: 2000ms)
+  - [x] `compute_layout` — layout recalculation (timeout: 3000ms)
+  - [x] `export_asset` — asset compilation & export (timeout: 10000ms)
+- [x] 🟢 Implementasi `IRToolRegistry` interface dan `loadBuiltinTools(): IRToolRegistry`
+- [x] 🔵 Refactor: setiap tool harus memiliki `input_schema` dan `output_schema` JSON Schema v7 yang valid
 
 ---
 
