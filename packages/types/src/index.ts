@@ -17,3 +17,5 @@ export * from './pixel.js';
 export * from './font.js';
 export * from './mockup.js';
 export * from './tools.js';
+export * from './binary.js';
+export * from './rlvrr.js';

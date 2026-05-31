@@ -640,27 +640,27 @@
 **Paralel dengan Fase 8–13**
 
 ### B.1 `.gir` Binary Format
-- [ ] 🔴 Tulis tes: header `.gir` byte 0–3 harus selalu `GIR!` (0x47 0x49 0x52 0x21)
-- [ ] 🔴 Tulis tes: Document UUID di byte 16–31 harus identik dengan `meta.ir_id` setelah parse
-- [ ] 🔴 Tulis tes: checksum SHA-256 (byte 52–63) harus mendeteksi payload yang dimodifikasi
-- [ ] 🔴 Tulis tes: serialisasi → deserialisasi harus menghasilkan dokumen yang identik byte-per-byte
-- [ ] 🟢 Implementasi `GIRHeader` structure (64 byte tepat, semua field sesuai spec)
-- [ ] 🟢 Implementasi MessagePack serialization untuk 4 blok body
-- [ ] 🟢 Implementasi LZ4 compression/decompression untuk blok 1–3
-- [ ] 🟢 Implementasi `serializeToGIR(doc: IRDocument): Buffer`
-- [ ] 🟢 Implementasi `deserializeFromGIR(buffer: Buffer): IRDocument`
-- [ ] 🔵 Refactor: benchmark target < 50ms untuk serialisasi dokumen 1000 node
+- [x] 🔴 Tulis tes: header `.gir` byte 0–3 harus selalu `GIR!` (0x47 0x49 0x52 0x21)
+- [x] 🔴 Tulis tes: Document UUID di byte 16–31 harus identik dengan `meta.ir_id` setelah parse
+- [x] 🔴 Tulis tes: checksum SHA-256 (byte 52–63) harus mendeteksi payload yang dimodifikasi
+- [x] 🔴 Tulis tes: serialisasi → deserialisasi harus menghasilkan dokumen yang identik byte-per-byte
+- [x] 🟢 Implementasi `GIRHeader` structure (64 byte tepat, semua field sesuai spec)
+- [x] 🟢 Implementasi MessagePack serialization untuk 4 blok body
+- [x] 🟢 Implementasi LZ4 compression/decompression untuk blok 1–3
+- [x] 🟢 Implementasi `serializeToGIR(doc: IRDocument): Buffer`
+- [x] 🟢 Implementasi `deserializeFromGIR(buffer: Buffer): IRDocument`
+- [x] 🔵 Refactor: benchmark target < 50ms untuk serialisasi dokumen 1000 node
 
 ### B.2 Migration System
 > 🔑 Keputusan #22: transformasi migrasi wajib menggunakan operator deklaratif, dilarang JS bebas.
 > 🔑 Keputusan #26: setiap dokumen yang bermigrasi wajib mencatat `script_id`.
 
-- [ ] 🔴 Tulis tes: `IRMigrationScript` tanpa `script_id` harus gagal registrasi
-- [ ] 🔴 Tulis tes: operator deklaratif `rename_field` harus mengubah nama field tanpa kehilangan data
-- [ ] 🔴 Tulis tes: `rollback` harus mengembalikan dokumen ke state sebelum migrasi
-- [ ] 🟢 Implementasi `IRMigrationTransformer` (expand_migrate_contract, big_bang strategies)
-- [ ] 🟢 Implementasi `IRMigrationScript` interface (script_id, from_version, to_version, transformers)
-- [ ] 🟢 Implementasi `MigrationRegistry`: manage dan eksekusi skrip migrasi
+- [x] 🔴 Tulis tes: `IRMigrationScript` tanpa `script_id` harus gagal registrasi
+- [x] 🔴 Tulis tes: operator deklaratif `rename_field` harus mengubah nama field tanpa kehilangan data
+- [x] 🔴 Tulis tes: `rollback` harus mengembalikan dokumen ke state sebelum migrasi
+- [x] 🟢 Implementasi `IRMigrationTransformer` (expand_migrate_contract, big_bang strategies)
+- [x] 🟢 Implementasi `IRMigrationScript` interface (script_id, from_version, to_version, transformers)
+- [x] 🟢 Implementasi `MigrationRegistry`: manage dan eksekusi skrip migrasi
 
 ---
 
@@ -670,13 +670,13 @@
 ### R.1 RLVRR Reward Signal Chain
 > 🔑 Keputusan #39: urutan evaluasi RLVRR dan bobotnya dikunci: Schema(0.40) → Brand(0.25) → Render(0.20) → Budget(0.10) → Semantik(0.05).
 
-- [ ] 🔴 Tulis tes: output model yang gagal Sinyal 1 (schema) harus mendapat total reward 0 (short-circuit)
-- [ ] 🔴 Tulis tes: output yang lulus 5 sinyal harus mendapat total reward = `0.40(1) + 0.25(1) + 0.20(1) + 0.10(1) + 0.05(1) = 1.0`
-- [ ] 🔴 Tulis tes: output yang gagal Sinyal 3 (render) tidak boleh mengevaluasi Sinyal 4 dan 5
-- [ ] 🟢 Implementasi `IRRLVRRSignal` interface (schema_compliance, brand_guard, render_error_rate, budget_accuracy, semantic_quality)
-- [ ] 🟢 Implementasi `evaluateRLVRR(output: IRDocument, reference: IRDocument): IRRLVRRResult`
-- [ ] 🟢 Implementasi gated evaluation: setiap sinyal hanya dievaluasi jika sinyal sebelumnya lulus
-- [ ] 🔵 Refactor: bobot sinyal harus dapat dikonfigurasi via `IRRLVRRConfig` per training run
+- [x] 🔴 Tulis tes: output model yang gagal Sinyal 1 (schema) harus mendapat total reward 0 (short-circuit)
+- [x] 🔴 Tulis tes: output yang lulus 5 sinyal harus mendapat total reward = `0.40(1) + 0.25(1) + 0.20(1) + 0.10(1) + 0.05(1) = 1.0`
+- [x] 🔴 Tulis tes: output yang gagal Sinyal 3 (render) tidak boleh mengevaluasi Sinyal 4 dan 5
+- [x] 🟢 Implementasi `IRRLVRRSignal` interface (schema_compliance, brand_guard, render_error_rate, budget_accuracy, semantic_quality)
+- [x] 🟢 Implementasi `evaluateRLVRR(output: IRDocument, reference: IRDocument): IRRLVRRResult`
+- [x] 🟢 Implementasi gated evaluation: setiap sinyal hanya dievaluasi jika sinyal sebelumnya lulus
+- [x] 🔵 Refactor: bobot sinyal harus dapat dikonfigurasi via `IRRLVRRConfig` per training run
 
 ---
 
@@ -686,46 +686,46 @@
 
 | # | Keputusan | Implementasi | Tes | Status |
 |---|-----------|:---:|:---:|:------:|
-| #01 | Urutan cascade style: inline → component → theme → brand | Fase 2.3 | ✓ | `[ ]` |
-| #02 | `ir_id` wajib UUID v4, immutable | Fase 1.4 | ✓ | `[ ]` |
-| #03 | *(reserved)* | — | — | `[ ]` |
-| #04 | Arsitektur 3-level HIR → MIR → LIR | Fase 1–4 | ✓ | `[ ]` |
-| #05 | Pipeline 7 pass wajib (Pass 0–8) | Fase 1–9 | ✓ | `[ ]` |
-| #06 | `meta.domain` tidak boleh null/empty | Fase 1.4 | ✓ | `[ ]` |
-| #07 | Label stabilitas: STABLE, BETA, x_*, DEPRECATED | Semua fase | ✓ | `[ ]` |
-| #08 | Unit standar per domain (px/mm/bar) | Fase 2.4 | ✓ | `[ ]` |
-| #09 | 17 nama domain dikunci permanen | Fase 1.1 | ✓ | `[ ]` |
-| #10 | EM unit font: 1000 atau 2048 | Fase 12A | ✓ | `[ ]` |
-| #11 | Data piksel biner tersimpan di `pixel_cel` | Fase 11B | ✓ | `[ ]` |
-| #12 | Bar/beat sebagai unit domain musik | Fase 5.3, 11A | ✓ | `[ ]` |
-| #13 | *(reserved)* | — | — | `[ ]` |
-| #14 | *(reserved)* | — | — | `[ ]` |
-| #15 | Kerning class system `IRKerningGroupDef` | Fase 12A | ✓ | `[ ]` |
-| #16 | Warna pixel palette wajib format hex | Fase 11B | ✓ | `[ ]` |
-| #17 | Namespace plugin `@namespace/name` | Fase A.3 | ✓ | `[ ]` |
-| #18 | Discriminated union `IRAction` & `IRNodeContent` | Fase 3.3, 6.2 | ✓ | `[ ]` |
-| #19 | `actions_taken` append-only | Fase A.1 | ✓ | `[ ]` |
-| #20 | Protokol pesan multi-agen kaku | Fase 13.3 | ✓ | `[ ]` |
-| #21 | `strict_ir_access` default true | Fase A.3 | ✓ | `[ ]` |
-| #22 | Migrasi wajib operator deklaratif | Fase B.2 | ✓ | `[ ]` |
-| #23 | Canvas khusus Audio (`IRAudioCanvas`) dan 3D (`IR3DViewport`) | Fase 2.4, 8.2, 8.3 | ✓ | `[ ]` |
-| #24 | `max_tree_depth` dikunci 64 | Fase 1.5 | ✓ | `[ ]` |
-| #25 | DPI sync policy `strict` untuk domain cetak | Fase 7.1 | ✓ | `[ ]` |
-| #26 | Migrasi wajib mencatat `script_id` | Fase B.2 | ✓ | `[ ]` |
-| #27 | `IRDelta` wajib operasi atomik | Fase 13.1 | ✓ | `[ ]` |
-| #28 | Properti keyframe dideklarasikan tipe statik | Fase 5.2 | ✓ | `[ ]` |
-| #29 | Hirarki kepercayaan plugin: official > verified > community | Fase A.3 | ✓ | `[ ]` |
-| #30 | Plugin action terisolasi pada scope-nya | Fase A.3 | ✓ | `[ ]` |
-| #31 | Plugin snapshot immutable (read-only) | Fase A.3 | ✓ | `[ ]` |
-| #32 | `IR_MODE_DOMAIN_MAP` dikunci sebagai konstanta | Fase 1.2 | ✓ | `[ ]` |
-| #33 | ID canvas preset standar bersifat permanen | Fase 2.5 | ✓ | `[ ]` |
-| #34 | Skema URI aset menggunakan `asset://` | Fase 3.4 | ✓ | `[ ]` |
-| #35 | `delta_only: true` menolak full document return | Fase A.2 | ✓ | `[ ]` |
-| #36 | Secret reference wajib `env:`, `vault:`, atau `secret:` | Fase 6.1 | ✓ | `[ ]` |
-| #37 | Aksi `irreversible` wajib eskalasi ke manusia | Fase A.1 | ✓ | `[ ]` |
-| #38 | CRDT menggunakan Loro (Rust + WASM) | Fase 13.2 | ✓ | `[ ]` |
-| #39 | Urutan & bobot RLVRR dikunci | Fase R.1 | ✓ | `[ ]` |
-| #40 | 9 built-in tool registry ID dikunci permanen | Fase A.4 | ✓ | `[ ]` |
+| #01 | Urutan cascade style: inline → component → theme → brand | Fase 2.3 | ✓ | `[x]` |
+| #02 | `ir_id` wajib UUID v4, immutable | Fase 1.4 | ✓ | `[x]` |
+| #03 | *(reserved)* | — | — | `[x]` |
+| #04 | Arsitektur 3-level HIR → MIR → LIR | Fase 1–4 | ✓ | `[x]` |
+| #05 | Pipeline 7 pass wajib (Pass 0–8) | Fase 1–9 | ✓ | `[x]` |
+| #06 | `meta.domain` tidak boleh null/empty | Fase 1.4 | ✓ | `[x]` |
+| #07 | Label stabilitas: STABLE, BETA, x_*, DEPRECATED | Semua fase | ✓ | `[x]` |
+| #08 | Unit standar per domain (px/mm/bar) | Fase 2.4 | ✓ | `[x]` |
+| #09 | 17 nama domain dikunci permanen | Fase 1.1 | ✓ | `[x]` |
+| #10 | EM unit font: 1000 atau 2048 | Fase 12A | ✓ | `[x]` |
+| #11 | Data piksel biner tersimpan di `pixel_cel` | Fase 11B | ✓ | `[x]` |
+| #12 | Bar/beat sebagai unit domain musik | Fase 5.3, 11A | ✓ | `[x]` |
+| #13 | *(reserved)* | — | — | `[x]` |
+| #14 | *(reserved)* | — | — | `[x]` |
+| #15 | Kerning class system `IRKerningGroupDef` | Fase 12A | ✓ | `[x]` |
+| #16 | Warna pixel palette wajib format hex | Fase 11B | ✓ | `[x]` |
+| #17 | Namespace plugin `@namespace/name` | Fase A.3 | ✓ | `[x]` |
+| #18 | Discriminated union `IRAction` & `IRNodeContent` | Fase 3.3, 6.2 | ✓ | `[x]` |
+| #19 | `actions_taken` append-only | Fase A.1 | ✓ | `[x]` |
+| #20 | Protokol pesan multi-agen kaku | Fase 13.3 | ✓ | `[x]` |
+| #21 | `strict_ir_access` default true | Fase A.3 | ✓ | `[x]` |
+| #22 | Migrasi wajib operator deklaratif | Fase B.2 | ✓ | `[x]` |
+| #23 | Canvas khusus Audio (`IRAudioCanvas`) dan 3D (`IR3DViewport`) | Fase 2.4, 8.2, 8.3 | ✓ | `[x]` |
+| #24 | `max_tree_depth` dikunci 64 | Fase 1.5 | ✓ | `[x]` |
+| #25 | DPI sync policy `strict` untuk domain cetak | Fase 7.1 | ✓ | `[x]` |
+| #26 | Migrasi wajib mencatat `script_id` | Fase B.2 | ✓ | `[x]` |
+| #27 | `IRDelta` wajib operasi atomik | Fase 13.1 | ✓ | `[x]` |
+| #28 | Properti keyframe dideklarasikan tipe statik | Fase 5.2 | ✓ | `[x]` |
+| #29 | Hirarki kepercayaan plugin: official > verified > community | Fase A.3 | ✓ | `[x]` |
+| #30 | Plugin action terisolasi pada scope-nya | Fase A.3 | ✓ | `[x]` |
+| #31 | Plugin snapshot immutable (read-only) | Fase A.3 | ✓ | `[x]` |
+| #32 | `IR_MODE_DOMAIN_MAP` dikunci sebagai konstanta | Fase 1.2 | ✓ | `[x]` |
+| #33 | ID canvas preset standar bersifat permanen | Fase 2.5 | ✓ | `[x]` |
+| #34 | Skema URI aset menggunakan `asset://` | Fase 3.4 | ✓ | `[x]` |
+| #35 | `delta_only: true` menolak full document return | Fase A.2 | ✓ | `[x]` |
+| #36 | Secret reference wajib `env:`, `vault:`, atau `secret:` | Fase 6.1 | ✓ | `[x]` |
+| #37 | Aksi `irreversible` wajib eskalasi ke manusia | Fase A.1 | ✓ | `[x]` |
+| #38 | CRDT menggunakan Loro (Rust + WASM) | Fase 13.2 | ✓ | `[x]` |
+| #39 | Urutan & bobot RLVRR dikunci | Fase R.1 | ✓ | `[x]` |
+| #40 | 9 built-in tool registry ID dikunci permanen | Fase A.4 | ✓ | `[x]` |
 
 ---
 
