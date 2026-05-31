@@ -13,8 +13,19 @@ export interface CompilationResult {
  * @stability BETA
  */
 export function compileDocument(doc: unknown): CompilationResult {
-  if (!validateHIR(doc)) {
-    return { success: false, errors: ['Invalid HIR Document Schema'] };
+  const validationResult = validateHIR(doc);
+  if (!validationResult.valid) {
+    return {
+      success: false,
+      errors: [
+        'Invalid HIR Document Schema',
+        ...validationResult.errors.map(e => `${e.path}: ${e.message}`),
+      ],
+    };
+  }
+  const typedDoc = doc as { meta?: { lifecycle_status?: string } };
+  if (typedDoc.meta?.lifecycle_status === 'archived') {
+    return { success: false, errors: ['Cannot compile archived document'] };
   }
   return { success: true, errors: [] };
 }

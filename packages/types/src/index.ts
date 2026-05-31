@@ -8,3 +8,4 @@ export * from './agents.js';
 export * from './delta.js';
 export * from './assets.js';
 export * from './lir.js';
+export * from './gaps.js';

@@ -96,3 +96,12 @@ export const IR_MODE_DOMAIN_MAP: Record<IRMode, IRModeContext> = Object.freeze({
     canvas_types: ['pixel'],
   },
 });
+
+/**
+ * Get context for a given IRMode
+ * @stability STABLE
+ */
+export function getModeContext(mode: IRMode): IRModeContext | undefined {
+  return IR_MODE_DOMAIN_MAP[mode];
+}
+

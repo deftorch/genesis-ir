@@ -40,77 +40,77 @@
 ### 1.1 `IRDomain` & Konstanta Dasar
 > 🔑 Keputusan #09: 17 nama domain dikunci permanen. Tidak boleh diubah setelah v1.0.
 
-- [ ] 🔴 Tulis tes: validasi bahwa semua 17 string literal domain terdefinisi dengan benar
-- [ ] 🟢 Implementasi `IRDomain` type alias (11 STABLE + 6 BETA)
-  - [ ] STABLE: `visual`, `image_edit`, `video`, `audio`, `motion`, `print`, `signage`, `packaging`, `data_viz`, `interactive`, `3d`
-  - [ ] BETA: `document`, `music_production`, `pixel_art`, `diagram`, `mockup`, `font_design`
-- [ ] 🔵 Refactor: pastikan domain tersimpan sebagai frozen const untuk tree-shaking
-- [ ] 🔴 Tulis tes: domain string di luar 17 nilai resmi harus ditolak validator
-- [ ] 🟢 Implementasi fungsi `isValidIRDomain(value: string): value is IRDomain`
-- [ ] ⛔ Jalankan tes suite lengkap domain — 100% harus lulus sebelum lanjut
+- [x] 🔴 Tulis tes: validasi bahwa semua 17 string literal domain terdefinisi dengan benar
+- [x] 🟢 Implementasi `IRDomain` type alias (11 STABLE + 6 BETA)
+  - [x] STABLE: `visual`, `image_edit`, `video`, `audio`, `motion`, `print`, `signage`, `packaging`, `data_viz`, `interactive`, `3d`
+  - [x] BETA: `document`, `music_production`, `pixel_art`, `diagram`, `mockup`, `font_design`
+- [x] 🔵 Refactor: pastikan domain tersimpan sebagai frozen const untuk tree-shaking
+- [x] 🔴 Tulis tes: domain string di luar 17 nilai resmi harus ditolak validator
+- [x] 🟢 Implementasi fungsi `isValidIRDomain(value: string): value is IRDomain`
+- [x] ⛔ Jalankan tes suite lengkap domain — 100% harus lulus sebelum lanjut
 
 ### 1.2 `IRMode` & `IR_MODE_DOMAIN_MAP`
 > 🔑 Keputusan #32: Hubungan kompatibilitas mode dan domain dikunci pada konstanta `IR_MODE_DOMAIN_MAP`.
 
-- [ ] 🔴 Tulis tes: setiap mode (`canvas_editor`, `video_editor`, `audio_editor`, `image_editor`) memiliki `primary_domain`, `secondary_domains`, `timeline_required`, `canvas_types` yang valid
-- [ ] 🟢 Implementasi `IRMode` type dan `IRModeContext` interface
-- [ ] 🟢 Implementasi konstanta `IR_MODE_DOMAIN_MAP` (4 mode bawaan + extensible)
-- [ ] 🔴 Tulis tes: `video_editor` wajib memiliki `timeline_required: true`
-- [ ] 🔴 Tulis tes: `canvas_editor` harus memiliki `timeline_required: false`
-- [ ] 🟢 Implementasi fungsi `getModeContext(mode: IRMode): IRModeContext | undefined`
-- [ ] 🔵 Refactor: `Record<string, IRModeContext>` harus readonly untuk mencegah mutasi
+- [x] 🔴 Tulis tes: setiap mode (`canvas_editor`, `video_editor`, `audio_editor`, `image_editor`) memiliki `primary_domain`, `secondary_domains`, `timeline_required`, `canvas_types` yang valid
+- [x] 🟢 Implementasi `IRMode` type dan `IRModeContext` interface
+- [x] 🟢 Implementasi konstanta `IR_MODE_DOMAIN_MAP` (4 mode bawaan + extensible)
+- [x] 🔴 Tulis tes: `video_editor` wajib memiliki `timeline_required: true`
+- [x] 🔴 Tulis tes: `canvas_editor` harus memiliki `timeline_required: false`
+- [x] 🟢 Implementasi fungsi `getModeContext(mode: IRMode): IRModeContext | undefined`
+- [x] 🔵 Refactor: `Record<string, IRModeContext>` harus readonly untuk mencegah mutasi
 
 ### 1.3 `IRDocumentLifecycleStatus` & `IRProductionGate`
 > 🔑 Transisi status bersifat forward-only. Dilarang keras downgrade status dokumen.
 
-- [ ] 🔴 Tulis tes: transisi dari `staging` ke `production` valid; dari `production` ke `draft` invalid
-- [ ] 🔴 Tulis tes: dokumen berstatus `archived` harus menolak operasi compile
-- [ ] 🟢 Implementasi `IRDocumentLifecycleStatus` type alias (6 nilai)
-- [ ] 🟢 Implementasi `IRProductionGate` interface dengan semua field wajib
-- [ ] 🟢 Implementasi fungsi `canTransition(from: IRDocumentLifecycleStatus, to: IRDocumentLifecycleStatus): boolean`
-- [ ] 🔵 Refactor: buat state machine eksplisit dengan adjacency map transisi valid
+- [x] 🔴 Tulis tes: transisi dari `staging` ke `production` valid; dari `production` ke `draft` invalid
+- [x] 🔴 Tulis tes: dokumen berstatus `archived` harus menolak operasi compile
+- [x] 🟢 Implementasi `IRDocumentLifecycleStatus` type alias (6 nilai)
+- [x] 🟢 Implementasi `IRProductionGate` interface dengan semua field wajib
+- [x] 🟢 Implementasi fungsi `canTransition(from: IRDocumentLifecycleStatus, to: IRDocumentLifecycleStatus): boolean`
+- [x] 🔵 Refactor: buat state machine eksplisit dengan adjacency map transisi valid
 
 ### 1.4 `IRDocument` Root Schema
 > 🔑 Keputusan #02: `ir_id` wajib UUID v4, immutable setelah dibuat.
 > 🔑 Keputusan #06: field `meta.domain` tidak boleh null/empty.
 
-- [ ] 🔴 Tulis tes: dokumen tanpa `ir_id` harus gagal validasi Pass 1
-- [ ] 🔴 Tulis tes: dokumen dengan `ir_id` bukan UUID v4 harus gagal validasi
-- [ ] 🔴 Tulis tes: `meta.domain` null/empty harus gagal validasi
-- [ ] 🔴 Tulis tes: `meta.schema_version` harus selalu `"1.0"`
-- [ ] 🔴 Tulis tes: `meta.tier` hanya boleh `"nano" | "core" | "full"`
-- [ ] 🔴 Tulis tes: `meta.max_tree_depth` harus ≤ 64 (Keputusan #24)
-- [ ] 🟢 Implementasi `IRDocument` interface TypeScript dengan semua field `meta`
-- [ ] 🟢 Implementasi JSON Schema Draft 7 untuk `IRDocument.meta`
-- [ ] 🟢 Implementasi factory `createIRDocument(opts): IRDocument` — auto-generate UUID v4
-- [ ] 🔵 Refactor: factory harus memastikan `ir_id` tidak dapat di-override setelah set pertama kali
+- [x] 🔴 Tulis tes: dokumen tanpa `ir_id` harus gagal validasi Pass 1
+- [x] 🔴 Tulis tes: dokumen dengan `ir_id` bukan UUID v4 harus gagal validasi
+- [x] 🔴 Tulis tes: `meta.domain` null/empty harus gagal validasi
+- [x] 🔴 Tulis tes: `meta.schema_version` harus selalu `"1.0"`
+- [x] 🔴 Tulis tes: `meta.tier` hanya boleh `"nano" | "core" | "full"`
+- [x] 🔴 Tulis tes: `meta.max_tree_depth` harus ≤ 64 (Keputusan #24)
+- [x] 🟢 Implementasi `IRDocument` interface TypeScript dengan semua field `meta`
+- [x] 🟢 Implementasi JSON Schema Draft 7 untuk `IRDocument.meta`
+- [x] 🟢 Implementasi factory `createIRDocument(opts): IRDocument` — auto-generate UUID v4
+- [x] 🔵 Refactor: factory harus memastikan `ir_id` tidak dapat di-override setelah set pertama kali
 
 ### 1.5 Tier System (Nano ⊂ Core ⊂ Full)
-- [ ] 🔴 Tulis tes: dokumen tier `nano` dengan lebih dari 100 node harus ditolak
-- [ ] 🔴 Tulis tes: dokumen tier `nano` dengan kedalaman pohon > 8 harus ditolak
-- [ ] 🔴 Tulis tes: dokumen tier `core` dengan lebih dari 1.000 node harus ditolak
-- [ ] 🔴 Tulis tes: dokumen tier `core` dengan kedalaman pohon > 32 harus ditolak
-- [ ] 🔴 Tulis tes: dokumen tier `nano` tidak boleh memuat asset eksternal atau plugin
-- [ ] 🟢 Implementasi `TierConstraints` config per tier
-- [ ] 🟢 Implementasi `validateTierLimits(doc: IRDocument): ValidationResult`
-- [ ] 🔵 Refactor: constraint values harus diambil dari konstanta yang dapat dikonfigurasi
+- [x] 🔴 Tulis tes: dokumen tier `nano` dengan lebih dari 100 node harus ditolak
+- [x] 🔴 Tulis tes: dokumen tier `nano` dengan kedalaman pohon > 8 harus ditolak
+- [x] 🔴 Tulis tes: dokumen tier `core` dengan lebih dari 1.000 node harus ditolak
+- [x] 🔴 Tulis tes: dokumen tier `core` dengan kedalaman pohon > 32 harus ditolak
+- [x] 🔴 Tulis tes: dokumen tier `nano` tidak boleh memuat asset eksternal atau plugin
+- [x] 🟢 Implementasi `TierConstraints` config per tier
+- [x] 🟢 Implementasi `validateTierLimits(doc: IRDocument): ValidationResult`
+- [x] 🔵 Refactor: constraint values harus diambil dari konstanta yang dapat dikonfigurasi
 
 ### 1.6 `IRGapRegistry`
-- [ ] 🔴 Tulis tes: setiap `IRGapEntry` harus memiliki `id` unik dengan prefix `IRGAP-`
-- [ ] 🔴 Tulis tes: gap dengan `status: "resolved"` harus memiliki `resolved_in` field
-- [ ] 🟢 Implementasi `IRGapEntry` interface
-- [ ] 🟢 Implementasi konstanta `IR_GAP_REGISTRY_V1` dengan 4 entri aktif (IRGAP-001 s.d. IRGAP-004)
-- [ ] 🟢 Implementasi fungsi `getOpenGaps(): IRGapEntry[]` dan `getGapById(id: string): IRGapEntry | undefined`
+- [x] 🔴 Tulis tes: setiap `IRGapEntry` harus memiliki `id` unik dengan prefix `IRGAP-`
+- [x] 🔴 Tulis tes: gap dengan `status: "resolved"` harus memiliki `resolved_in` field
+- [x] 🟢 Implementasi `IRGapEntry` interface
+- [x] 🟢 Implementasi konstanta `IR_GAP_REGISTRY_V1` dengan 4 entri aktif (IRGAP-001 s.d. IRGAP-004)
+- [x] 🟢 Implementasi fungsi `getOpenGaps(): IRGapEntry[]` dan `getGapById(id: string): IRGapEntry | undefined`
 
 ### 1.7 JSON Schema & AJV Validator (Pass 1 Foundation)
 > ⛔ Milestone M1 gate: semua tes di fase 1 harus lulus 100% sebelum fase 2.
 
-- [ ] 🔴 Tulis tes integrasi: dokumen valid minimal (Nano tier) lulus validasi AJV tanpa error
-- [ ] 🔴 Tulis tes integrasi: dokumen dengan field tambahan tidak dikenal (unknown fields) ditangani sesuai mode `additionalProperties: false`
-- [ ] 🟢 Generate JSON Schema dari TypeScript interfaces menggunakan `ts-json-schema-generator`
-- [ ] 🟢 Konfigurasi instance AJV dengan opsi `strict: true`, `coerceTypes: false`
-- [ ] 🟢 Implementasi `validateHIR(document: unknown): ValidationResult` sebagai entry point Pass 1
-- [ ] 🔵 Refactor: kumpulkan seluruh error AJV menjadi array `ValidationError[]` yang terstruktur
+- [x] 🔴 Tulis tes integrasi: dokumen valid minimal (Nano tier) lulus validasi AJV tanpa error
+- [x] 🔴 Tulis tes integrasi: dokumen dengan field tambahan tidak dikenal (unknown fields) ditangani sesuai mode `additionalProperties: false`
+- [x] 🟢 Generate JSON Schema dari TypeScript interfaces menggunakan `ts-json-schema-generator`
+- [x] 🟢 Konfigurasi instance AJV dengan opsi `strict: true`, `coerceTypes: false`
+- [x] 🟢 Implementasi `validateHIR(document: unknown): ValidationResult` sebagai entry point Pass 1
+- [x] 🔵 Refactor: kumpulkan seluruh error AJV menjadi array `ValidationError[]` yang terstruktur
 
 ---
 

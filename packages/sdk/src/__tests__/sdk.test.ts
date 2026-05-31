@@ -6,6 +6,7 @@ import {
   renderToSVG,
   createAgentAction,
   mergeDeltas,
+  createIRDocument,
 } from '../index.js';
 
 const context = describe;
@@ -14,18 +15,18 @@ describe('sdk', () => {
   context('exports', () => {
     it('should expose all sub-package functions', () => {
       expect(isValidIRDomain('visual')).toBe(true);
-      expect(
-        validateHIR({
-          ir_id: 'e207908b-b8df-4158-963d-4c3e41416e9b',
-          meta: { domain: 'visual', schema_version: '1.0' },
-        }),
-      ).toBe(true);
-      expect(
-        compileDocument({
-          ir_id: 'e207908b-b8df-4158-963d-4c3e41416e9b',
-          meta: { domain: 'visual', schema_version: '1.0' },
-        }).success,
-      ).toBe(true);
+
+      const doc = createIRDocument({
+        domain: 'visual',
+        canvas: {
+          width: 800,
+          height: 600,
+          color_space: 'sRGB',
+        },
+      });
+
+      expect(validateHIR(doc).valid).toBe(true);
+      expect(compileDocument(doc).success).toBe(true);
       expect(renderToSVG).toBeDefined();
       expect(createAgentAction).toBeDefined();
       expect(mergeDeltas).toBeDefined();
