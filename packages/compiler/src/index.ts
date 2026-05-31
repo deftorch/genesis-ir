@@ -2,6 +2,7 @@ import { validateHIR } from '@genesis/schema';
 export * from './profiler.js';
 export * from './binary.js';
 export * from './rlvrr.js';
+export * from './font.js';
 
 /**
  * @stability BETA
