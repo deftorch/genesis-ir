@@ -14,3 +14,5 @@ export * from './print.js';
 export * from './observability.js';
 export * from './music.js';
 export * from './pixel.js';
+export * from './font.js';
+export * from './mockup.js';

@@ -508,17 +508,17 @@
 > 🔑 Keputusan #10: EM unit dikunci 1000 atau 2048.
 > 🔑 Keputusan #15: kerning class system menggunakan `IRKerningGroupDef`.
 
-- [ ] 🔴 Tulis tes: `IRFontSpec.units_per_em` bukan 1000 atau 2048 harus gagal validasi
-- [ ] 🔴 Tulis tes: `IRGlyphContent.contours` tidak boleh memiliki kontur terbuka (open contour)
-- [ ] 🔴 Tulis tes: `IRKerningPairDef` dengan `left_class` dan `right_class` yang tidak ada di `grid_groups` harus gagal
-- [ ] 🔴 Tulis tes: font dengan `auto_hint: true` harus menghasilkan TrueType hinting instructions
-- [ ] 🟢 Implementasi `IRFontSpec` interface (family_name, metrics, glyphs, kerning_pairs, opentype_features, variable_axes)
-- [ ] 🟢 Implementasi `IRKerningPairDef` dan `IRKerningGroupDef`
-- [ ] 🟢 Implementasi `IROpenTypeFeature` (liga, smcp, calt, dll.)
-- [ ] 🟢 Implementasi `IRVariableAxis` dan `IRFontMaster`
-- [ ] 🟢 Sub-pass 3b: Font Semantic Validation (kontur bocor, metrik konsistensi)
-- [ ] 🟢 Sub-pass 5c: Font Asset Resolution ke binary opentype
-- [ ] 🟢 Sub-pass 7c: Kompilasi tabel OpenType (glyf, head, hhea) → `.otf`/`.ttf` menggunakan `opentype.js`
+- [x] 🔴 Tulis tes: `IRFontSpec.units_per_em` bukan 1000 atau 2048 harus gagal validasi
+- [x] 🔴 Tulis tes: `IRGlyphContent.contours` tidak boleh memiliki kontur terbuka (open contour)
+- [x] 🔴 Tulis tes: `IRKerningPairDef` dengan `left_class` dan `right_class` yang tidak ada di `grid_groups` harus gagal
+- [x] 🔴 Tulis tes: font dengan `auto_hint: true` harus menghasilkan TrueType hinting instructions
+- [x] 🟢 Implementasi `IRFontSpec` interface (family_name, metrics, glyphs, kerning_pairs, opentype_features, variable_axes)
+- [x] 🟢 Implementasi `IRKerningPairDef` dan `IRKerningGroupDef`
+- [x] 🟢 Implementasi `IROpenTypeFeature` (liga, smcp, calt, dll.)
+- [x] 🟢 Implementasi `IRVariableAxis` dan `IRFontMaster`
+- [x] 🟢 Sub-pass 3b: Font Semantic Validation (kontur bocor, metrik konsistensi)
+- [x] 🟢 Sub-pass 5c: Font Asset Resolution ke binary opentype
+- [x] 🟢 Sub-pass 7c: Kompilasi tabel OpenType (glyf, head, hhea) → `.otf`/`.ttf` menggunakan `opentype.js`
 
 ---
 
@@ -526,11 +526,11 @@
 **Milestone M12-B: Mockup 3D Device Frame (Target: Akhir Bulan ke-36)**
 
 ### 12B.1 `IRMockupSpec` Implementation
-- [ ] 🔴 Tulis tes: `device_frame` tanpa `screen_content_id` yang valid harus gagal Pass 3
-- [ ] 🔴 Tulis tes: sudut perspektif mockup harus dalam rentang yang valid untuk CSS 3D transform
-- [ ] 🟢 Implementasi `IRMockupSpec` interface (scene_3d_config, device_type, perspective)
-- [ ] 🟢 Implementasi `IRDeviceFrameContent` (device_type, screen_content_id, bezel_color)
-- [ ] 🟢 Sub-pass 7f: CSS 3D transform composition untuk mockup rendering
+- [x] 🔴 Tulis tes: `device_frame` tanpa `screen_content_id` yang valid harus gagal Pass 3
+- [x] 🔴 Tulis tes: sudut perspektif mockup harus dalam rentang yang valid untuk CSS 3D transform
+- [x] 🟢 Implementasi `IRMockupSpec` interface (scene_3d_config, device_type, perspective)
+- [x] 🟢 Implementasi `IRDeviceFrameContent` (device_type, screen_content_id, bezel_color)
+- [x] 🟢 Sub-pass 7f: CSS 3D transform composition untuk mockup rendering
 
 ---
 

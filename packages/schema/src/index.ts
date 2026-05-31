@@ -126,6 +126,14 @@ const irDocumentSchema: Schema = {
       type: 'object',
       additionalProperties: true,
     },
+    font_spec: {
+      type: 'object',
+      additionalProperties: true,
+    },
+    mockup_spec: {
+      type: 'object',
+      additionalProperties: true,
+    },
   },
   additionalProperties: false,
 };
@@ -512,6 +520,18 @@ export function validateHIR(doc: unknown): ValidationResult {
   const pixelResult = validatePixelDomain(doc);
   if (!pixelResult.valid) {
     errors.push(...pixelResult.errors);
+  }
+
+  // Font domain validation
+  const fontResult = validateFontDomain(doc);
+  if (!fontResult.valid) {
+    errors.push(...fontResult.errors);
+  }
+
+  // Mockup domain validation
+  const mockupResult = validateMockupDomain(doc);
+  if (!mockupResult.valid) {
+    errors.push(...mockupResult.errors);
   }
 
   return {
@@ -1552,6 +1572,94 @@ export function validatePixelDomain(doc: any): ValidationResult {
         }
       }
     });
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate font design domain constraints.
+ * @stability BETA
+ */
+export function validateFontDomain(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const fontSpec = doc.font_spec;
+  if (!fontSpec) return { valid: true, errors: [] };
+
+  // units_per_em must be exactly 1000 or 2048 (Keputusan #10)
+  if (fontSpec.units_per_em !== undefined) {
+    if (fontSpec.units_per_em !== 1000 && fontSpec.units_per_em !== 2048) {
+      errors.push({
+        path: 'font_spec.units_per_em',
+        message: `units_per_em must be exactly 1000 or 2048, got ${fontSpec.units_per_em}`,
+        keyword: 'invalid-em-unit',
+      });
+    }
+  }
+
+  // Kerning pair validation: left_class and right_class must exist in grid_groups
+  const gridGroupNames = new Set((fontSpec.grid_groups || []).map((g: any) => g.name));
+  const kerningPairs = fontSpec.kerning_pairs || [];
+  kerningPairs.forEach((pair: any, pi: number) => {
+    if (pair.left_class && gridGroupNames.size > 0 && !gridGroupNames.has(pair.left_class)) {
+      errors.push({
+        path: `font_spec.kerning_pairs[${pi}].left_class`,
+        message: `Kerning pair left_class '${pair.left_class}' not found in grid_groups`,
+        keyword: 'invalid-kerning-class',
+      });
+    }
+    if (pair.right_class && gridGroupNames.size > 0 && !gridGroupNames.has(pair.right_class)) {
+      errors.push({
+        path: `font_spec.kerning_pairs[${pi}].right_class`,
+        message: `Kerning pair right_class '${pair.right_class}' not found in grid_groups`,
+        keyword: 'invalid-kerning-class',
+      });
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Validate mockup domain constraints.
+ * @stability BETA
+ */
+export function validateMockupDomain(doc: any): ValidationResult {
+  const errors: ValidationError[] = [];
+  const mockupSpec = doc.mockup_spec;
+  if (!mockupSpec) return { valid: true, errors: [] };
+
+  const objectIds = new Set((doc.objects || []).map((o: any) => o.id));
+
+  // Validate devices
+  const devices = mockupSpec.devices || [];
+  devices.forEach((device: any, di: number) => {
+    // screen_content_node_id must reference a valid node
+    if (device.screen_content_node_id && !objectIds.has(device.screen_content_node_id)) {
+      errors.push({
+        path: `mockup_spec.devices[${di}].screen_content_node_id`,
+        message: `Device '${device.id || di}' references non-existent screen_content_node_id '${device.screen_content_node_id}'`,
+        keyword: 'invalid-screen-content-ref',
+      });
+    }
+
+    // Validate perspective angle for 3d_perspective view_mode
+    if (mockupSpec.view_mode === '3d_perspective' && device.view_angle === 'custom') {
+      const rot = device.custom_rotation;
+      if (!rot) {
+        errors.push({
+          path: `mockup_spec.devices[${di}].custom_rotation`,
+          message: `Device '${device.id || di}' with custom view_angle must have custom_rotation`,
+          keyword: 'missing-custom-rotation',
+        });
+      }
+    }
   });
 
   return {

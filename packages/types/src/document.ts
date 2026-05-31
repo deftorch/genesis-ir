@@ -8,6 +8,8 @@ import { IRPrintSpec } from './print.js';
 import { IRObservability, IRDebugExtension } from './observability.js';
 import { IRMusicSpec } from './music.js';
 import { IRPixelSpec } from './pixel.js';
+import { IRFontSpec } from './font.js';
+import { IRMockupSpec } from './mockup.js';
 
 /**
  * @stability STABLE
@@ -263,6 +265,8 @@ export interface IRDocument {
   x_debug?: IRDebugExtension;
   music_spec?: IRMusicSpec;
   pixel_spec?: IRPixelSpec;
+  font_spec?: IRFontSpec;
+  mockup_spec?: IRMockupSpec;
 }
 
 function uuidv4(): string {
