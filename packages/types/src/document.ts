@@ -246,6 +246,46 @@ export interface IRPhysicalSpec {
 }
 
 /**
+ * @stability BETA
+ */
+export interface IRI18nContext {
+  default_language: string;
+  supported_languages: string[];
+  translations: Record<string, Record<string, string>>;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRAssetRegistry {
+  external_assets: Record<string, {
+    uri: string;
+    checksum: string;
+    mime_type: string;
+    size_bytes: number;
+    fallback_color?: string;
+  }>;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRAILineageEntry {
+  model_id: string;
+  prompt_hash?: string;
+  generation_time_ms?: number;
+  confidence_score?: number;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRAILineage {
+  generator_model?: string;
+  node_lineage: Record<string, IRAILineageEntry>;
+}
+
+/**
  * @stability STABLE
  */
 export interface IRDocument {
@@ -267,6 +307,9 @@ export interface IRDocument {
   pixel_spec?: IRPixelSpec;
   font_spec?: IRFontSpec;
   mockup_spec?: IRMockupSpec;
+  i18n_context?: IRI18nContext;
+  asset_registry?: IRAssetRegistry;
+  ai_lineage?: IRAILineage;
 }
 
 function uuidv4(): string {
@@ -292,6 +335,9 @@ export function createIRDocument(opts: {
   bindings?: Record<string, IRDataBinding>;
   interaction_model?: IRInteractionModel;
   print_spec?: IRPrintSpec;
+  i18n_context?: IRI18nContext;
+  asset_registry?: IRAssetRegistry;
+  ai_lineage?: IRAILineage;
 }): IRDocument {
   const doc = {
     meta: {
@@ -322,6 +368,9 @@ export function createIRDocument(opts: {
     bindings: opts.bindings,
     interaction_model: opts.interaction_model,
     print_spec: opts.print_spec,
+    i18n_context: opts.i18n_context,
+    asset_registry: opts.asset_registry,
+    ai_lineage: opts.ai_lineage,
   } as unknown as IRDocument;
 
   const id = uuidv4();

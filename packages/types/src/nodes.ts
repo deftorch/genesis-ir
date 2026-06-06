@@ -103,7 +103,15 @@ export type IRNodeType =
   | 'glyph_component'
   | 'font_guideline'
   | 'kerning_pair'
-  | 'kerning_group';
+  | 'kerning_group'
+  | 'caption_track'
+  | 'qr_code'
+  | 'watermark_layer'
+  | 'network_graph'
+  | 'code_runner_cell'
+  | 'math_formula'
+  | 'physics_collider'
+  | 'logic_trigger';
 
 /**
  * Locked static validation mapping for Phase 3.1
@@ -115,60 +123,65 @@ export const IR_ALLOWED_NODE_TYPES_BY_DOMAIN: Record<IRDomain, ReadonlyArray<IRN
     'gradient', 'blur_effect', 'shadow_effect', 'flex_container',
     'grid_container', 'masonry_container', 'artboard', 'boolean_shape',
     'symbol_instance', 'mesh_gradient', 'chart', 'table', 'data_table',
-    'gauge', 'map', 'button', 'slider', 'toggle', 'hotspot', 'form_field'
+    'gauge', 'map', 'button', 'slider', 'toggle', 'hotspot', 'form_field',
+    'watermark_layer', 'math_formula'
   ],
   image_edit: [
     'image', 'group', 'frame', 'shape', 'path', 'svg_path', 'gradient',
-    'blur_effect', 'shadow_effect', 'mesh_gradient'
+    'blur_effect', 'shadow_effect', 'mesh_gradient', 'watermark_layer'
   ],
   video: [
     'video_clip', 'audio_clip', 'audio_track', 'image', 'text', 'shape',
     'path', 'svg_path', 'group', 'frame', 'animation', 'lottie',
-    'particle_system', 'gradient', 'blur_effect', 'shader_effect'
+    'particle_system', 'gradient', 'blur_effect', 'shader_effect',
+    'caption_track', 'watermark_layer'
   ],
   audio: [
-    'audio_clip', 'audio_track', 'group'
+    'audio_clip', 'audio_track', 'group', 'caption_track'
   ],
   motion: [
     'path', 'shape', 'text', 'image', 'group', 'frame', 'svg_path',
     'animation', 'lottie', 'particle_system', 'shader_effect',
-    'gradient', 'blur_effect', 'shadow_effect'
+    'gradient', 'blur_effect', 'shadow_effect', 'caption_track',
+    'physics_collider'
   ],
   print: [
     'path', 'shape', 'text', 'image', 'group', 'frame', 'svg_path',
     'gradient', 'shadow_effect', 'print_text_frame', 'print_image_frame',
     'print_master_ref', 'print_bleed_guide', 'print_safe_guide',
-    'spot_color_area'
+    'spot_color_area', 'qr_code', 'watermark_layer'
   ],
   signage: [
     'path', 'shape', 'text', 'image', 'group', 'frame', 'svg_path',
     'gradient', 'shadow_effect', 'print_text_frame', 'print_image_frame',
-    'print_bleed_guide', 'print_safe_guide', 'spot_color_area'
+    'print_bleed_guide', 'print_safe_guide', 'spot_color_area', 'qr_code'
   ],
   packaging: [
     'path', 'shape', 'text', 'image', 'group', 'frame', 'svg_path',
     'gradient', 'shadow_effect', 'print_dieline', 'print_fold_line',
     'print_cut_line', 'print_bleed_guide', 'print_safe_guide',
-    'spot_color_area'
+    'spot_color_area', 'qr_code'
   ],
   data_viz: [
     'chart', 'table', 'data_table', 'map', 'gauge', 'text', 'shape',
-    'path', 'svg_path', 'image', 'group', 'frame'
+    'path', 'svg_path', 'image', 'group', 'frame', 'network_graph'
   ],
   interactive: [
     'button', 'slider', 'toggle', 'hotspot', 'form_field', 'flex_container',
     'grid_container', 'masonry_container', 'shape', 'path', 'svg_path',
-    'text', 'image', 'group', 'frame', 'animation', 'lottie'
+    'text', 'image', 'group', 'frame', 'animation', 'lottie',
+    'code_runner_cell', 'logic_trigger', 'physics_collider'
   ],
   '3d': [
     'scene_3d', 'mesh_3d', 'light_3d', 'camera_3d', 'bone_3d',
-    'environment_3d', 'material_3d'
+    'environment_3d', 'material_3d', 'physics_collider'
   ],
   document: [
     'doc_paragraph', 'doc_heading', 'doc_list', 'doc_list_item',
     'doc_callout', 'doc_code_block', 'doc_math_block', 'doc_table',
     'doc_toggle', 'doc_divider', 'doc_embed_asset', 'doc_footnote',
-    'doc_toc', 'image', 'table', 'group', 'frame'
+    'doc_toc', 'image', 'table', 'group', 'frame', 'math_formula',
+    'code_runner_cell', 'watermark_layer'
   ],
   music_production: [
     'music_track', 'music_clip', 'music_note', 'music_automation',
@@ -182,11 +195,11 @@ export const IR_ALLOWED_NODE_TYPES_BY_DOMAIN: Record<IRDomain, ReadonlyArray<IRN
     'diagram_node', 'diagram_edge', 'diagram_label', 'diagram_swimlane',
     'diagram_group', 'erd_entity', 'erd_relation', 'uml_class',
     'uml_lifeline', 'uml_message', 'bpmn_element', 'bpmn_pool', 'bpmn_lane',
-    'text', 'shape', 'path', 'svg_path'
+    'text', 'shape', 'path', 'svg_path', 'network_graph'
   ],
   mockup: [
     'mockup_scene', 'device_frame', 'screen_content', 'mockup_prop',
-    'mockup_background', 'image', 'video_clip'
+    'mockup_background', 'image', 'video_clip', 'logic_trigger'
   ],
   font_design: [
     'glyph', 'glyph_component', 'font_guideline', 'kerning_pair',
@@ -564,6 +577,222 @@ export interface IRPrintTextFrameContent extends IRNodeContentBase {
 }
 
 /**
+ * @stability BETA
+ */
+export interface IRAnimationContent extends IRNodeContentBase {
+  kind: 'animation';
+  duration_ms: number;
+  loop: boolean;
+  easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'step';
+  keyframes: { progress: number; properties: Record<string, any> }[];
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRFlexContainerContent extends IRNodeContentBase {
+  kind: 'flex_container';
+  direction: 'row' | 'column' | 'row-reverse' | 'column-reverse';
+  wrap: 'nowrap' | 'wrap' | 'wrap-reverse';
+  justify_content: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
+  align_items: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
+  gap: number | [number, number];
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRGridContainerContent extends IRNodeContentBase {
+  kind: 'grid_container';
+  columns: number | string[];
+  rows: number | string[];
+  gap: number | [number, number];
+  auto_flow: 'row' | 'column' | 'dense' | 'row dense' | 'column dense';
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRGradientContent extends IRNodeContentBase {
+  kind: 'gradient';
+  gradient_type: 'linear' | 'radial' | 'angular' | 'diamond';
+  stops: { color: ColorValue; position: number }[];
+  start_point?: { x: number; y: number };
+  end_point?: { x: number; y: number };
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRBlurEffectContent extends IRNodeContentBase {
+  kind: 'blur_effect';
+  blur_type: 'gaussian' | 'box' | 'motion' | 'zoom' | 'background';
+  radius: number;
+  angle?: number;
+  center?: { x: number; y: number };
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRShadowEffectContent extends IRNodeContentBase {
+  kind: 'shadow_effect';
+  shadow_type: 'drop' | 'inner';
+  color: ColorValue;
+  offset_x: number;
+  offset_y: number;
+  blur_radius: number;
+  spread_radius: number;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRShaderEffectContent extends IRNodeContentBase {
+  kind: 'shader_effect';
+  shader_source: string;
+  uniforms: Record<string, { type: 'float' | 'int' | 'vec2' | 'vec3' | 'vec4' | 'sampler2D'; value: any }>;
+  blend_mode: 'normal' | 'multiply' | 'screen' | 'overlay' | 'darken' | 'lighten' | 'color-dodge' | 'color-burn';
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRParticleSystemContent extends IRNodeContentBase {
+  kind: 'particle_system';
+  max_particles: number;
+  emission_rate: number;
+  life_time: [number, number];
+  start_color: ColorValue;
+  end_color: ColorValue;
+  start_size: [number, number];
+  end_size: [number, number];
+  start_velocity: [number, number, number];
+  gravity: [number, number, number];
+  texture_asset_id?: string;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRLottieContent extends IRNodeContentBase {
+  kind: 'lottie';
+  asset_id: string;
+  loop: boolean;
+  autoplay: boolean;
+  speed: number;
+  interactive_markers?: { name: string; time_start: number; time_end: number }[];
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRBooleanShapeContent extends IRNodeContentBase {
+  kind: 'boolean_shape';
+  operation: 'union' | 'subtract' | 'intersect' | 'exclude';
+  operands: string[];
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRCaptionTrackContent extends IRNodeContentBase {
+  kind: 'caption_track';
+  language_code: string;
+  captions: {
+    start_ms: number;
+    end_ms: number;
+    text: string;
+    speaker?: string;
+    style_override?: Record<string, any>;
+  }[];
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRQRCodeContent extends IRNodeContentBase {
+  kind: 'qr_code';
+  payload: string;
+  error_correction_level: 'L' | 'M' | 'Q' | 'H';
+  version?: number;
+  foreground_color?: ColorValue;
+  background_color?: ColorValue;
+  logo_asset_id?: string;
+  is_barcode?: boolean;
+  barcode_format?: 'UPC' | 'EAN13' | 'CODE39' | 'CODE128';
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRWatermarkContent extends IRNodeContentBase {
+  kind: 'watermark_layer';
+  text?: string;
+  image_asset_id?: string;
+  opacity: number;
+  pattern: 'diagonal' | 'grid' | 'single_center';
+  is_locked: boolean;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRNetworkGraphContent extends IRNodeContentBase {
+  kind: 'network_graph';
+  data_provider_id: string;
+  layout_algorithm: 'force_directed' | 'circular' | 'hierarchical';
+  node_repulsion: number;
+  edge_length: number;
+  show_labels: boolean;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRCodeRunnerContent extends IRNodeContentBase {
+  kind: 'code_runner_cell';
+  language: 'javascript' | 'python' | 'typescript' | 'sql';
+  source_code: string;
+  auto_execute: boolean;
+  hide_source?: boolean;
+  output_format?: 'console' | 'html' | 'json';
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRMathFormulaContent extends IRNodeContentBase {
+  kind: 'math_formula';
+  latex: string;
+  display_mode: 'inline' | 'block';
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRPhysicsColliderContent extends IRNodeContentBase {
+  kind: 'physics_collider';
+  collider_type: 'box' | 'sphere' | 'capsule' | 'mesh';
+  body_type: 'static' | 'kinematic' | 'dynamic';
+  mass: number;
+  restitution: number;
+  friction: number;
+  trigger_only: boolean;
+}
+
+/**
+ * @stability BETA
+ */
+export interface IRLogicTriggerContent extends IRNodeContentBase {
+  kind: 'logic_trigger';
+  event_type: 'on_click' | 'on_hover' | 'on_enter_viewport' | 'on_leave_viewport' | 'on_collision';
+  target_id: string;
+  action_type: 'navigate' | 'play_animation' | 'toggle_state' | 'emit_event' | 'execute_script';
+  payload?: any;
+}
+
+/**
  * @stability STABLE
  */
 export type IRNodeContent =
@@ -583,7 +812,25 @@ export type IRNodeContent =
   | IRMesh3DContent
   | IRGlyphContent
   | IRDeviceFrameContent
-  | IRPrintTextFrameContent;
+  | IRPrintTextFrameContent
+  | IRAnimationContent
+  | IRFlexContainerContent
+  | IRGridContainerContent
+  | IRGradientContent
+  | IRBlurEffectContent
+  | IRShadowEffectContent
+  | IRShaderEffectContent
+  | IRParticleSystemContent
+  | IRLottieContent
+  | IRBooleanShapeContent
+  | IRCaptionTrackContent
+  | IRQRCodeContent
+  | IRWatermarkContent
+  | IRNetworkGraphContent
+  | IRCodeRunnerContent
+  | IRMathFormulaContent
+  | IRPhysicsColliderContent
+  | IRLogicTriggerContent;
 
 /**
  * @stability STABLE
