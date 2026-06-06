@@ -14,8 +14,8 @@
 
 Untuk memfasilitasi kolaborasi real-time tanpa konflik antara agen AI dan manusia pengembang di workspace yang sama, Genesis IR menyediakan dua backend:
 
-- **LWW (Last-Write-Wins) Backend**: Implementasi murni JavaScript (`GenesisLWWDoc`) yang mengurutkan delta berdasarkan stempel waktu secara deterministik.
-- **Loro WASM Backend**: Dukungan masa depan untuk integrasi langsung library Rust Loro WASM melalui flag konfigurasi `GENESIS_CRDT_BACKEND`.
+- **LWW (Last-Write-Wins) Backend**: Implementasi murni JavaScript (`GenesisLWWDoc`) bertindak sebagai *fallback* yang efisien, mengurutkan delta secara deterministik melalui *timestamp* ketika *runtime* WASM tidak tersedia.
+- **Loro WASM Backend (V2.0)**: Arsitektur CRDT standar industri kini dioperasikan melalui `LoroCRDTAdapter`. Modul asinkron `loro-crdt` (Rust/WASM) dipanggil secara *native*, menduplikasi struktur State Loro Map untuk manajemen sejarah yang sepenuhnya non-blocking. Transisi ini dapat dikendalikan melalui flag `GENESIS_CRDT_BACKEND`.
 
 ---
 

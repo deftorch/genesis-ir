@@ -26,14 +26,14 @@ graph TD
 ### 1. `docs/architecture/` — Core Pipeline & Compiler Core
 Fokus pada mekanisme internal monorepo, pipeline kompilasi HIR → MIR → LIR, sistem cascade style, dan observability.
 
-- [ ] `docs/architecture/pipeline-overview.md`
+- [x] `docs/architecture/pipeline-overview.md`
  - **Isi**: Penjelasan alur kompilasi 3 tingkat (HIR → MIR → LIR) dan fungsi dari 9 kompilasi pass (Pass 0 s.d. Pass 8).
  - **Diagram**: Visualisasi data flow dari representasi visual/audio tingkat tinggi ke bentuk akhir (SVG, Audio Graph, WebGL).
-- [ ] `docs/architecture/style-cascade-tokens.md`
+- [x] `docs/architecture/style-cascade-tokens.md`
  - **Isi**: Mekanisme style cascade order (inline → component → theme → brand profile) sesuai Keputusan Arsitektur #01, format warna (`hex`, `cmyk`, `pantone://`), dan token resolution.
-- [ ] `docs/architecture/layout-reflow-engines.md`
+- [x] `docs/architecture/layout-reflow-engines.md`
  - **Isi**: Cara kerja Flexbox & Grid computation, sistem reflow teks multi-page untuk domain `document`, serta layout dirty-tracking.
-- [ ] `docs/architecture/observability-profiling.md`
+- [x] `docs/architecture/observability-profiling.md`
  - **Isi**: Penjelasan tentang CompilerProfiler, pelacakan `x_debug` provenance, audit aksesibilitas otomatis, dan mitigasi downtime.
 
 ---
@@ -41,17 +41,17 @@ Fokus pada mekanisme internal monorepo, pipeline kompilasi HIR → MIR → LIR, 
 ### 2. `docs/domains/` — Spesifikasi 17 Domain Genesis IR
 Dokumentasi mendalam mengenai aturan semantik, tipe node yang diizinkan (Keputusan #17), dan batasan unit (Keputusan #08) untuk 17 domain resmi.
 
-- [ ] `docs/domains/visual-and-graphic.md`
+- [x] `docs/domains/visual-and-graphic.md`
  - **Isi**: Spesifikasi domain `visual`, `image_edit`, `motion`, `interactive`, `packaging`, dan `signage`. Pembatasan unit (digital: `px`, cetak: `mm`/`pt`).
-- [ ] `docs/domains/document-and-diagram.md`
+- [x] `docs/domains/document-and-diagram.md`
  - **Isi**: Penjelasan 14 node tipe `document` (reflow multi-halaman) dan 13 node tipe `diagram` (deteksi siklik graf menggunakan DFS dan auto-routing konektor A*).
-- [ ] `docs/domains/music-and-audio.md`
+- [x] `docs/domains/music-and-audio.md`
  - **Isi**: Spesifikasi domain `music_production` (Keputusan #12: beat/bar unit, tempo map, MIDI notes) dan integrasi sintesis Web Audio API.
-- [ ] `docs/domains/pixel-art-spec.md`
+- [x] `docs/domains/pixel-art-spec.md`
  - **Isi**: Spesifikasi domain `pixel_art` (Keputusan #11: data piksel biner RGBA base64 di `pixel_cel`, format warna hex, sprite sheet packing).
-- [ ] `docs/domains/font-design-spec.md`
+- [x] `docs/domains/font-design-spec.md`
  - **Isi**: Aturan ketat domain `font_design` (Keputusan #10: units_per_em hanya 1000 atau 2048, kerning class `IRKerningGroupDef`, kompilasi tabel OpenType).
-- [ ] `docs/domains/mockup-3d-spec.md`
+- [x] `docs/domains/mockup-3d-spec.md`
  - **Isi**: Konfigurasi domain `mockup` dan `3d` (lighting, viewport, Three.js render backend, dan CSS 3D matrix transforms).
 
 ---
@@ -59,13 +59,13 @@ Dokumentasi mendalam mengenai aturan semantik, tipe node yang diizinkan (Keputus
 ### 3. `docs/agent/` — Rantai Sinkronisasi Kolaboratif & Sistem Agen
 Menjelaskan runtime agen, kolaborasi multi-user dengan CRDT, protokol komunikasi agen, dan sandbox plugin.
 
-- [ ] `docs/agent/loro-crdt-sync.md`
+- [x] `docs/agent/loro-crdt-sync.md`
  - **Isi**: Arsitektur sinkronisasi Loro CRDT (Keputusan #38) berbasis WASM/Rust, strategi Last-Write-Wins (LWW) resolusi konflik, dan delta stack.
-- [ ] `docs/agent/runtime-and-contracts.md`
+- [x] `docs/agent/runtime-and-contracts.md`
  - **Isi**: Kontrak kapabilitas agen (`IRAgentContract`), audit `actions_taken` yang bersifat append-only (Keputusan #19), dan eskalasi keputusan `irreversible` ke manusia (Keputusan #37).
-- [ ] `docs/agent/plugin-acl-security.md`
+- [x] `docs/agent/plugin-acl-security.md`
  - **Isi**: Aturan keamanan plugin (Keputusan #17: namespace `@namespace/name`, Keputusan #21: strict IR access control, isolasi sandbox, snapshot immutable).
-- [ ] `docs/agent/builtin-tools.md`
+- [x] `docs/agent/builtin-tools.md`
  - **Isi**: Daftar dan spesifikasi parameter input/output JSON Schema v7 untuk 9 registry ID built-in tools (Keputusan #40).
 
 ---
@@ -73,11 +73,11 @@ Menjelaskan runtime agen, kolaborasi multi-user dengan CRDT, protokol komunikasi
 ### 4. `docs/binary_rlvrr/` — Penyimpanan Biner & Gated RLVRR
 Dokumentasi teknis serialisasi biner `.gir`, strategi migrasi, dan rantai pelatihan model (RLVRR).
 
-- [ ] `docs/binary_rlvrr/gir-binary-format.md`
+- [x] `docs/binary_rlvrr/gir-binary-format.md`
  - **Isi**: Penjelasan struktur header 64-byte `.gir` tepat, serialisasi MessagePack, dan kompresi LZ4 block (blok 0 s.d. 2).
-- [ ] `docs/binary_rlvrr/migration-guide.md`
+- [x] `docs/binary_rlvrr/migration-guide.md`
  - **Isi**: Cara merancang `IRMigrationScript` menggunakan 5 operator deklaratif tanpa kode JS bebas (Keputusan #22) dan riwayat audit migrasi.
-- [ ] `docs/binary_rlvrr/rlvrr-reward-signals.md`
+- [x] `docs/binary_rlvrr/rlvrr-reward-signals.md`
  - **Isi**: Arsitektur gated reward signal chain (Keputusan #39) beserta urutan bobot evaluasi (Schema → Brand → Render → Budget → Semantik) dan interpretasi skor kualitas.
 
 ---
@@ -109,3 +109,25 @@ Pembuatan berkas dokumentasi akan berjalan secara inkremental sejajar dengan pen
 | **MD3: Specialized Docs** | `font-design-spec.md`, `mockup-3d-spec.md` | Normal |
 | **MD4: Agent & Sync** | `loro-crdt-sync.md`, `plugin-acl-security.md`, `builtin-tools.md` | Tinggi |
 | **MD5: Storage & RLVRR** | `gir-binary-format.md`, `migration-guide.md`, `rlvrr-reward-signals.md` | Kritis |
+
+---
+
+## Rencana Tambahan: Milestone V2.0 (Ekspansi Renderer & Infrastruktur)
+
+Modul-modul hasil "ROADMAP V2.0 IMPLEMENTATION CHECKLIST" yang harus segera didokumentasikan:
+
+### 5. `docs/architecture/renderer-backends.md` (BARU)
+Fokus pada rincian implementasi mesin rendering dan konversi aset level rendah (LIR).
+- [ ] **PDF/X Renderer**: Integrasi `pdf-lib` dan `@pdf-lib/fontkit`, strategi `sRGB -> CMYK`, dan metadata PDF/X-4.
+- [ ] **Video & Motion**: Konversi timeline via `CanvasVideoRenderer` dan eksport video menggunakan `MediaRecorder` API (`video/webm`).
+- [ ] **Font Compiler**: Transformasi `svgPathToOTPath` dan kompilasi OpenType menggunakan `opentype.js`.
+- [ ] **Web Audio API**: Pembentukan graf audio LIR (`OscillatorNode`, `GainNode`, filter).
+- [ ] **WebGL & Three.js**: Implementasi material PBR (`MeshStandardMaterial`), pencahayaan, dan kendali tampilan (`OrbitControls`).
+- [ ] **Pixel Art Packer**: Teknik bin-packing dengan `maxrects-packer` dan output JSON manifest untuk Phaser/PixiJS.
+
+### 6. Pembaruan Dokumen Eksisting (V2.0 Update)
+Dokumen lama yang wajib diperbarui kontennya agar mencerminkan transisi V2.0:
+- [ ] `docs/agent/loro-crdt-sync.md`: Update penjelasan pergeseran dari fallback JS LWW (`GenesisLWWDoc`) ke Loro WASM sesungguhnya (`LoroCRDTAdapter`) serta mekanisme WebSocket layer yang lebih detail.
+- [ ] `docs/binary_rlvrr/gir-binary-format.md`: Update spesifikasi penggantian metode LZ4 manual ke `lz4js`.
+- [ ] `docs/architecture/observability-profiling.md`: Tambahkan bagian optimasi Native Rust WASM (`wasm-pack`) untuk profiling *hot paths* kompilasi.
+- [ ] `docs/binary_rlvrr/rlvrr-reward-signals.md`: Penjelasan detail algoritma/metrik konkret untuk S3 (Render Error), S4 (Budget Accuracy), dan S5 (Semantic Quality) yang baru diimplementasikan.

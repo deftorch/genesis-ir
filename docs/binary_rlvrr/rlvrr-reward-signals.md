@@ -22,11 +22,14 @@ $$\text{Total Reward} = 0.40 \cdot S_1 + 0.25 \cdot S_2 + 0.20 \cdot S_3 + 0.10 
   - Palette validation: mencocokkan nilai warna pada token warna (`colors.*`) agar tidak menyimpang dari warna brand referensi.
   - Audit kontras warna teks/primary terhadap background menggunakan standar kalkulasi WCAG AA (rasio minimum 4.5:1).
 3. **$S_3$: Render Error Rate (Bobot 0.20)**:
-  - Mengukur kegagalan rendering visual LIR (SVG error, open path font, audio clipping, tabrakan box model).
+  - **V2.0 Metrik Implementasi**: Mengukur rasio insiden saat kompilasi ke LIR (seperti tag SVG korup pada `pdf-lib`, kontur terbuka di kompilasi `opentype.js`, atau clipping frekuensi pada `WebAudio API`). Model tidak mendapat skor ($S_3 = 0.0$) jika terjadi *fatal rendering panic*, dan mendapat nilai parsial jika ditemukan tabrakan box-model ringan yang tertangkap oleh layout `Yoga/Flexbox`.
 4. **$S_4$: Budget Accuracy (Bobot 0.10)**:
-  - Mengukur tingkat efisiensi penggunaan sumber daya (jumlah node terhadap `max_tree_depth`, ukuran file biner terkompresi).
+  - **V2.0 Metrik Implementasi**: Mengevaluasi optimasi pohon AST (jumlah node relatif terhadap `max_tree_depth`) serta mengkalkulasi efisiensi *payload* pasca-kompresi `lz4js`. Dihitung dengan invers persentil: ukuran biner yang lebih padat (dibawah rata-rata budget baseline 50KB) menerima skor presisi $1.0$.
 5. **$S_5$: Semantic Quality (Bobot 0.05)**:
-  - Evaluasi orisinalitas gaya, kompleksitas layout, dan skor kepatuhan aturan aksesibilitas WCAG.
+  - **V2.0 Metrik Implementasi**: Pengukuran kualitatif berlapis: 
+    - (a) Skor audit otonom WCAG AA/AAA via `validate_accessibility`. 
+    - (b) Kohesi hierarki visual (Gestalt Analysis). 
+    - (c) Variansi distribusi komponen interaktif (state machine). Jika ketiga pilar terpenuhi, skor penuh $1.0$ tercapai.
 
 ---
 

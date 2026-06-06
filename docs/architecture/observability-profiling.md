@@ -60,3 +60,12 @@ Semua berkas dokumen HIR memiliki objek `x_debug` opsional untuk mencatat sejara
 
 - **Gestalt Analysis**: Menyimpan statistik keseimbangan tata letak (visual weight, whitespace distribution) yang diperoleh dari pass evaluasi kecerdasan buatan.
 - **Diff History**: Menyimpan kompresi snapshot ringkas dari perbedaan antardelta guna melacak orisinalitas perubahan.
+
+---
+
+## Optimasi Performa & Native Rust WASM (Fase V2.0)
+
+Untuk mengatasi masalah bottleneck komputasi (hot paths) seperti re-kalkulasi tata letak Flexbox atau kompresi rekursif pada file yang kompleks, kompilator ini menggunakan paket Rust berkinerja tinggi yang dikompilasi menggunakan `wasm-pack`.
+
+- **Paket Native**: Logika berat diekstrak ke dalam paket crate di direktori `packages/native` (atau dialihkan jika fallback).
+- **Transparent Fallback**: Apabila modul WASM gagal diinisialisasi dalam lingkungan *runtime* (seperti browser tanpa akses SharedArrayBuffer atau lingkungan Node terbatas), modul kompiler secara transparan mundur menggunakan *wrapper fallback JS* secara otomatis tanpa memutuskan eksekusi.

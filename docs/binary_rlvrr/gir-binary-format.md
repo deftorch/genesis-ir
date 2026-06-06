@@ -58,12 +58,9 @@ Tubuh dokumen terbagi menjadi 4 komponen biner mandiri yang disusun secara berur
 
 ---
 
-## Struktur Kompresi LZ4 Block
+## Struktur Kompresi LZ4 & lz4js (V2.0)
 
-Kompresi block diimplementasikan secara murni (pure-JS) untuk kecepatan tinggi:
+Untuk menjamin kompresi blok data (`Blok 0` hingga `Blok 2`) berjalan secara tangguh pada ukuran produksi, mekanisme pembacaan dan kompresi manual LZ4 (`homebrew`) telah digantikan oleh penggunaan pustaka tingkat produksi `lz4js` di `@genesis/compiler`.
 
-- **Token (1 Byte)**: Menyimpan panjang literal dan panjang match secara padat:
- $$\text{Literal Length} = \text{Token} \gg 4$$
- $$\text{Match Length} = \text{Token} \& 0x0F$$
-- **Offset (2 Byte - Little Endian)**: Jarak mundur ke belakang buffer untuk menyalin data duplikat yang cocok (match).
-- **Integritas Payload**: SHA-256 checksum bertindak sebagai tameng keamanan. Setiap modifikasi ilegal di tingkat biner pada data terkompresi akan dideteksi instan oleh parser saat pemecahan checksum 96-bit dilakukan.
+- **Blok Standar LZ4**: Kompresi dienkapsulasi menggunakan standar block framing baku dari LZ4. Berkat perpindahan ini, ukuran payload lebih stabil dan performa konversi data ke format *MessagePack* di peramban web menjadi lebih andal.
+- **Integritas Payload**: SHA-256 checksum yang tertanam dalam header (96-bit) bertindak sebagai tameng keamanan. Setiap modifikasi ilegal di tingkat biner pada data terkompresi `lz4js` akan dideteksi secara instan oleh parser sebelum dekompresi dilakukan.
