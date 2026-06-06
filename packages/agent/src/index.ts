@@ -1,5 +1,7 @@
 import { IRAgentAction, IRAgentContext } from '@genesis/types';
 import { appendAgentAction, requiresHumanEscalation, loadBuiltinTools, canPluginAccess, IRPluginManifest, validateAgentMessage, IRAgentMessage } from '@genesis/types';
+export * from './rlvrr.js';
+export * from './orchestrator.js';
 
 /**
  * Factory for creating an IRAgentAction.
