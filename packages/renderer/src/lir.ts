@@ -1,6 +1,7 @@
 import { IRMIRDocument, PlatformTarget, IRLIRDocument, WebLIR, PrintLIR, VideoLIR, PixelLIR } from '@genesis/types';
 import { renderToSVG } from './svg.js';
 import { computeLayout } from './layout.js';
+import { renderToHTMLDOM } from './interactive.js';
 import { generateWebAudioLIR } from './webaudio.js';
 import { packSpriteSheet } from './spritesheet.js';
 
@@ -34,6 +35,22 @@ export function generateLIR(mir: IRMIRDocument, target: PlatformTarget): IRLIRDo
       return {
         target,
         lir: pixelLir,
+      };
+    }
+
+    if (domain === 'interactive' || domain === 'document') {
+      const { html, scripts } = renderToHTMLDOM(mir);
+      const webLir: WebLIR = {
+        type: 'web',
+        dom_instructions: {
+          format: 'html_dom',
+          html,
+          scripts,
+        },
+      };
+      return {
+        target,
+        lir: webLir,
       };
     }
 

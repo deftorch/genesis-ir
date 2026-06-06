@@ -27,6 +27,7 @@ export interface WebLIR {
     | { format: 'svg'; svg: string }
     | { format: 'canvas2d'; instructions: any[] }
     | { format: 'webaudio'; graph: AudioGraphInstruction[] }
+    | { format: 'html_dom'; html: string; scripts: string[] }
     | Record<string, unknown>;
 }
 
