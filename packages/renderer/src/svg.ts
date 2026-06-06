@@ -83,10 +83,16 @@ export function renderToSVG(doc: IRDocument): string {
         const fontFamily = (style.font_family as string) ?? 'sans-serif';
         const fontSize = (style.font_size as number) ?? 16;
         const fontWeight = (style.font_weight as string | number) ?? 'normal';
+        // i18n Translation Swapping Layer
+        let displayString = content.raw || '';
+        if (doc.i18n_context) {
+          const lang = doc.i18n_context.default_language;
+          if (doc.i18n_context.translations[lang] && doc.i18n_context.translations[lang][displayString]) {
+            displayString = doc.i18n_context.translations[lang][displayString];
+          }
+        }
         // Add absolute position, align vertical baseline roughly with fontSize
-        contentStr = `<text x="${layout.x}" y="${layout.y + fontSize}" font-family="${fontFamily}" font-size="${fontSize}" font-weight="${fontWeight}" ${commonAttrs}>${
-          content.raw || ''
-        }</text>`;
+        contentStr = `<text x="${layout.x}" y="${layout.y + fontSize}" font-family="${fontFamily}" font-size="${fontSize}" font-weight="${fontWeight}" ${commonAttrs}>${displayString}</text>`;
       } else if (content.kind === 'image') {
         const preserveRatio = (content.fit as string) === 'contain' ? 'xMidYMid meet' : 'xMidYMid slice';
         contentStr = `<image href="${content.asset_id}" x="${layout.x}" y="${layout.y}" width="${layout.width}" height="${layout.height}" preserveAspectRatio="${preserveRatio}" ${commonAttrs} />`;
