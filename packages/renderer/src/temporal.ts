@@ -190,6 +190,7 @@ export function resolveTempoChanges(changes: IRTempoChange[], totalBars: number)
 export interface TemporalResolutionResult {
   success: boolean;
   resolvedNotes?: { noteId: string; startMs: number; durationMs: number }[];
+  resolvedFrames?: { frameId: string; startMs: number; durationMs: number }[];
   errors: string[];
 }
 
@@ -234,6 +235,33 @@ export function runPass5(doc: any, _assetPool: any[]): TemporalResolutionResult 
     return {
       success: true,
       resolvedNotes,
+      errors: [],
+    };
+  }
+
+  // Sub-pass 5b: Pixel Frame Timing
+  if (domain === 'pixel_art') {
+    const spec = doc.pixel_spec;
+    if (!spec) {
+      return { success: false, errors: ['Missing pixel_spec'] };
+    }
+
+    const resolvedFrames: { frameId: string; startMs: number; durationMs: number }[] = [];
+    let accumulatedMs = 0;
+
+    const frames = spec.frames || [];
+    for (const frame of frames) {
+      resolvedFrames.push({
+        frameId: frame.id || '',
+        startMs: accumulatedMs,
+        durationMs: frame.duration_ms || 0
+      });
+      accumulatedMs += (frame.duration_ms || 0);
+    }
+
+    return {
+      success: true,
+      resolvedFrames,
       errors: [],
     };
   }

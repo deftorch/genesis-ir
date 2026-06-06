@@ -89,4 +89,29 @@ describe('Timeline & Temporal Resolution Engine', () => {
       expect(valEnd).toBe(1.0);
     });
   });
+
+  describe('Pixel Frame Timing (Sub-pass 5b)', () => {
+    it('calculates accumulated startMs for pixel frames', () => {
+      const { runPass5 } = require('../temporal.js');
+      const doc = {
+        meta: { domain: 'pixel_art' },
+        pixel_spec: {
+          frames: [
+            { id: 'f1', duration_ms: 100 },
+            { id: 'f2', duration_ms: 150 },
+            { id: 'f3', duration_ms: 200 }
+          ]
+        }
+      };
+
+      const result = runPass5(doc, []);
+      expect(result.success).toBe(true);
+      expect(result.resolvedFrames).toHaveLength(3);
+      
+      expect(result.resolvedFrames[0].startMs).toBe(0);
+      expect(result.resolvedFrames[1].startMs).toBe(100);
+      expect(result.resolvedFrames[2].startMs).toBe(250); // 100 + 150
+      expect(result.resolvedFrames[2].durationMs).toBe(200);
+    });
+  });
 });

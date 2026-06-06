@@ -1,9 +1,10 @@
-import { IRMIRDocument, PlatformTarget, IRLIRDocument, WebLIR, PrintLIR, VideoLIR, PixelLIR } from '@genesis/types';
+import { IRMIRDocument, PlatformTarget, IRLIRDocument, WebLIR, PrintLIR, VideoLIR, PixelLIR, FontLIR } from '@genesis/types';
 import { renderToSVG } from './svg.js';
 import { computeLayout } from './layout.js';
 import { renderToHTMLDOM } from './interactive.js';
 import { generateWebAudioLIR } from './webaudio.js';
 import { packSpriteSheet } from './spritesheet.js';
+import { compileOpenTypeFont } from './opentype.js';
 
 /**
  * Generate Low-Level IR (LIR) from Medium-Level IR (MIR) document.
@@ -18,6 +19,19 @@ export function generateLIR(mir: IRMIRDocument, target: PlatformTarget): IRLIRDo
       return {
         target,
         lir: webLir,
+      };
+    }
+
+    if (domain === 'font_design') {
+      const fontResult = compileOpenTypeFont(mir);
+      const fontLir: FontLIR = {
+        type: 'font',
+        font_format: fontResult.format,
+        binary_buffer: fontResult.buffer.toString('base64'),
+      };
+      return {
+        target,
+        lir: fontLir,
       };
     }
 

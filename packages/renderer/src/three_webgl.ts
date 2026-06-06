@@ -18,7 +18,16 @@ export const GeometryFactory = {
       case 'plane':
         return `new THREE.PlaneGeometry(${params.width ?? 1}, ${params.height ?? 1})`;
       case 'capsule':
-        return `new THREE.CapsuleGeometry(${params.radius ?? 0.5}, ${params.length ?? 1}, ${params.capSegments ?? 4}, ${params.radialSegments ?? 8})`;
+        return `(function(){
+          const radius = ${params.radius ?? 0.5};
+          const length = ${params.length ?? 1};
+          const radial = ${params.radialSegments ?? 16};
+          const path = new THREE.Path();
+          path.absarc(0, -length/2, radius, Math.PI * 1.5, Math.PI * 2);
+          path.lineTo(radius, length/2);
+          path.absarc(0, length/2, radius, 0, Math.PI * 0.5);
+          return new THREE.LatheGeometry(path.getPoints(), radial);
+        })()`;
       case 'box':
       default:
         return `new THREE.BoxGeometry(${params.width ?? 1}, ${params.height ?? 1}, ${params.depth ?? 1})`;
@@ -132,6 +141,40 @@ export class ThreeDWebGLRenderer {
         `;
       }
     });
+
+    // Mockup Domain 3D Perspective Integration
+    if (doc.mockup_spec && doc.mockup_spec.view_mode === '3d_perspective') {
+      const devices = doc.mockup_spec.devices || [];
+      devices.forEach((device: any) => {
+        const x = device.position?.x ?? 0;
+        const y = device.position?.y ?? 0;
+        const z = device.position?.z ?? 0;
+        const scale = device.scale ?? 1;
+        
+        let rotX = 0, rotY = 0, rotZ = 0;
+        if (device.view_angle === 'custom' && device.custom_rotation) {
+          rotX = device.custom_rotation.x ?? 0;
+          rotY = device.custom_rotation.y ?? 0;
+          rotZ = device.custom_rotation.z ?? 0;
+        } else if (device.view_angle === 'angle_45') {
+          rotY = Math.PI / 4;
+        }
+
+        const geometryCode = GeometryFactory.create('box', { width: 1, height: 2, depth: 0.1 });
+        meshesCode += `
+        // Create Mockup Device: ${device.id}
+        const geometry_${device.id} = ${geometryCode};
+        const material_${device.id} = new THREE.MeshStandardMaterial({ color: '${device.color_variant === 'black' ? '#222222' : '#cccccc'}', roughness: 0.2, metalness: 0.8 });
+        const mesh_${device.id} = new THREE.Mesh(geometry_${device.id}, material_${device.id});
+        mesh_${device.id}.position.set(${x}, ${y}, ${z});
+        mesh_${device.id}.rotation.set(${rotX}, ${rotY}, ${rotZ});
+        mesh_${device.id}.scale.set(${scale}, ${scale}, ${scale});
+        mesh_${device.id}.castShadow = true;
+        mesh_${device.id}.receiveShadow = true;
+        scene.add(mesh_${device.id});
+        `;
+      });
+    }
 
     const html = `
 <!DOCTYPE html>

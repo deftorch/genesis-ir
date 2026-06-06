@@ -19,6 +19,7 @@ export class GenesisSyncServer {
   private persistenceStore: ISyncPersistenceStore;
   private maxClientsPerRoom: number;
   private maxPayloadSizeBytes: number;
+  private authValidator?: (token?: string, roomId?: string, userId?: string) => Promise<boolean>;
 
   constructor(opts: {
     port?: number;
@@ -26,6 +27,7 @@ export class GenesisSyncServer {
     persistence?: ISyncPersistenceStore;
     maxClientsPerRoom?: number;
     maxPayloadSizeBytes?: number;
+    authValidator?: (token?: string, roomId?: string, userId?: string) => Promise<boolean>;
   } = {}) {
     this.wss = new WebSocketServer({
       port: opts.port,
@@ -34,6 +36,7 @@ export class GenesisSyncServer {
     this.persistenceStore = opts.persistence || new InMemorySyncPersistence();
     this.maxClientsPerRoom = opts.maxClientsPerRoom || 50;
     this.maxPayloadSizeBytes = opts.maxPayloadSizeBytes || 5 * 1024 * 1024; // 5MB limit
+    this.authValidator = opts.authValidator;
 
     this.wss.on('connection', (ws) => {
       this.handleConnection(ws);
@@ -102,7 +105,18 @@ export class GenesisSyncServer {
   }
 
   private async handleJoinRoom(ws: WebSocket, msg: SyncMessage): Promise<void> {
-    const { roomId, senderId } = msg;
+    const { roomId, senderId, token } = msg;
+
+    // Authentication Gate
+    if (this.authValidator) {
+      const isValid = await this.authValidator(token, roomId, senderId);
+      if (!isValid) {
+        this.sendError(ws, 'Unauthorized', roomId);
+        ws.close(1008, 'Unauthorized');
+        return;
+      }
+    }
+
     let clients = this.rooms.get(roomId) || [];
 
     // Circuit breaker: check maximum client count

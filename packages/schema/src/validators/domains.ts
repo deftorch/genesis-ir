@@ -313,6 +313,21 @@ export function validateFontDomain(doc: any): ValidationResult {
     }
   });
 
+  const objects = doc.objects || [];
+  objects.forEach((obj: any, idx: number) => {
+    if (obj.type === 'glyph' && obj.content && obj.content.kind === 'glyph') {
+      const contours = obj.content.contours || [];
+      contours.forEach((contour: any, cidx: number) => {
+        if (typeof contour.d === 'string') {
+          const d = contour.d.trim();
+          if (d.length > 0 && !d.toLowerCase().endsWith('z')) {
+            errors.push({ path: `objects[${idx}].content.contours[${cidx}]`, message: `Glyph contour must be closed (end with Z/z). Found open contour in glyph '${obj.content.glyph_name}'`, keyword: 'open-contour' });
+          }
+        }
+      });
+    }
+  });
+
   return { valid: errors.length === 0, errors };
 }
 

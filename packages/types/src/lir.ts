@@ -70,7 +70,16 @@ export interface PixelLIR {
 /**
  * @stability STABLE
  */
+export interface FontLIR {
+  type: 'font';
+  font_format: 'ttf' | 'otf';
+  binary_buffer: string; // Base64
+}
+
+/**
+ * @stability STABLE
+ */
 export interface IRLIRDocument {
   target: PlatformTarget;
-  lir: WebLIR | PrintLIR | VideoLIR | PixelLIR;
+  lir: WebLIR | PrintLIR | VideoLIR | PixelLIR | FontLIR;
 }

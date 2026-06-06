@@ -53,8 +53,8 @@ export async function dispatchMultiRenderer(doc: IRDocument, targetContexts?: st
     output.audio = Buffer.from(JSON.stringify(webLIR.dom_instructions), 'utf8');
   }
 
-  // 3. 3D rendering
-  const has3D = activeDomains.includes('3d') || domain === '3d' || (doc.canvas as any)?.canvas_type === '3d';
+  // 3. 3D rendering (including Mockup 3D Perspective)
+  const has3D = activeDomains.includes('3d') || domain === '3d' || (doc.canvas as any)?.canvas_type === '3d' || domain === 'mockup';
 
   if (has3D && wants('three_d')) {
     const webglRenderer = new ThreeDWebGLRenderer();

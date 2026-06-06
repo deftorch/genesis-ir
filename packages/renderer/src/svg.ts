@@ -120,6 +120,19 @@ export function renderToSVG(doc: IRDocument): string {
         const op = (content as any).opacity ?? 0.5;
         contentStr = `<text x="${layout.x + layout.width/2}" y="${layout.y + layout.height/2}" font-family="sans-serif" font-size="${layout.height/4}" font-weight="bold" fill="rgba(200,200,200,${op})" text-anchor="middle" dominant-baseline="middle" transform="rotate(-45 ${layout.x + layout.width/2} ${layout.y + layout.height/2})">${(content as any).text ?? 'WATERMARK'}</text>`;
       }
+    } else if (node.type === 'diagram_edge') {
+      const waypoints = (node as any).computed_waypoints || [];
+      if (waypoints.length >= 4) {
+        const p0 = waypoints[0];
+        const p1 = waypoints[1];
+        const p2 = waypoints[2];
+        const p3 = waypoints[3];
+        contentStr = `<path d="M ${p0.x},${p0.y} C ${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}" fill="none" stroke="${stroke === 'none' ? '#000000' : stroke}" stroke-width="${strokeWidth}" />`;
+      } else if (waypoints.length === 2) {
+        const p0 = waypoints[0];
+        const p1 = waypoints[1];
+        contentStr = `<line x1="${p0.x}" y1="${p0.y}" x2="${p1.x}" y2="${p1.y}" stroke="${stroke === 'none' ? '#000000' : stroke}" stroke-width="${strokeWidth}" />`;
+      }
     }
 
     // Children rendering

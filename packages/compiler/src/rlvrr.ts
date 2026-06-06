@@ -18,7 +18,7 @@ const DEFAULT_CONFIG: IRRLVRRConfig = {
  */
 export function evaluateRLVRR(
   output: IRDocument,
-  reference: IRDocument,
+  reference?: IRDocument,
   config: IRRLVRRConfig = DEFAULT_CONFIG
 ): IRRLVRRResult {
   // Sinyal 1: Schema Compliance (Gate Utama, Weight: 0.40)
@@ -51,7 +51,7 @@ export function evaluateRLVRR(
   // Sinyal 2: Brand Guard (Weight: 0.25)
   // Check if output violates brand profile in style context compared to reference
   const violations: string[] = [];
-  if (output.style_context?.theme_tokens && reference.style_context?.theme_tokens) {
+  if (reference && output.style_context?.theme_tokens && reference.style_context?.theme_tokens) {
     const outTokens = output.style_context.theme_tokens;
     const refTokens = reference.style_context.theme_tokens;
     
@@ -86,7 +86,11 @@ export function evaluateRLVRR(
         }
       }
     }
+  } else if (!reference) {
+    // If no reference brand profile is provided, we assume it's valid
+    // but we can still evaluate contrast rules from output's theme.
   }
+  
   const s2_passed = violations.length === 0;
   const s2_score = s2_passed ? 1.0 : Math.max(0.0, 1.0 - violations.length * 0.2);
 

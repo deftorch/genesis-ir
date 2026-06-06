@@ -73,6 +73,52 @@ describe('FASE 12A — Font Design Domain', () => {
     ];
     expect(validateHIR(doc).valid).toBe(true);
   });
+
+  it('fails if a glyph contour is open', () => {
+    const doc = baseFontDoc();
+    doc.objects = [
+      {
+        id: 'glyphA',
+        type: 'glyph',
+        content: {
+          kind: 'glyph',
+          unicode: 65,
+          glyph_name: 'A',
+          advance_width: 600,
+          lsb: 50,
+          rsb: 50,
+          contours: [
+            { kind: 'svg_path', d: 'M 0 0 L 100 100 L 0 100', fill_rule: 'nonzero', path_type: 'cubic' }
+          ]
+        }
+      } as any
+    ];
+    const res = validateHIR(doc);
+    expect(res.valid).toBe(false);
+    expect(res.errors.some(e => e.keyword === 'open-contour')).toBe(true);
+  });
+
+  it('passes if all glyph contours are closed', () => {
+    const doc = baseFontDoc();
+    doc.objects = [
+      {
+        id: 'glyphA',
+        type: 'glyph',
+        content: {
+          kind: 'glyph',
+          unicode: 65,
+          glyph_name: 'A',
+          advance_width: 600,
+          lsb: 50,
+          rsb: 50,
+          contours: [
+            { kind: 'svg_path', d: 'M 0 0 L 100 100 L 0 100 Z', fill_rule: 'nonzero', path_type: 'cubic' }
+          ]
+        }
+      } as any
+    ];
+    expect(validateHIR(doc).valid).toBe(true);
+  });
 });
 
 describe('FASE 12B — Mockup Domain', () => {

@@ -22,7 +22,7 @@ export interface CompilationResult {
  * Compile pipeline entrypoint
  * @stability BETA
  */
-export function compileDocument(doc: unknown): CompilationResult {
+export async function compileDocument(doc: unknown): Promise<CompilationResult> {
   const typedDoc = doc as IRDocument;
   
   if (typedDoc.meta?.lifecycle_status === 'archived') {
@@ -30,7 +30,7 @@ export function compileDocument(doc: unknown): CompilationResult {
   }
 
   try {
-    const lir = runCompilerPipeline(typedDoc);
+    const lir = await runCompilerPipeline(typedDoc);
     return { success: true, errors: [], lir };
   } catch (error: any) {
     return {

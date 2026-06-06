@@ -19,8 +19,17 @@ export interface ICRDTStore {
  */
 export function mergeDeltas(local: IRDelta[], remote: IRDelta[]): IRDelta[] {
   const merged = [...local, ...remote];
-  // Sort by created_at timestamp for deterministic ordering (LWW)
-  merged.sort((a, b) => a.created_at.localeCompare(b.created_at));
+  // Sort by lamport_clock, fallback to created_at and session_id for deterministic ordering (LWW)
+  merged.sort((a, b) => {
+    const clockA = a.lamport_clock ?? 0;
+    const clockB = b.lamport_clock ?? 0;
+    if (clockA !== clockB) {
+      return clockA - clockB;
+    }
+    const timeCmp = a.created_at.localeCompare(b.created_at);
+    if (timeCmp !== 0) return timeCmp;
+    return a.session_id.localeCompare(b.session_id);
+  });
   // Deduplicate by delta_id
   const seen = new Set<string>();
   return merged.filter(d => {
@@ -109,18 +118,19 @@ export class LoroCRDTAdapter implements ICRDTStore {
 
   static async create(): Promise<LoroCRDTAdapter> {
     const instance = new LoroCRDTAdapter();
+    try {
+      const { UndoManager } = await import('loro-crdt');
+      instance.undoManager = new UndoManager(instance.doc, {} as any);
+    } catch (e) {
+      // Fallback if UndoManager is not available in the current loro-crdt version
+      instance.undoManager = null;
+    }
     return instance;
   }
 
   private constructor() {
     this.doc = new LoroDoc();
-    try {
-      const { UndoManager } = require('loro-crdt');
-      this.undoManager = new UndoManager(this.doc);
-    } catch (e) {
-      // Fallback if UndoManager is not available in the current loro-crdt version
-      this.undoManager = null;
-    }
+    this.undoManager = null;
   }
 
   applyDelta(delta: IRDelta): { success: boolean; errors?: string[] } {

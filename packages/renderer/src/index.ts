@@ -9,4 +9,7 @@ export * from './three_webgl.js';
 export * from './dispatch.js';
 export * from './webaudio.js';
 export * from './spritesheet.js';
+export * from './reflow.js';
+export * from './routing.js';
 export * from './video.js';
+export * from './opentype.js';

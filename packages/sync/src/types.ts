@@ -22,6 +22,7 @@ export interface SyncMessage {
   senderId: string;
   payload?: any;
   error?: string;
+  token?: string;
 }
 
 /**

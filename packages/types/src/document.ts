@@ -352,7 +352,10 @@ export function createIRDocument(opts: {
       lifecycle_status: opts.lifecycle_status ?? 'draft',
       max_tree_depth: 64,
     },
-    canvas: opts.canvas,
+    canvas: {
+      ...opts.canvas,
+      ...(!('canvas_type' in opts.canvas) && !('color_space' in opts.canvas) ? { color_space: 'sRGB' } : {})
+    } as any,
     style_context: {
       theme_tokens: {},
       brand_profile: {},
