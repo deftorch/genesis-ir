@@ -48,7 +48,9 @@ export async function dispatchMultiRenderer(doc: IRDocument, targetContexts?: st
                    domain === 'music_production';
 
   if (hasAudio && wants('audio')) {
-    output.audio = Buffer.from('RIFF\x24\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00\x44\xac\x00\x00\x88\x58\x01\x00\x02\x00\x10\x00data\x00\x00\x00\x00', 'binary');
+    const { generateWebAudioLIR } = await import('./webaudio.js');
+    const webLIR = generateWebAudioLIR(doc as any);
+    output.audio = Buffer.from(JSON.stringify(webLIR.dom_instructions), 'utf8');
   }
 
   // 3. 3D rendering

@@ -42,9 +42,10 @@ export function runLayoutBenchmark(
   iterations: number = 100
 ): {
   jsDurationMs: number;
-  wasmDurationMs: number;
-  wasmSpeedupMultiplier: number;
+  wasmDurationMs: number | null;
+  wasmSpeedupMultiplier: number | null;
   wasmAvailable: boolean;
+  note?: string;
 } {
   const startJs = Date.now();
   for (let i = 0; i < iterations; i++) {
@@ -65,15 +66,19 @@ export function runLayoutBenchmark(
       }
     }
     wasmDurationMs = Date.now() - startWasm;
+    return {
+      jsDurationMs,
+      wasmDurationMs,
+      wasmSpeedupMultiplier: wasmDurationMs > 0 ? jsDurationMs / wasmDurationMs : 1.0,
+      wasmAvailable,
+    };
   } else {
-    // Simulate wasm time for benchmark report fallback when not compiled
-    wasmDurationMs = Math.round(jsDurationMs * 0.15); // Hypothetical 6.6x speedup typical of Rust layouter
+    return {
+      jsDurationMs,
+      wasmDurationMs: null,
+      wasmSpeedupMultiplier: null,
+      wasmAvailable,
+      note: "WASM not available — benchmark skipped"
+    };
   }
-
-  return {
-    jsDurationMs,
-    wasmDurationMs,
-    wasmSpeedupMultiplier: wasmDurationMs > 0 ? jsDurationMs / wasmDurationMs : 1.0,
-    wasmAvailable,
-  };
 }

@@ -22,7 +22,7 @@ export class GenesisSyncClient {
   // Event callbacks
   public onConnected?: () => void;
   public onDisconnected?: () => void;
-  public onLoroUpdate?: (payload: any) => void;
+  public onCrdtUpdate?: (payload: any) => void;
   public onPresenceUpdate?: (presence: any) => void;
   public onSyncResponse?: (snapshotBase64: string | null) => void;
   public onError?: (error: string) => void;
@@ -65,8 +65,8 @@ export class GenesisSyncClient {
         if (msg.roomId !== this.roomId) return;
 
         switch (msg.type) {
-          case 'loro_update':
-            if (this.onLoroUpdate) this.onLoroUpdate(msg.payload);
+          case 'crdt_update':
+            if (this.onCrdtUpdate) this.onCrdtUpdate(msg.payload);
             break;
           case 'presence_update':
             if (this.onPresenceUpdate) this.onPresenceUpdate(msg.payload);
@@ -110,9 +110,9 @@ export class GenesisSyncClient {
   /**
    * Broadcast a Loro/CRDT update snapshot base64 string to the room.
    */
-  sendLoroUpdate(snapshotBase64: string): void {
+  sendCrdtUpdate(snapshotBase64: string): void {
     this.send({
-      type: 'loro_update',
+      type: 'crdt_update',
       roomId: this.roomId,
       senderId: this.userId,
       payload: { snapshotBase64 }

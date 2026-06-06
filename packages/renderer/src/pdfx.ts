@@ -274,37 +274,6 @@ export class PDFXRenderer {
  */
 export class DXFExporter {
   exportDieline(svgPath: string): string {
-    const lines: string[] = [];
-    lines.push('  0');
-    lines.push('SECTION');
-    lines.push('  2');
-    lines.push('HEADER');
-    lines.push('  0');
-    lines.push('ENDSEC');
-    lines.push('  0');
-    lines.push('SECTION');
-    lines.push('  2');
-    lines.push('ENTITIES');
-
-    // Simplistic line parsing from M x y L x2 y2 to lines
-    lines.push('  0');
-    lines.push('LINE');
-    lines.push('  8');
-    lines.push('dieline');
-    lines.push(' 10');
-    lines.push('0.0');
-    lines.push(' 20');
-    lines.push('0.0');
-    lines.push(' 11');
-    lines.push('100.0');
-    lines.push(' 21');
-    lines.push('100.0');
-
-    lines.push('  0');
-    lines.push('ENDSEC');
-    lines.push('  0');
-    lines.push('EOF');
-
-    return lines.join('\n');
+    throw new Error('DXFExporter not yet implemented — requires SVG to DXF path parser (see G-05)');
   }
 }

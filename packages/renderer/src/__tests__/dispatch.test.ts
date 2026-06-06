@@ -28,7 +28,7 @@ describe('Multi-Renderer Dispatch & WebGL Renderer', () => {
       expect(res.svg).toBeDefined();
       expect(res.pdf).toBeDefined();
       expect(res.audio).toBeDefined();
-      expect(res.audio!.toString('binary')).toContain('WAVE');
+      expect(res.audio!.toString('utf8')).toContain('webaudio');
     });
 
     it('dispatches 3D HTML output for 3D viewport canvas documents', async () => {

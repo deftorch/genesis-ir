@@ -108,11 +108,13 @@ export function evaluateRLVRR(
   // Sinyal 3: Render Error Rate (Weight: 0.20)
   // Target: error rate < 0.02
   // We can calculate this based on node layout differences or node count mismatch
+  const auditErrorsCount = (output.observability as any)?.audit_log?.filter((l: any) => l.severity === 'error' || l.severity === 'critical')?.length || 0;
   const outNodesCount = output.objects?.length || 0;
   const refNodesCount = reference.objects?.length || 0;
   const diff = Math.abs(outNodesCount - refNodesCount);
-  const error_rate = refNodesCount > 0 ? diff / refNodesCount : 0.0;
-  const s3_passed = error_rate < 0.02;
+  const node_error_rate = refNodesCount > 0 ? diff / refNodesCount : 0.0;
+  const error_rate = Math.min(1.0, node_error_rate + (auditErrorsCount * 0.1));
+  const s3_passed = error_rate < 0.05;
   const s3_score = s3_passed ? 1.0 : Math.max(0.0, 1.0 - error_rate * 5);
 
   signals.signal_3_render_error_rate = {
@@ -131,10 +133,20 @@ export function evaluateRLVRR(
 
   // Sinyal 4: Budget Accuracy (Weight: 0.10)
   // Accuracy = 1 - difference ratio
-  const est = output.observability?.compilation_profile?.resolved_styles_count ?? reference.observability?.compilation_profile?.resolved_styles_count ?? 100;
-  const act = output.observability?.metrics?.token_resolutions ?? reference.observability?.metrics?.token_resolutions ?? 100;
-  const accuracy = Math.max(0.0, 1.0 - Math.abs(est - act) / Math.max(est, act));
-  const s4_score = accuracy;
+  let s4_score = 0.5;
+  let est = 0;
+  let act = 0;
+  let accuracy = 0.0;
+
+  if (output.observability?.compilation_profile && output.observability?.metrics) {
+    est = output.observability.compilation_profile.resolved_styles_count ?? 100;
+    act = output.observability.metrics.token_resolutions ?? 100;
+    accuracy = Math.max(0.0, 1.0 - Math.abs(est - act) / Math.max(est, act));
+    s4_score = accuracy;
+  } else {
+    // Penalty if observability is missing
+    s4_score = 0.5;
+  }
 
   signals.signal_4_budget_accuracy = {
     estimated_tokens: est,
@@ -146,8 +158,16 @@ export function evaluateRLVRR(
 
   // Sinyal 5: Semantic Quality (Weight: 0.05)
   // High quality when text size/contrast/semantic checks pass.
-  const semanticScore = (output.canvas as any).grid_layout || (output.canvas as any).context?.type === 'diagram' ? 1.0 : 0.9;
-  const s5_score = semanticScore;
+  let s5_score = 0.7;
+  const accessibilityScore = (output.observability as any)?.accessibility_audit?.score;
+  
+  if (accessibilityScore !== undefined) {
+    s5_score = accessibilityScore / 100.0;
+  } else if ((output as any).validation_pass === 'both' || (output as any).validation_pass === 'pass3') {
+    s5_score = 1.0;
+  } else if ((output.canvas as any).grid_layout || (output.canvas as any).context?.type === 'diagram') {
+    s5_score = 0.9;
+  }
 
   signals.signal_5_semantic_quality = {
     score: s5_score,

@@ -65,8 +65,15 @@ describe('Native WASM Compiler Fallbacks & Benchmarks', () => {
     const report = runLayoutBenchmark(mockDoc, 50);
 
     expect(report.jsDurationMs).toBeGreaterThanOrEqual(0);
-    expect(report.wasmDurationMs).toBeGreaterThanOrEqual(0);
-    expect(report.wasmSpeedupMultiplier).toBeGreaterThan(0);
     expect(typeof report.wasmAvailable).toBe('boolean');
+    
+    if (report.wasmAvailable) {
+      expect(report.wasmDurationMs).toBeGreaterThanOrEqual(0);
+      expect(report.wasmSpeedupMultiplier).toBeGreaterThan(0);
+    } else {
+      expect(report.wasmDurationMs).toBeNull();
+      expect(report.wasmSpeedupMultiplier).toBeNull();
+      expect(report.note).toBe("WASM not available — benchmark skipped");
+    }
   });
 });

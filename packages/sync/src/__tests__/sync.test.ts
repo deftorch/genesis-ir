@@ -63,7 +63,7 @@ describe('Real-time Collaboration & Synchronization Layer', () => {
 
       const mockSnapshot = Buffer.from('loro-crdt-binary-payload').toString('base64');
 
-      client2.onLoroUpdate = (payload) => {
+      client2.onCrdtUpdate = (payload) => {
         expect(payload.snapshotBase64).toBe(mockSnapshot);
         client1.disconnect();
         client2.disconnect();
@@ -76,7 +76,7 @@ describe('Real-time Collaboration & Synchronization Layer', () => {
 
       client2.onConnected = () => {
         // Broadcast update from client 1
-        client1.sendLoroUpdate(mockSnapshot);
+        client1.sendCrdtUpdate(mockSnapshot);
       };
 
       client1.onError = (err) => reject(new Error(err));

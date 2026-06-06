@@ -89,15 +89,9 @@ describe('PDF/X-4 & DXF Renderer Backend', () => {
   });
 
   describe('DXF Exporter', () => {
-    it('generates a valid DXF dieline drawing exchange file structure', () => {
+    it('throws NotImplementedError for exportDieline', () => {
       const exporter = new DXFExporter();
-      const output = exporter.exportDieline('M 0 0 L 100 100');
-
-      expect(output).toContain('SECTION');
-      expect(output).toContain('HEADER');
-      expect(output).toContain('ENTITIES');
-      expect(output).toContain('LINE');
-      expect(output).toContain('EOF');
+      expect(() => exporter.exportDieline('M 0 0 L 100 100')).toThrowError(/not yet implemented/);
     });
   });
 });

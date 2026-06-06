@@ -76,8 +76,8 @@ export class GenesisSyncServer {
           case 'join_room':
             await this.handleJoinRoom(ws, msg);
             break;
-          case 'loro_update':
-            await this.handleLoroUpdate(ws, msg);
+          case 'crdt_update':
+            await this.handleCrdtUpdate(ws, msg);
             break;
           case 'presence_update':
             this.handlePresenceUpdate(ws, msg);
@@ -130,12 +130,11 @@ export class GenesisSyncServer {
     await this.handleSyncRequest(ws, msg);
   }
 
-  private async handleLoroUpdate(ws: WebSocket, msg: SyncMessage): Promise<void> {
+  private async handleCrdtUpdate(ws: WebSocket, msg: SyncMessage): Promise<void> {
     const { roomId, senderId, payload } = msg;
     
-    // Broadcast updates to all other clients in the room
     this.broadcastToRoom(roomId, senderId, {
-      type: 'loro_update',
+      type: 'crdt_update',
       roomId,
       senderId,
       payload

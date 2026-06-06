@@ -6,7 +6,7 @@ import { IRDelta } from '@genesis/types';
  */
 export type SyncMessageType =
   | 'join_room'
-  | 'loro_update'
+  | 'crdt_update'
   | 'presence_update'
   | 'sync_request'
   | 'sync_response'
