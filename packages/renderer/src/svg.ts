@@ -90,6 +90,29 @@ export function renderToSVG(doc: IRDocument): string {
       } else if (content.kind === 'image') {
         const preserveRatio = (content.fit as string) === 'contain' ? 'xMidYMid meet' : 'xMidYMid slice';
         contentStr = `<image href="${content.asset_id}" x="${layout.x}" y="${layout.y}" width="${layout.width}" height="${layout.height}" preserveAspectRatio="${preserveRatio}" ${commonAttrs} />`;
+      } else if (content.kind === 'qr_code') {
+        // LIR Generation for QR Code (Mockup bounding box with payload)
+        contentStr = `<rect x="${layout.x}" y="${layout.y}" width="${layout.width}" height="${layout.height}" fill="${(content as any).background_color ?? '#ffffff'}" stroke="${(content as any).foreground_color ?? '#000000'}" />
+                      <text x="${layout.x + 10}" y="${layout.y + 20}" font-family="monospace" font-size="12" fill="${(content as any).foreground_color ?? '#000000'}">QR: ${(content as any).payload}</text>`;
+      } else if (content.kind === 'math_formula') {
+        // LIR Generation for Math Formula (LaTeX placeholder)
+        contentStr = `<rect x="${layout.x}" y="${layout.y}" width="${layout.width}" height="${layout.height}" fill="none" stroke="#dddddd" stroke-dasharray="4" />
+                      <text x="${layout.x + 10}" y="${layout.y + 20}" font-family="serif" font-style="italic" font-size="16" fill="${fill}">$$ ${(content as any).latex} $$</text>`;
+      } else if (content.kind === 'network_graph') {
+        // LIR Generation for Force-Directed Graph Node Map
+        contentStr = `<rect x="${layout.x}" y="${layout.y}" width="${layout.width}" height="${layout.height}" fill="none" stroke="#cccccc" />
+                      <circle cx="${layout.x + layout.width/2}" cy="${layout.y + layout.height/2}" r="20" fill="#4CAF50" />
+                      <line x1="${layout.x}" y1="${layout.y}" x2="${layout.x + layout.width}" y2="${layout.y + layout.height}" stroke="#4CAF50" />
+                      <text x="${layout.x + 5}" y="${layout.y + 15}" font-family="sans-serif" font-size="10" fill="#333">Graph: ${(content as any).data_provider_id}</text>`;
+      } else if (content.kind === 'code_runner_cell') {
+        // LIR Generation for Executable Code Cell
+        contentStr = `<rect x="${layout.x}" y="${layout.y}" width="${layout.width}" height="${layout.height}" fill="#1e1e1e" rx="4" />
+                      <text x="${layout.x + 10}" y="${layout.y + 20}" font-family="monospace" font-size="14" fill="#d4d4d4">[${(content as any).language}]</text>
+                      <text x="${layout.x + 10}" y="${layout.y + 40}" font-family="monospace" font-size="12" fill="#ce9178">${((content as any).source_code || '').substring(0, 50)}...</text>`;
+      } else if (content.kind === 'watermark_layer') {
+        // LIR Generation for Global Watermark
+        const op = (content as any).opacity ?? 0.5;
+        contentStr = `<text x="${layout.x + layout.width/2}" y="${layout.y + layout.height/2}" font-family="sans-serif" font-size="${layout.height/4}" font-weight="bold" fill="rgba(200,200,200,${op})" text-anchor="middle" dominant-baseline="middle" transform="rotate(-45 ${layout.x + layout.width/2} ${layout.y + layout.height/2})">${(content as any).text ?? 'WATERMARK'}</text>`;
       }
     }
 
