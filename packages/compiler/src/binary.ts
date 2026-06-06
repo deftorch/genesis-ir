@@ -4,10 +4,10 @@ import { IRDocument, IRMigrationScript, IRMigrationTransformer } from '@genesis/
 // ==========================================
 // 1. PURE JS MESSAGEPACK ENCODER/DECODER
 // ==========================================
-export function encodeMsgPack(val: any): Buffer {
+export function encodeMsgPack(val: unknown): Buffer {
   const buffers: Buffer[] = [];
 
-  function write(v: any) {
+  function write(v: unknown) {
     if (v === null || v === undefined) {
       buffers.push(Buffer.from([0xc0]));
     } else if (typeof v === 'boolean') {
@@ -113,7 +113,7 @@ export function encodeMsgPack(val: any): Buffer {
       }
       for (const k of keys) {
         write(k);
-        write(v[k]);
+        write((v as Record<string, unknown>)[k]);
       }
     }
   }
@@ -122,10 +122,10 @@ export function encodeMsgPack(val: any): Buffer {
   return Buffer.concat(buffers);
 }
 
-export function decodeMsgPack(buf: Buffer): any {
+export function decodeMsgPack(buf: Buffer): unknown {
   let offset = 0;
 
-  function read(): any {
+  function read(): unknown {
     if (offset >= buf.length) throw new Error('Unexpected EOF in MsgPack');
     const type = buf[offset++];
 
@@ -212,18 +212,18 @@ export function decodeMsgPack(buf: Buffer): any {
     return s;
   }
 
-  function readArray(len: number): any[] {
-    const arr = [];
+  function readArray(len: number): unknown[] {
+    const arr: unknown[] = [];
     for (let i = 0; i < len; i++) {
       arr.push(read());
     }
     return arr;
   }
 
-  function readMap(len: number): any {
-    const map: any = {};
+  function readMap(len: number): Record<string, unknown> {
+    const map: Record<string, unknown> = {};
     for (let i = 0; i < len; i++) {
-      const k = read();
+      const k = read() as string;
       const v = read();
       map[k] = v;
     }
@@ -281,7 +281,7 @@ export function serializeToGIR(doc: IRDocument): Buffer {
   };
 
   const assetPool = {
-    assets: (doc as any).assets,
+    assets: (doc as unknown as Record<string, unknown>).assets,
   };
 
   // Block 1, 2, 3: MsgPack + LZ4
@@ -402,10 +402,10 @@ export function deserializeFromGIR(buffer: Buffer): IRDocument {
   const b4Data = bodyPayload.subarray(offset, offset + b4Len);
 
   // Decompress and Decode Blocks
-  const metadata = decodeMsgPack(decompressLZ4(b1Data));
-  const canvasStyle = decodeMsgPack(decompressLZ4(b2Data));
-  const nodeTree = decodeMsgPack(decompressLZ4(b3Data));
-  const assetPool = decodeMsgPack(b4Data);
+  const metadata = decodeMsgPack(decompressLZ4(b1Data)) as Record<string, unknown>;
+  const canvasStyle = decodeMsgPack(decompressLZ4(b2Data)) as Record<string, unknown>;
+  const nodeTree = decodeMsgPack(decompressLZ4(b3Data)) as Record<string, unknown>;
+  const assetPool = decodeMsgPack(b4Data) as Record<string, unknown>;
 
   const domains = [
     'visual', 'image_edit', 'video', 'audio', 'motion', 'print', 'signage', 'packaging',
@@ -428,7 +428,7 @@ export function deserializeFromGIR(buffer: Buffer): IRDocument {
     pixel_spec: metadata.pixel_spec,
     font_spec: metadata.font_spec,
     mockup_spec: metadata.mockup_spec,
-  } as any;
+  } as unknown as IRDocument;
 }
 
 // ==========================================
@@ -504,7 +504,7 @@ export class MigrationRegistry {
       migrated.meta.schema_version = script.to_version;
 
       return { doc: migrated, script_id: scriptId };
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Revert checkpoint on failure
       return { doc: checkpoint, script_id: scriptId };
     }
@@ -517,13 +517,13 @@ export class MigrationRegistry {
     return JSON.parse(JSON.stringify(originalDoc));
   }
 
-  private transformRename(obj: any, path: string, newKey: string): any {
+  private transformRename(obj: unknown, path: string, newKey: string): unknown {
     const parts = path.split('.');
     const lastKey = parts.pop()!;
-    let current = obj;
+    let current = obj as Record<string, unknown>;
     for (const part of parts) {
       if (current && typeof current === 'object') {
-        current = current[part];
+        current = current[part] as Record<string, unknown>;
       }
     }
     if (current && typeof current === 'object' && lastKey in current) {
@@ -533,13 +533,13 @@ export class MigrationRegistry {
     return obj;
   }
 
-  private transformRemove(obj: any, path: string): any {
+  private transformRemove(obj: unknown, path: string): unknown {
     const parts = path.split('.');
     const lastKey = parts.pop()!;
-    let current = obj;
+    let current = obj as Record<string, unknown>;
     for (const part of parts) {
       if (current && typeof current === 'object') {
-        current = current[part];
+        current = current[part] as Record<string, unknown>;
       }
     }
     if (current && typeof current === 'object' && lastKey in current) {
@@ -548,16 +548,16 @@ export class MigrationRegistry {
     return obj;
   }
 
-  private transformAdd(obj: any, path: string, defaultValue: any): any {
+  private transformAdd(obj: unknown, path: string, defaultValue: unknown): unknown {
     const parts = path.split('.');
     const lastKey = parts.pop()!;
-    let current = obj;
+    let current = obj as Record<string, unknown>;
     for (const part of parts) {
       if (current && typeof current === 'object') {
         if (!(part in current)) {
           current[part] = {};
         }
-        current = current[part];
+        current = current[part] as Record<string, unknown>;
       }
     }
     if (current && typeof current === 'object' && !(lastKey in current)) {
@@ -566,13 +566,13 @@ export class MigrationRegistry {
     return obj;
   }
 
-  private transformChangeType(obj: any, path: string, toType: string): any {
+  private transformChangeType(obj: unknown, path: string, toType: string): unknown {
     const parts = path.split('.');
     const lastKey = parts.pop()!;
-    let current = obj;
+    let current = obj as Record<string, unknown>;
     for (const part of parts) {
       if (current && typeof current === 'object') {
-        current = current[part];
+        current = current[part] as Record<string, unknown>;
       }
     }
     if (current && typeof current === 'object' && lastKey in current) {
@@ -584,10 +584,10 @@ export class MigrationRegistry {
     return obj;
   }
 
-  private transformRestructure(obj: any, transformer: IRMigrationTransformer): any {
-    if (transformer.type === 'map_nodes' && Array.isArray(obj.objects)) {
-      obj.objects = obj.objects.map((node: any) => {
-        let mapped = { ...node };
+  private transformRestructure(obj: unknown, transformer: IRMigrationTransformer): unknown {
+    if (transformer.type === 'map_nodes' && Array.isArray((obj as Record<string, unknown>).objects)) {
+      (obj as Record<string, unknown>).objects = ((obj as Record<string, unknown>).objects as unknown[]).map((node: unknown) => {
+        let mapped: Record<string, unknown> = { ...(node as object) };
         if (transformer.field_mapping) {
           for (const [from, to] of Object.entries(transformer.field_mapping)) {
             if (from in mapped) {

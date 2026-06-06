@@ -179,7 +179,7 @@ describe('FASE RLVRR — Reward Signal Chain', () => {
   });
 
 
-  it('fails Signal 3 (render error) when node count diverges', () => {
+  it('fails Signal 3 (render error) when node geometry is out of bounds', () => {
     const doc = makeValidDoc({
       objects: Array.from({ length: 50 }, (_, i) => ({
         id: `n-${i}`,
@@ -191,23 +191,23 @@ describe('FASE RLVRR — Reward Signal Chain', () => {
       })),
       style_context: { theme_tokens: {}, brand_profile: {}, component_styles: {} },
     });
+    
+    // Simulate computed layout where all 50 nodes are out of bounds
+    (doc as any).observability = {
+      computed_layout: Object.fromEntries(
+        Array.from({ length: 50 }, (_, i) => [
+          `n-${i}`,
+          { x: -100, y: -100, width: 10, height: 10 }
+        ])
+      )
+    };
 
-    const ref = makeValidDoc({
-      objects: [
-        {
-          id: 'n1', kind: 'visual', type: 'shape', name: 'S',
-          geometry: { x: 0, y: 0, width: 10, height: 10 },
-          style_override: {},
-        },
-      ],
-      style_context: { theme_tokens: {}, brand_profile: {}, component_styles: {} },
-    });
-
+    const ref = makeValidDoc();
     const result = evaluateRLVRR(doc, ref);
 
     expect(result.signals.signal_1_schema_compliance.passed).toBe(true);
     expect(result.signals.signal_2_brand_guard?.passed).toBe(true);
-    // error_rate = (50 - 1) / 1 = 49 > 0.02
+    // 50 out of bounds out of 50 = 1.0 error rate
     expect(result.signals.signal_3_render_error_rate?.error_rate).toBeGreaterThan(0.02);
     // Signal 4, 5 not evaluated
     expect(result.signals.signal_4_budget_accuracy).toBeUndefined();

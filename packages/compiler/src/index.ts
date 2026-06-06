@@ -1,10 +1,13 @@
 import { validateHIR } from '@genesis/schema';
+import { runCompilerPipeline } from './pipeline.js';
+import { IRDocument } from '@genesis/types';
+
 export * from './profiler.js';
 export * from './binary.js';
 export * from './rlvrr.js';
 export * from './font.js';
 export * from './native_wasm.js';
-
+export * from './pipeline.js';
 
 /**
  * @stability BETA
@@ -12,6 +15,7 @@ export * from './native_wasm.js';
 export interface CompilationResult {
   success: boolean;
   errors: string[];
+  lir?: any;
 }
 
 /**
@@ -19,19 +23,19 @@ export interface CompilationResult {
  * @stability BETA
  */
 export function compileDocument(doc: unknown): CompilationResult {
-  const validationResult = validateHIR(doc);
-  if (!validationResult.valid) {
-    return {
-      success: false,
-      errors: [
-        'Invalid HIR Document Schema',
-        ...validationResult.errors.map(e => `${e.path}: ${e.message}`),
-      ],
-    };
-  }
-  const typedDoc = doc as { meta?: { lifecycle_status?: string } };
+  const typedDoc = doc as IRDocument;
+  
   if (typedDoc.meta?.lifecycle_status === 'archived') {
     return { success: false, errors: ['Cannot compile archived document'] };
   }
-  return { success: true, errors: [] };
+
+  try {
+    const lir = runCompilerPipeline(typedDoc);
+    return { success: true, errors: [], lir };
+  } catch (error: any) {
+    return {
+      success: false,
+      errors: [error.message || 'Unknown compilation error'],
+    };
+  }
 }

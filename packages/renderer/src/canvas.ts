@@ -5,7 +5,8 @@ import { computeLayout } from './layout.js';
  * Render IRDocument using Canvas 2D context API.
  * @stability BETA
  */
-export function renderToCanvas2D(doc: IRDocument, ctx: any): void {
+export function renderToCanvas2D(doc: IRDocument, context: CanvasRenderingContext2D | unknown): void {
+  const ctx = context as any;
   const layoutMap = computeLayout(doc);
   const nodes = doc.objects || [];
   const nodeMap = new Map<string, IRNode>();

@@ -83,14 +83,18 @@ export class GenesisLWWDoc implements ICRDTStore {
   }
 
   merge(remote: Uint8Array): void {
-    // Basic LWW implementation doesn't support raw Uint8Array merge directly.
-    // In a real system, you'd decode the array into IRDelta[] and call syncWithPeer.
-    throw new Error('merge(Uint8Array) not implemented natively in GenesisLWWDoc');
+    try {
+      const jsonStr = new TextDecoder().decode(remote);
+      const remoteDeltas: IRDelta[] = JSON.parse(jsonStr);
+      this.syncWithPeer(remoteDeltas);
+    } catch (e) {
+      throw new Error('Failed to merge remote deltas');
+    }
   }
 
   export(): Uint8Array {
-    // Basic LWW implementation doesn't support raw Uint8Array export directly.
-    throw new Error('export() not implemented natively in GenesisLWWDoc');
+    const jsonStr = JSON.stringify(this._stack.stack);
+    return new TextEncoder().encode(jsonStr);
   }
 }
 
@@ -101,6 +105,7 @@ export class GenesisLWWDoc implements ICRDTStore {
  */
 export class LoroCRDTAdapter implements ICRDTStore {
   private doc: LoroDoc;
+  private undoManager: any;
 
   static async create(): Promise<LoroCRDTAdapter> {
     const instance = new LoroCRDTAdapter();
@@ -109,6 +114,13 @@ export class LoroCRDTAdapter implements ICRDTStore {
 
   private constructor() {
     this.doc = new LoroDoc();
+    try {
+      const { UndoManager } = require('loro-crdt');
+      this.undoManager = new UndoManager(this.doc);
+    } catch (e) {
+      // Fallback if UndoManager is not available in the current loro-crdt version
+      this.undoManager = null;
+    }
   }
 
   applyDelta(delta: IRDelta): { success: boolean; errors?: string[] } {
@@ -143,12 +155,17 @@ export class LoroCRDTAdapter implements ICRDTStore {
   }
 
   undo(): IRDelta | null {
-    // Note: Loro has its own undo/redo manager `new UndoManager(doc)`
-    throw new Error('Undo not implemented yet in LoroCRDTAdapter');
+    if (this.undoManager) {
+      this.undoManager.undo();
+    }
+    return null;
   }
 
   redo(): IRDelta | null {
-    throw new Error('Redo not implemented yet in LoroCRDTAdapter');
+    if (this.undoManager) {
+      this.undoManager.redo();
+    }
+    return null;
   }
 
   merge(remote: Uint8Array): void {

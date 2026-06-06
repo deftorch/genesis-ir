@@ -42,7 +42,7 @@ export function convertSRGBToCMYK(
   return { c, m, y, k };
 }
 
-function parseColor(colorStr: any, colorSpace: string): any {
+function parseColor(colorStr: unknown, colorSpace: string): unknown {
   let r = 0, g = 0, b = 0;
   if (typeof colorStr === 'string') {
     const clean = colorStr.trim().toLowerCase();
@@ -205,7 +205,7 @@ export class PDFXRenderer {
           x: xPdf,
           y: yPdf,
           size: fontSize,
-          color: parseColor(textColor, colorSpace),
+          color: parseColor(textColor, colorSpace) as any,
           font: embeddedFont,
         });
       } else if (kind === 'shape' || kind === 'rect' || kind === 'circle' || kind === 'ellipse') {
@@ -221,8 +221,8 @@ export class PDFXRenderer {
             y: yPdf + hPdf / 2,
             xScale: wPdf / 2,
             yScale: hPdf / 2,
-            color: parseColor(fillColor, colorSpace),
-            borderColor: parseColor(strokeColor, colorSpace),
+            color: parseColor(fillColor, colorSpace) as any,
+            borderColor: parseColor(strokeColor, colorSpace) as any,
             borderWidth: strokeWidth,
           });
         } else {
@@ -231,8 +231,8 @@ export class PDFXRenderer {
             y: yPdf,
             width: wPdf,
             height: hPdf,
-            color: parseColor(fillColor, colorSpace),
-            borderColor: parseColor(strokeColor, colorSpace),
+            color: parseColor(fillColor, colorSpace) as any,
+            borderColor: parseColor(strokeColor, colorSpace) as any,
             borderWidth: strokeWidth,
           });
         }

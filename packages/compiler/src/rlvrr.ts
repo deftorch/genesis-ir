@@ -107,13 +107,29 @@ export function evaluateRLVRR(
 
   // Sinyal 3: Render Error Rate (Weight: 0.20)
   // Target: error rate < 0.02
-  // We can calculate this based on node layout differences or node count mismatch
-  const auditErrorsCount = (output.observability as any)?.audit_log?.filter((l: any) => l.severity === 'error' || l.severity === 'critical')?.length || 0;
-  const outNodesCount = output.objects?.length || 0;
-  const refNodesCount = reference.objects?.length || 0;
-  const diff = Math.abs(outNodesCount - refNodesCount);
-  const node_error_rate = refNodesCount > 0 ? diff / refNodesCount : 0.0;
-  const error_rate = Math.min(1.0, node_error_rate + (auditErrorsCount * 0.1));
+  const observability = output.observability as Record<string, unknown> | undefined;
+  const auditLog = observability?.audit_log as Array<Record<string, unknown>> | undefined;
+  const auditErrorsCount = auditLog?.filter(l => l.severity === 'error' || l.severity === 'critical')?.length || 0;
+  
+  // Calculate exceptions and out-of-bounds metrics based on computed_layout
+  const computedLayout = observability?.computed_layout as Record<string, { x: number, y: number, width: number, height: number }> | undefined;
+  const canvasRecord = output.canvas as unknown as Record<string, unknown> | undefined;
+  const canvasWidth = (canvasRecord?.width as number) || 1920;
+  const canvasHeight = (canvasRecord?.height as number) || 1080;
+  
+  let outOfBoundsCount = 0;
+  const totalNodes = output.objects?.length || 0;
+
+  if (computedLayout) {
+    for (const layout of Object.values(computedLayout)) {
+      if (layout.x < 0 || layout.y < 0 || layout.x + layout.width > canvasWidth || layout.y + layout.height > canvasHeight) {
+        outOfBoundsCount++;
+      }
+    }
+  }
+
+  const geometry_error_rate = totalNodes > 0 ? outOfBoundsCount / totalNodes : 0.0;
+  const error_rate = Math.min(1.0, geometry_error_rate + (auditErrorsCount * 0.1));
   const s3_passed = error_rate < 0.05;
   const s3_score = s3_passed ? 1.0 : Math.max(0.0, 1.0 - error_rate * 5);
 
@@ -158,15 +174,68 @@ export function evaluateRLVRR(
 
   // Sinyal 5: Semantic Quality (Weight: 0.05)
   // High quality when text size/contrast/semantic checks pass.
-  let s5_score = 0.7;
-  const accessibilityScore = (output.observability as any)?.accessibility_audit?.score;
+  let s5_score = 0.5;
+  const accessibilityScore = (observability?.accessibility_audit as Record<string, unknown>)?.score as number | undefined;
   
   if (accessibilityScore !== undefined) {
     s5_score = accessibilityScore / 100.0;
-  } else if ((output as any).validation_pass === 'both' || (output as any).validation_pass === 'pass3') {
-    s5_score = 1.0;
-  } else if ((output.canvas as any).grid_layout || (output.canvas as any).context?.type === 'diagram') {
-    s5_score = 0.9;
+  } else {
+    // Check WCAG contrast ratio and semantic hierarchy
+    let hasSemanticTags = false;
+    let hasGoodContrast = true;
+    let textNodesCount = 0;
+    
+    // Simple hierarchy validation (e.g. h1 -> h2)
+    const headers: string[] = [];
+    if (output.objects) {
+      for (const node of output.objects) {
+        if (node.type === 'text') {
+          textNodesCount++;
+          const semanticTag = (node.content as unknown as Record<string, unknown>)?.semantic_tag as string | undefined;
+          if (semanticTag) {
+            hasSemanticTags = true;
+            if (semanticTag.startsWith('h')) {
+              headers.push(semanticTag);
+            }
+          }
+          
+          // Contrast validation (simplified)
+          const color = (node.style as Record<string, unknown>)?.color as string | undefined;
+          const bgTokens = output.style_context?.theme_tokens as Record<string, unknown> | undefined;
+          const bgColors = bgTokens?.colors as Record<string, string> | undefined;
+          const bg = bgColors?.background;
+          
+          if (color && bg && color.startsWith('#') && bg.startsWith('#')) {
+            const ratio = calculateContrastRatio(color, bg);
+            if (!checkWCAGCompliance(ratio, 'AA', 14)) {
+              hasGoodContrast = false;
+            }
+          }
+        }
+      }
+    }
+    
+    let hierarchyValid = true;
+    if (headers.length > 0) {
+      // Validate h1 comes before h2, etc. (simplified check)
+      let prevLevel = parseInt(headers[0].replace('h', ''));
+      for (let i = 1; i < headers.length; i++) {
+        const level = parseInt(headers[i].replace('h', ''));
+        if (level > prevLevel + 1) { // Skipped a level (e.g., h1 -> h3)
+          hierarchyValid = false;
+        }
+        prevLevel = level;
+      }
+    }
+    
+    if (textNodesCount === 0) {
+      s5_score = 0.8; // Acceptable if no text
+    } else {
+      s5_score = 0.0;
+      if (hasSemanticTags) s5_score += 0.4;
+      if (hierarchyValid) s5_score += 0.3;
+      if (hasGoodContrast) s5_score += 0.3;
+    }
   }
 
   signals.signal_5_semantic_quality = {
